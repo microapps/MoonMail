@@ -83,6 +83,7 @@
   "checkSubscriptionLimitsFunctionName": "${project}-subscriptions-checkSubscriptionLimits",
   "getSubscriptionDetailsFunctionName": "${project}-subscriptions-getSubscriptionDetails",
   "getTotalRecipientsFunctionName": "${project}-recipients-getTotalRecipients",
+  "listRecipientsFunctionName": "${project}-recipients-listRecipients",
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
   "eventsBusTopic": "${project}-${stage}-eventsBus",
   "emailAdminsTopic": "${project}-${stage}-emailAdmins",
