@@ -1,5 +1,13 @@
 import omitEmpty from 'omit-empty';
 
+function findDetectedDevice(metadata) {
+  if (metadata['CloudFront-Is-Desktop-Viewer'] === 'true') { return 'desktop'; }
+  if (metadata['CloudFront-Is-Mobile-Viewer'] === 'true') { return 'mobile'; }
+  if (metadata['CloudFront-Is-SmartTV-Viewer'] === 'true') { return 'smartTv'; }
+  if (metadata['CloudFront-Is-Tablet-Viewer'] === 'true') { return 'tablet'; }
+  return 'unknown';
+}
+
 export default function parseCFRequestHeaders(requestHeaders) {
   const cfIpAddress = (requestHeaders['X-Forwarded-For'] || ',').split(',').shift().trim();
   const acceptLanguage = (requestHeaders['Accept-Language'] || ',').split(',').shift().trim();
@@ -13,12 +21,4 @@ export default function parseCFRequestHeaders(requestHeaders) {
     detectedDevice: findDetectedDevice(requestHeaders),
     userAgent: requestHeaders['User-Agent']
   });
-}
-
-function findDetectedDevice(metadata) {
-  if (metadata['CloudFront-Is-Desktop-Viewer'] === 'true') { return 'desktop'; }
-  if (metadata['CloudFront-Is-Mobile-Viewer'] === 'true') { return 'mobile'; }
-  if (metadata['CloudFront-Is-SmartTV-Viewer'] === 'true') { return 'smartTv'; }
-  if (metadata['CloudFront-Is-Tablet-Viewer'] === 'true') { return 'tablet'; }
-  return 'unknown';
 }

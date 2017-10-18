@@ -1,6 +1,6 @@
 import request from 'request-promise';
 
-export default function getGeolocationData(ipAddress) {
+export default function getGeoInformationFromIp(ipAddress) {
   return request(`https://freegeoip.net/json/${ipAddress}`)
     .then(result => JSON.parse(result));
 }

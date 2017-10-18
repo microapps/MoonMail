@@ -1,3 +1,4 @@
+import omitEmpty from 'omit-empty';
 import Promise from 'bluebird';
 import { strip } from 'eskimo-stripper';
 import parseRequestMetadata from '../services/parseRequestMetadata';
@@ -6,26 +7,26 @@ import StreamUtils from '../StreamUtils';
 import getGeoInformationFromIp from '../services/getGeoInformationFromIp';
 import parseCFRequestHeaders from '../services/parseCFRequestHeaders';
 
+async function buildSystemMetadata(requestHeaders) {
+  const systemMetadata = await parseCFRequestHeaders(requestHeaders);
+  const geoLocationData = await getGeoInformationFromIp(systemMetadata.ip);
+  return omitEmpty(Object.assign({}, systemMetadata, {
+    countryName: geoLocationData.country_name,
+    regionCode: geoLocationData.region_code,
+    regionName: geoLocationData.region_name,
+    city: geoLocationData.city,
+    zipCode: geoLocationData.zip_code,
+    timeZone: geoLocationData.time_zone,
+    location: {
+      lat: geoLocationData.latitude,
+      lon: geoLocationData.longitude
+    },
+    metroCode: geoLocationData.metro_code
+  }));
+}
+
 const Api = {
-  
-  buildSystemMetadata(requestHeaders) {
-    return parseCFRequestHeaders(requestHeaders)
-    .then(systemMetadata => getGeoInformationFromIp(cfIpAddress)) 
-    .then(geoLocationData => omitEmpty(Object.assign({}, updatedMetadata, {
-      countryName: geoLocationData.country_name,
-      regionCode: geoLocationData.region_code,
-      regionName: geoLocationData.region_name,
-      city: geoLocationData.city,
-      zipCode: geoLocationData.zip_code,
-      timeZone: geoLocationData.time_zone,
-      location: {
-        lat: geoLocationData.latitude,
-        lon: geoLocationData.longitude
-      },
-      metroCode: geoLocationData.metro_code
-    })));
-  }
-  
+
   processOpenClickEventsStream(records) { // out
     return Promise.map(records, record => this.processOpenClickEvent(record), { concurrency: 2 });
   },
@@ -79,4 +80,6 @@ const Api = {
   }
 };
 
-export default Api;
+export default {
+  buildSystemMetadata
+};
