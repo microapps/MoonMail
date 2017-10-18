@@ -25,7 +25,7 @@ const Api = {
       metroCode: geoLocationData.metro_code
     })));
   }
-
+  
   processOpenClickEventsStream(records) { // out
     return Promise.map(records, record => this.processOpenClickEvent(record), { concurrency: 2 });
   },
