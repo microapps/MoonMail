@@ -3,9 +3,30 @@ import { strip } from 'eskimo-stripper';
 import parseRequestMetadata from '../services/parseRequestMetadata';
 import Recipients from './Recipients';
 import StreamUtils from '../StreamUtils';
+import getGeoInformationFromIp from '../services/getGeoInformationFromIp';
+import parseCFRequestHeaders from '../services/parseCFRequestHeaders';
 
 const Api = {
-  processOpenClickEventsStream(records) {
+  
+  buildSystemMetadata(requestHeaders) {
+    return parseCFRequestHeaders(requestHeaders)
+    .then(systemMetadata => getGeoInformationFromIp(cfIpAddress)) 
+    .then(geoLocationData => omitEmpty(Object.assign({}, updatedMetadata, {
+      countryName: geoLocationData.country_name,
+      regionCode: geoLocationData.region_code,
+      regionName: geoLocationData.region_name,
+      city: geoLocationData.city,
+      zipCode: geoLocationData.zip_code,
+      timeZone: geoLocationData.time_zone,
+      location: {
+        lat: geoLocationData.latitude,
+        lon: geoLocationData.longitude
+      },
+      metroCode: geoLocationData.metro_code
+    })));
+  }
+
+  processOpenClickEventsStream(records) { // out
     return Promise.map(records, record => this.processOpenClickEvent(record), { concurrency: 2 });
   },
 

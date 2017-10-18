@@ -9,16 +9,18 @@ function awsCredentials() {
 }
 
 const ElasticSearch = {
-  deleteDocument(esClient, indexName, indexType, id) {
-    return esClient.delete({
+  deleteDocument(indexName, indexType, id, esClient = null) {
+    const client = Object.assign({}, this.createClient({}), esClient);
+    return client.delete({
       index: indexName,
       type: indexType,
       id
     });
   },
 
-  createOrUpdateDocument(esClient, indexName, indexType, id, item) {
-    return esClient.index({
+  createOrUpdateDocument(indexName, indexType, id, item, esClient = null) {
+    const client = Object.assign({}, this.createClient({}), esClient);
+    return client.index({
       index: indexName,
       type: indexType,
       id,
@@ -26,14 +28,15 @@ const ElasticSearch = {
     });
   },
 
-  search(esClient, indexName, indexType, queryBody) {
+  search(indexName, indexType, queryBody, esClient = null) {
+    const client = Object.assign({}, this.createClient({}), esClient);
     const esQueryRequest = {
       index: indexName,
       type: indexType,
       body: queryBody
     };
-    logger().debug(JSON.stringify(esQueryRequest));
-    return esClient.search(esQueryRequest);
+    logger().debug('ElasticSearch.search', JSON.stringify(esQueryRequest));
+    return client.search(esQueryRequest);
   },
 
   // {
