@@ -1,8 +1,8 @@
 import cuid from 'cuid';
 import base64url from 'base64-url';
 import { ListSegment } from 'moonmail-models';
-import ElasticSearch from '../elasticsearch/index';
-import Recipients from '../recipients/index';
+import ElasticSearch from '../elasticsearch';
+import Recipients from '../recipients/Recipients';
 
 const Segments = {
 

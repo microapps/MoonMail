@@ -1,0 +1,8 @@
+{
+  "REGION": "us-east-1",
+  "LOG_LEVEL": "debug",
+  "ES_HOST": "https://search-es-microapps-odcj3qud4olgytj6sz4bfy3nxm.us-east-1.es.amazonaws.com/",
+  "ES_REGION": "us-east-1"
+  "LISTS_TABLE": "MoonMail-v2-dev-lists",
+  "RECIPIENTS_TABLE": "MoonMail-v2-dev-recipients"
+}

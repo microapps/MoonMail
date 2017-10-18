@@ -1,0 +1,62 @@
+service: MoonMail-v2-lists
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:service}-${self:custom.currentStage}
+  region: ${file(./config.${self:custom.currentStage}.json):REGION}
+  timeout: 300
+  environment:
+    LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
+    LISTS_TABLE: ${file(./config.${self:custom.currentStage}.json):LISTS_TABLE}
+    RECIPIENTS_TABLE: ${file(./config.${self:custom.currentStage}.json):RECIPIENTS_TABLE}
+    ES_HOST: ${file(./config.${self:custom.currentStage}.json):ES_HOST}
+    ES_REGION: ${file(./config.${self:custom.currentStage}.json):ES_REGION}
+    
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+        - "lambda:*"
+        - "logs:*"
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DeleteNetworkInterface"
+      Resource: "*"
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+  
+
+package:
+  individually: true
+
+functions:
+  createTemplate:
+    handler: templates.createTemplate
+    name: ${self:custom.resourcesPrefix}-createTemplate
+
+resources:
+  Resources:
+    RecipientEventStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: RecipientEvents
+        ShardCount: 1
+  Outputs:
+    RecipientsStreamARN:
+      Description: RecipientEvents Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - RecipientEventStream
+          - Arn

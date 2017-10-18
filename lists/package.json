@@ -29,6 +29,9 @@
     "chai-fuzzy": "^1.6.1",
     "chai-things": "^0.2.0",
     "mocha": "^2.4.5",
+    "serverless": "^1.23.0",
+    "serverless-offline": "^3.16.0",
+    "serverless-plugin-optimize": "^3.0.3-rc.1",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0"

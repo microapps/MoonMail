@@ -1,4 +1,4 @@
-import '../spec_helper';
+import '../specHelper';
 
 import awsMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';

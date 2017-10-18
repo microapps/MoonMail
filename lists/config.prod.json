@@ -1,0 +1,8 @@
+{
+  "REGION": "eu-west-1",
+  "LOG_LEVEL": "info",
+  "ES_HOST": "https://search-moonmail-prod-mpml3zqsw6hi2r6rtajfkzx3yy.eu-west-1.es.amazonaws.com/",
+  "ES_REGION": "eu-west-1",
+  "LISTS_TABLE": "MoonMail-v2-prod-lists",
+  "RECIPIENTS_TABLE": "MoonMail-v2-prod-recipients"
+}
