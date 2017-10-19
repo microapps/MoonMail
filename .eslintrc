@@ -1,6 +1,11 @@
 {
+  "plugins": [
+    "babel"
+  ],
   "env": {
-    "mocha": true
+    "mocha": true,
+    "es6": true,
+    "node": true
   },
   "rules": {
     "comma-dangle": [2, "never"],    

@@ -1,10 +1,10 @@
 import omitEmpty from 'omit-empty';
 
-function findDetectedDevice(metadata) {
-  if (metadata['CloudFront-Is-Desktop-Viewer'] === 'true') { return 'desktop'; }
-  if (metadata['CloudFront-Is-Mobile-Viewer'] === 'true') { return 'mobile'; }
-  if (metadata['CloudFront-Is-SmartTV-Viewer'] === 'true') { return 'smartTv'; }
-  if (metadata['CloudFront-Is-Tablet-Viewer'] === 'true') { return 'tablet'; }
+function findDetectedDevice(headers) {
+  if (headers['CloudFront-Is-Desktop-Viewer'] === 'true') { return 'desktop'; }
+  if (headers['CloudFront-Is-Mobile-Viewer'] === 'true') { return 'mobile'; }
+  if (headers['CloudFront-Is-SmartTV-Viewer'] === 'true') { return 'smartTv'; }
+  if (headers['CloudFront-Is-Tablet-Viewer'] === 'true') { return 'tablet'; }
   return 'unknown';
 }
 

@@ -1,7 +1,7 @@
 import '../specHelper';
 import Recipients from './Recipients';
 import Api from './Api';
-import ElasticSearch from '../elasticsearch';
+import ElasticSearch from '../ElasticSearch';
 
 describe('Recipients Api', () => {
   describe('#syncRecipientRecordWithES', () => {
