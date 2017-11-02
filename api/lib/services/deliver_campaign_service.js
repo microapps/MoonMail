@@ -55,6 +55,7 @@ class DeliverCampaignService {
     const segmentId = campaign.segmentId;
     return FunctionsClient.execute(process.env.LIST_SEGMENT_MEMBERS_FUNCTION, {
       segmentId,
+      // FIXME: Not needed anymore
       options: {
         conditions: [
           { condition: { queryType: 'match', fieldToQuery: 'status', searchTerm: 'subscribed' }, conditionType: 'filter' }
