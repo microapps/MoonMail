@@ -1,0 +1,19 @@
+{
+    "listId": "my-list",
+    "recipients": [
+        {
+            "email": "david.garcia@microapps.com",
+            "metadata": {
+                "name": "David",
+                "surname": "Garcia"
+            }
+        },
+        {
+            "email": "test@email.com",
+            "metadata": {
+                "name": "Gabriel",
+                "surname": "Robert"
+            }
+        }
+    ]
+}
