@@ -19,8 +19,8 @@ export function respond(event, cb) {
             return cb(ApiErrors.response('No recipients specified'));
         }
 
-        if (event.recipients.length > 1000) {
-            return cb(ApiErrors.response('Do not provide more than 1000 recipients'));
+        if (event.recipients.length > 25) {
+            return cb(ApiErrors.response('Do not provide more than 25 recipients'));
         }
 
         const incomingRecipients = [];

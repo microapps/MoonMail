@@ -79,13 +79,13 @@ describe('bulkCreateRecipients', () => {
       });
 
       it('returns an error message when too much recipients', (done) => {
-        for (var i = 0; i <= 1000; i++) {
+        for (var i = 0; i <= 25; i++) {
           event.recipients.push({})
         }
         respond(event, (err, result) => {
           expect(result).to.not.exist;
           const error = JSON.parse(err);
-          expect(error).to.have.property('message', 'Do not provide more than 1000 recipients');
+          expect(error).to.have.property('message', 'Do not provide more than 25 recipients');
           done();
         });
       });
