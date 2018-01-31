@@ -26,6 +26,47 @@ function stringifyMetadata(metadata) {
   }, {});
 }
 
+const buildCompoundQuery = (queryParams) => {
+  const filters = [
+    queryParams.status ? { terms: { 'status.keyword': [].concat.apply([], [queryParams.status]) } } : null,
+    queryParams.listId ? { term: { 'listId.keyword': queryParams.listId } } : null
+  ].filter(q => !!q);
+
+  const fullTextSearch = queryParams.q ? [
+    // { multi_match: { query: queryParams.q, fuzziness: 'AUTO', fields: ['name', 'email', 'companyName'] } },
+    { multi_match: { query: queryParams.q, type: 'phrase', fields: ['email', 'metadata.name', 'metadata.surname'] } },
+    { multi_match: { query: queryParams.q, type: 'phrase_prefix', fields: ['email', 'metadata.name', 'metadata.surname'] } }
+  ] : [];
+  const queryTemplate = {
+    from: queryParams.from,
+    size: queryParams.size,
+    query: {
+      bool: {
+        // -> This part declares the fulltext search part
+        // must:
+        // [{
+        //  bool: {
+        //     should: fullTextSearch
+        //  }
+        // }],
+
+        // -> This part declares the filters
+        // filter: filters
+      }
+    }
+  };
+  if (fullTextSearch.length > 0) queryTemplate.query.bool.must = [{ bool: { should: fullTextSearch } }];
+  if (filters.length > 0) queryTemplate.query.bool.filter = filters;
+  if (fullTextSearch.length === 0 && filters.length === 0) {
+    delete queryTemplate.query.bool;
+    queryTemplate.query = {
+      match_all: {}
+    };
+  }
+  return queryTemplate;
+};
+
+
 const Recipients = {
   indexName: process.env.ES_RECIPIENTS_INDEX_NAME,
   indexType: process.env.ES_RECIPIENTS_INDEX_TYPE,
@@ -66,6 +107,13 @@ const Recipients = {
     return ListSegment.validateConditions(conditions)
       .then(conditions => ElasticSearch.buildQueryFilters(conditions).from(from).size(size))
       .then(query => ElasticSearch.search(this.client, this.indexName, this.indexType, query.build()))
+      .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
+  },
+
+  listRecipients(queryOptions, { from = 0, size = 10 }) {
+    const query = buildCompoundQuery(Object.assign({}, queryOptions, { from, size }));
+    return Promise.resolve(query)
+      .then(query => ElasticSearch.search(this.client, this.indexName, this.indexType, query))
       .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
   },
 
@@ -130,7 +178,7 @@ const Recipients = {
 
   // TODO: migrate to ES
   totalRecipients(userId) {
-    return List.allBy('userId', userId)
+    return List.allBy('userId', userId, { recursive: true })
       .then(lists => lists.items.filter(l => (!!l.subscribedCount && !l.archived)).reduce((accum, next) => (accum + next.subscribedCount), 0));
   },
 
