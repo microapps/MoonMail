@@ -1,0 +1,46 @@
+{
+  "name": "bulkCreateRecipients",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-bulkCreateRecipients",
+  "customRole": false,
+  "handler": "recipients/bulkCreateRecipients/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/lists/{listId}/recipients/bulk",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "listId": "$input.params('listId')",
+          "recipients": "$input.json('$.recipients')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": "true",
+    "RECIPIENTS_TABLE": "$${recipientsTable}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
