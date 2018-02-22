@@ -4,7 +4,7 @@
       "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",
       "ReceiptHandle": "this_is_the_code_that_identifies_the_sqs_message",
       "MD5OfBody": "md5",
-      "Body": "{\"userId\":\"some_user_id\", \"userPlan\":\"paid\", \"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"H4sIAAAAAAAAA3PNTczMUUjKT6kEAPlfQXAKAAAA\",\"subject\":\"Email Subject\"},\"recipient\":{\"unsubscribeLink\":\"https://jamgfqiefe.execute-api.eu-west-1.amazonaws.com/prod/lists/cir3hx1t6000001p7dh6mqs2q/recipients/ZGF2aWQuZ2FyY2lhQG1pY3JvYXBwcy5jb20/unsubscribe?cid=cis7egmsp000001p9erpzgr5f\",\"email\":\"david.garcia@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\"}}"
+      "Body": "{\"userId\":\"some_user_id\", \"userPlan\":\"paid\", \"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"segmentId\":\"some_segment\",\"body\":\"H4sIAAAAAAAAA3PNTczMUUjKT6kEAPlfQXAKAAAA\",\"subject\":\"Email Subject\"},\"recipient\":{\"unsubscribeUrl\":\"https://jamgfqiefe.execute-api.eu-west-1.amazonaws.com/prod/lists/cir3hx1t6000001p7dh6mqs2q/recipients/ZGF2aWQuZ2FyY2lhQG1pY3JvYXBwcy5jb20/unsubscribe?cid=cis7egmsp000001p9erpzgr5f\",\"email\":\"david.garcia@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\"}}"
     },
     {
       "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",

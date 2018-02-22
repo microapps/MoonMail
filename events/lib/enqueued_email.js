@@ -32,7 +32,7 @@ class EnqueuedEmail {
         subject: this.message.campaign.subject,
         html: this.message.campaign.body,
         to: this.message.recipient.email,
-        headers: [{key: 'List-Unsubscribe', value: this._listUnsubscribeHeaderValue()}]
+        headers: this._buildHeaders()
       };
       if (this.message.campaign.attachments) {
         mailOptions.attachments = this._buildAttachments();
@@ -40,13 +40,25 @@ class EnqueuedEmail {
       const mail = mailcomposer(mailOptions);
       mail.build((err, message) => {
         if (err) return reject(err);
-        else return resolve({RawMessage: {Data: message}});
+        return resolve({ RawMessage: { Data: message } });
       });
     });
   }
 
+  _buildHeaders() {
+    const headers = [
+      { key: 'List-Unsubscribe', value: this._listUnsubscribeHeaderValue() },
+      { key: 'X-Moonmail-User-ID', value: this.message.userId },
+      { key: 'X-Moonmail-Campaign-ID', value: this.message.campaign.id },
+      { key: 'X-Moonmail-List-ID', value: this.message.recipient.listId },
+      { key: 'X-Moonmail-Recipient-ID', value: this.message.recipient.id },
+      { key: 'X-Moonmail-Segment-ID', value: this.message.campaign.segmentId }
+    ];
+    return headers;
+  }
+
   _buildAttachments() {
-    return this.message.campaign.attachments.map(att => ({filename: att.name, path: att.url, }));
+    return this.message.campaign.attachments.map(att => ({ filename: att.name, path: att.url }));
   }
 
   _listUnsubscribeHeaderValue() {

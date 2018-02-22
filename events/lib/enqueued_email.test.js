@@ -1,15 +1,13 @@
-'use strict';
-
-import * as chai from 'chai';
-const chaiAsPromised = require('chai-as-promised');
-const chaiThings = require('chai-things');
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import chaiThings from 'chai-things';
 import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
+import sinon from 'sinon';
+import mailcomposer from 'mailcomposer';
 import { EnqueuedEmail } from './enqueued_email';
 import * as sqsMessages from './sqs_receive_messages_response.json';
-import * as sinon from 'sinon';
-import mailcomposer from 'mailcomposer';
 
+const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
@@ -17,9 +15,10 @@ chai.use(chaiThings);
 describe('EnqueuedEmail', () => {
   let email;
   let expectedFrom;
+  const campaign = JSON.parse(sqsMessages.Messages[0].Body);
 
   before(() => {
-    email = new EnqueuedEmail(JSON.parse(sqsMessages.Messages[0].Body), 'some_handler');
+    email = new EnqueuedEmail(campaign, 'some_handler');
     expectedFrom = `"${email.message.sender.fromName}" <${email.message.sender.emailAddress}>`;
   });
 
@@ -38,6 +37,19 @@ describe('EnqueuedEmail', () => {
     it('builds SES raw params', (done) => {
       email.toSesRawParams().then(sesRawEmail => {
         expect(sesRawEmail).to.have.deep.property('RawMessage.Data');
+        done();
+      }).catch(done);
+    });
+
+    it('has custom headers', (done) => {
+      email.toSesRawParams().then(sesRawEmail => {
+        const rawEmail = Buffer.from(sesRawEmail.RawMessage.Data, 'base64').toString();
+        expect(rawEmail).to.contain(`X-Moonmail-User-ID: ${campaign.userId}`);
+        expect(rawEmail).to.contain(`X-Moonmail-List-ID: ${campaign.recipient.listId}`);
+        expect(rawEmail).to.contain(`X-Moonmail-Recipient-ID: ${campaign.recipient.id}`);
+        expect(rawEmail).to.contain(`X-Moonmail-Campaign-ID: ${campaign.campaign.id}`);
+        expect(rawEmail).to.contain(`X-Moonmail-User-ID: ${campaign.userId}`);
+        expect(rawEmail).to.contain(`X-Moonmail-Segment-ID: ${campaign.campaign.segmentId}`);
         done();
       }).catch(done);
     });
