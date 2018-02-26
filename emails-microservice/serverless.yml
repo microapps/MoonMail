@@ -1,0 +1,55 @@
+service: MoonMail-v2-emails
+
+plugins:
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:custom.config.PROFILE}
+  region: ${self:custom.config.REGION}
+  timeout: 300
+  environment:
+    REGION: ${self:custom.config.REGION}
+
+package:
+  individually: true
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  config: ${file(./config.${self:custom.currentStage}.json)}
+
+# functions:
+  # routeEvents:
+  #   handler: handler.routeEvents
+  #   events:
+  #     - stream:
+  #         type: kinesis
+  #         arn:
+  #           Fn::GetAtt:
+  #             - EventsIngestionStream
+  #             - Arn
+
+resources:
+  Resources:
+    EmailNotificationsTopic:
+      Type: "AWS::SNS::Topic"
+      Properties:
+        TopicName: ${self:custom.resourcesPrefix}-EmailNotificationsTopic
+    EmailNotificationsTopicPolicy:
+      Type: "AWS::SNS::TopicPolicy"
+      Properties:
+        PolicyDocument:
+          Statement:
+            -
+              Effect: Allow
+              Principal:
+                AWS: "*"
+              Action: "SNS:Publish"
+              Resource:
+                Ref: EmailNotificationsTopic
+        Topics:
+          -
+            Ref: EmailNotificationsTopic

@@ -1,0 +1,14 @@
+{
+  "name": "emails-microservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-plugin-optimize": "^3.0.4-rc.1"
+  }
+}
