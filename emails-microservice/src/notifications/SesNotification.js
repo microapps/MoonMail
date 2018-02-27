@@ -11,27 +11,14 @@ const mmJoi = Joi.extend((joi) => ({
       {
         name: 'hasMoonMailHeaders',
         validate(params, headersArray, state, options) {
-          // const emailHeaders = R.pluck('name', headersArray);
-          // const emailHeadersContains = R.partialRight(R.contains, [emailHeaders]);
-          // console.log('******* Required', moonmailHeaders);
-          // console.log('======= Actual', emailHeaders);
-          // console.log('Valid:', R.all(emailHeadersContains)(moonmailHeaders));
-          const getHeaderNamesFromSesHeaders = R.pluck('name');
-          // const containsAllItmes = R.pipe(R.flip(R.contains), R.all);
-          // R.pipe(getHeaderNamesFromSesHeaders, containsAllItmes)
           const emailHeadersContainAll = R.pipe(
             R.pluck('name'),
             R.flip(R.contains),
             R.all
           )(headersArray);
-          console.log('Valid2:', emailHeadersContainAll(moonmailHeaders));
-          // R.all(headersContains(value))(moonmailHeaders)
-          // if (value % 1 !== 0) {
-          //     // Generate an error, state and options need to be passed
-          //     return this.createError('number.round', { v: value }, state, options);
-          // }
-          // const
-          return value;
+          return emailHeadersContainAll(moonmailHeaders)
+            ? headersArray
+            : this.createError('array.hasMoonMailHeaders', { v: headersArray }, state, options);
         }
       }
     ]
@@ -43,78 +30,11 @@ const notificationSchema = mmJoi.object({
   }).required()
 })
 
-// {
-//   [listRecipientImported]: {
-//     schema: Joi.object({
-//       type: listRecipientImported,
-//       payload: Joi.object({
-//         recipient: Joi.object({
-//           email: Joi.string().required().email(),
-//           listId: Joi.string().required(),
-//           userId: Joi.string().required(),
-//           // TODO: Should we enforce string types on values here?
-//           metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.any()),
-//           systemMetadata: Joi.object({
-//             countryCode: Joi.string().valid(alpha2CountryCodes)
-//           })
-//         }).required(),
-//         totalRecipients: Joi.number().required(),
-//         recipientIndex: Joi.number().required(),
-//         importId: Joi.string().required()
-//       }).required()
-//     })
-//   },
-//   [listRecipientCreated]: {
-//     schema: Joi.object({
-//       type: listRecipientCreated,
-//       payload: Joi.object({
-//         recipient: {
-//           listId: Joi.string().required(),
-//           userId: Joi.string().required(),
-//           email: Joi.string().required().email(),
-//           subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)),
-//           isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
-//           status: Joi.string().valid(RecipientModel.statuses.subscribed, RecipientModel.statuses.awaitingConfirmation).required(),
-//           metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required())
-//           // systemMetadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
-//         }
-//       }).required()
-//     })
-//   },
-//   [listRecipientUpdated]: {
-//     schema: Joi.object({
-//       type: listRecipientUpdated,
-//       payload: Joi.object({
-//         listId: Joi.string().required(),
-//         userId: Joi.string().required(),
-//         id: Joi.string().required(),
-//         data: Joi.object({
-//           status: Joi.string().valid(Object.values(RecipientModel.statuses)),
-//           isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
-//           metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required())
-//         }).required()
-//       }).required()
-//     })
-//   },
-//   [listRecipientDeleted]: {
-//     schema: Joi.object({
-//       type: listRecipientDeleted,
-//       payload: Joi.object({
-//         listId: Joi.string().required(),
-//         userId: Joi.string().required(),
-//         id: Joi.string().required()
-//       })
-//     })
-//   }
-// };
-
 const isValid = (event) => {
   try {
-    const result = Joi.validate(event, notificationSchema, { allowUnknown: true });
-    // console.log(event, result)
+    const result = mmJoi.validate(event, notificationSchema, { allowUnknown: true });
     return !result.error;
   } catch (err) {
-    // console.log(event, err)
     return false;
   }
 };
