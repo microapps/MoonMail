@@ -2,19 +2,10 @@ import { expect } from 'chai';
 import R from 'ramda';
 import SesNotification from './SesNotification';
 import delivery from './fixtures/delivery.json';
+import bounce from './fixtures/bounce.json';
+import complaint from './fixtures/complaint.json';
 
 describe('SesNotification', () => {
-  const bounce = R.pipe(
-    R.assoc('notificationType', 'Bounce'),
-    R.assoc('bounce', { bounceType: 'Permanent' }),
-    R.dissoc('delivery')
-  )(delivery);
-  const complaint = R.pipe(
-    R.assoc('notificationType', 'Complaint'),
-    R.assoc('complaint', { complaintFeedbackType: 'abuse' }),
-    R.dissoc('delivery')
-  )(delivery);
-
   describe('.isValid()', () => {
     context('when the notification is valid', () => {
       it('returns true', () => {

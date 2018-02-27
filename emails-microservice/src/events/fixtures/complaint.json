@@ -1,0 +1,88 @@
+{
+  "notificationType": "Complaint",
+  "mail": {
+    "timestamp": "2018-02-26T11:19:17.795Z",
+    "source": "David <david.garcia@microapps.com>",
+    "sourceArn": "arn:aws:ses:us-east-1:862946620411:identity/david.garcia@microapps.com",
+    "sourceIp": "52.23.224.207",
+    "sendingAccountId": "862946620411",
+    "messageId": "01000161d1d69a23-a505c9aa-143b-4626-b206-3c5855f516db-000000",
+    "destination": [
+      "david.garcia@microapps.com"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "text/html"
+      },
+      {
+        "name": "List-Unsubscribe",
+        "value": "<https://staging.execute-api.us-east-1.amazonaws.com/dev/lists/cj84bbbtf000u01qramxpipzo/recipients/ZGF2aWQuZ2FyY2lhQG1pY3JvYXBwcy5jb20/unsubscribe?cid=cje44pvqg000101p9wqyvsf1b>"
+      },
+      {
+        "name": "X-Moonmail-User-ID",
+        "value": "google-oauth2|12345"
+      },
+      {
+        "name": "X-Moonmail-Campaign-ID",
+        "value": "cje44pvqg000101p9wqyvsf1b"
+      },
+      {
+        "name": "X-Moonmail-List-ID",
+        "value": "cj84bbbtf000u01qramxpipzo"
+      },
+      {
+        "name": "X-Moonmail-Recipient-ID",
+        "value": "ZGF2aWQuZ2FyY2lhQG1pY3JvYXBwcy5jb20"
+      },
+      {
+        "name": "From",
+        "value": "David <david.garcia@microapps.com>"
+      },
+      {
+        "name": "To",
+        "value": "david.garcia@microapps.com"
+      },
+      {
+        "name": "Subject",
+        "value": "Test"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<394a5208-0de2-e934-30b5-d21b0ca7df5c@microapps.com>"
+      },
+      {
+        "name": "Content-Transfer-Encoding",
+        "value": "quoted-printable"
+      },
+      {
+        "name": "Date",
+        "value": "Mon, 26 Feb 2018 11:19:17 +0000"
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      }
+    ],
+    "commonHeaders": {
+      "from": [
+        "David <david.garcia@microapps.com>"
+      ],
+      "date": "Mon, 26 Feb 2018 11:19:17 +0000",
+      "to": [
+        "david.garcia@microapps.com"
+      ],
+      "messageId": "<394a5208-0de2-e934-30b5-d21b0ca7df5c@microapps.com>",
+      "subject": "Test"
+    }
+  },
+  "complaint":{
+    "userAgent":"AnyCompany Feedback Loop (V0.01)",
+    "complainedRecipients":[{ "emailAddress":"richard@example.com" }],
+    "complaintFeedbackType":"abuse",
+    "arrivalDate":"2016-01-27T14:59:38.237Z",
+    "timestamp":"2016-01-27T14:59:38.237Z",
+    "feedbackId":"000001378603177f-18c07c78-fa81-4a58-9dd1-fedc3cb8f49a-000000"
+  }
+}
