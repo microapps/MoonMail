@@ -11,6 +11,7 @@ provider:
   timeout: 300
   environment:
     REGION: ${self:custom.config.REGION}
+    EVENTS_ROUTER_STREAM_NAME: ${self:custom.config.EVENTS_ROUTER_STREAM_NAME}
 
 package:
   individually: true
