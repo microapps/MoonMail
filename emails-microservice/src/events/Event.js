@@ -43,7 +43,7 @@ const buildPayloadFromNotification = function buildPayloadFromNotification(sesNo
     const newObj = { [key]: val };
     return Object.assign({}, acc, newObj);
   }, {});
-  return Object.assign({}, headerPayload, notifycationPayload);
+  return omitEmpty(Object.assign({}, headerPayload, notifycationPayload));
 }
 
 const fromSesNotification = function eventFromSesNotification(sesNotification = {}) {

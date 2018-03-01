@@ -21,16 +21,13 @@ custom:
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   config: ${file(./config.${self:custom.currentStage}.json)}
 
-# functions:
-  # routeEvents:
-  #   handler: handler.routeEvents
-  #   events:
-  #     - stream:
-  #         type: kinesis
-  #         arn:
-  #           Fn::GetAtt:
-  #             - EventsIngestionStream
-  #             - Arn
+functions:
+  processSesNotification:
+    handler: handler.processSesNotification
+    events:
+      - sns:
+          arn:
+            Ref: EmailNotificationsTopic
 
 resources:
   Resources:
