@@ -59,7 +59,7 @@ describe('EventsRouter', () => {
         [aTypeEvents, aTypeSubscription],
         [anotherTypeEvents, anotherTypeSubscription]
       ];
-      expectations.forEach(expected => {
+      expectations.forEach((expected) => {
         expect(KinesisNotifier.publishBatch).to.have.been.calledWithExactly(...expected);
       });
     });
@@ -68,7 +68,7 @@ describe('EventsRouter', () => {
       await EventsRouter.execute(kinesisStream);
       expect(EventsDeadLetterQueue.put).to.have.been.calledTwice;
       const expectations = [aTypeResponse.records[0], anotherTypeResponse.records[0]];
-      expectations.forEach(expected => {
+      expectations.forEach((expected) => {
         expect(EventsDeadLetterQueue.put).to.have.been.calledWithExactly(expected);
       });
     });
