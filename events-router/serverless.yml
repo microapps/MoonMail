@@ -56,3 +56,9 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: EventsDeadLetterQueue
+  Outputs:
+    EventsIngestionStreamName:
+      Value:
+        Ref: EventsIngestionStream
+      Export:
+        Name: EventsRouterStreamName-${self:custom.currentStage}
