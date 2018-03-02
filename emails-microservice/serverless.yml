@@ -11,7 +11,13 @@ provider:
   timeout: 300
   environment:
     REGION: ${self:custom.config.REGION}
-    EVENTS_ROUTER_STREAM_NAME: ${self:custom.config.EVENTS_ROUTER_STREAM_NAME}
+    EVENTS_ROUTER_STREAM_NAME:
+      Fn::ImportValue: EventsRouterStreamName-${self:custom.currentStage}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "kinesis:putRecord"
+      Resource: "*"
 
 package:
   individually: true
@@ -21,21 +27,31 @@ custom:
   currentStage: ${opt:stage, self:custom.defaultStage}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   config: ${file(./config.${self:custom.currentStage}.json)}
+  emailNotificationsTopicName: ${self:custom.resourcesPrefix}-EmailNotificationsTopic
+  emailNotificationsTopicArn:
+    Fn::Join:
+      - ":"
+      - - arn
+        - aws
+        - sns
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - ${self:custom.emailNotificationsTopicName}
 
 functions:
   processSesNotification:
     handler: handler.processSesNotification
     events:
       - sns:
-          arn:
-            Ref: EmailNotificationsTopic
+          arn: ${self:custom.emailNotificationsTopicArn}
+          topicName: ${self:custom.emailNotificationsTopicName}
 
 resources:
   Resources:
     EmailNotificationsTopic:
       Type: "AWS::SNS::Topic"
       Properties:
-        TopicName: ${self:custom.resourcesPrefix}-EmailNotificationsTopic
+        TopicName: ${self:custom.emailNotificationsTopicName}
     EmailNotificationsTopicPolicy:
       Type: "AWS::SNS::TopicPolicy"
       Properties:

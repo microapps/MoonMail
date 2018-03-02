@@ -11,7 +11,7 @@ function buildKinesisParams(partitionKey, streamName, payload) {
 
 function publishKinesisEvent(partitionKey, streamName, payload, kinesisClient = null) {
   const params = buildKinesisParams(partitionKey, streamName, payload);
-  const client = kinesisClient || new AWS.Kinesis({ region: process.env.SERVERLESS_REGION });
+  const client = kinesisClient || new AWS.Kinesis({ region: process.env.REGION });
   return client.putRecord(params).promise();
 }
 
