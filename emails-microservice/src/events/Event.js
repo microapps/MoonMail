@@ -34,7 +34,7 @@ const notificationTypeMapping = {
 
 const buildPayloadFromNotification = function buildPayloadFromNotification(sesNotification = {}) {
   const headerValue = notificationHeaderValue(sesNotification);
-  const headerPayload = Object.keys(payloadHeadersMapping).reduce((acc, key) =>  {
+  const headerPayload = Object.keys(payloadHeadersMapping).reduce((acc, key) => {
     const newObj = { [key]: headerValue(payloadHeadersMapping[key]) };
     return Object.assign({}, acc, newObj);
   }, {});
@@ -44,16 +44,16 @@ const buildPayloadFromNotification = function buildPayloadFromNotification(sesNo
     return Object.assign({}, acc, newObj);
   }, {});
   return omitEmpty(Object.assign({}, headerPayload, notifycationPayload));
-}
+};
 
 const fromSesNotification = function eventFromSesNotification(sesNotification = {}) {
   const payload = buildPayloadFromNotification(sesNotification);
   return {
     type: notificationTypeMapping[sesNotification.notificationType],
-    payload 
-  }
-}
+    payload
+  };
+};
 
 export default {
   fromSesNotification
-}
+};

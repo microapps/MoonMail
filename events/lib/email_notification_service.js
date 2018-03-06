@@ -1,67 +1,76 @@
-'use strict';
-
 import { Promise } from 'bluebird';
-import { debug } from './index';
-import { SentEmail, Report, Recipient } from 'moonmail-models';
+import R from 'ramda';
 import moment from 'moment';
 import omitEmpty from 'omit-empty';
+import { Report, Recipient } from 'moonmail-models';
+import { debug } from './index';
 
 class EmailNotificationService {
-
   constructor(notification) {
-    this.messageId = notification.mail.messageId;
     this.notification = notification;
-    this.sentEmail = null;
+  }
+
+  get headers() {
+    return R.pathOr({}, ['mail', 'headers'], this.notification);
+  }
+
+  get emailMetadata() {
+    const payloadHeadersMapping = {
+      listId: 'X-Moonmail-List-ID',
+      recipientId: 'X-Moonmail-Recipient-ID',
+      campaignId: 'X-Moonmail-Campaign-ID'
+    };
+    const headerValue = header => R.pipe(
+      R.find(R.propEq('name', header)),
+      el => el ? el : {},
+      R.prop('value')
+    )(this.headers);
+    const metadata = Object.keys(payloadHeadersMapping).reduce((acc, key) => {
+      const newObj = { [key]: headerValue(payloadHeadersMapping[key]) };
+      return Object.assign({}, acc, newObj);
+    }, {});
+    return omitEmpty(metadata);
   }
 
   process() {
-    debug('= EmailNotificationService.process', JSON.stringify(this.messageId));
+    if (!this.isProcessable()) return Promise.resolve(true);
     return this.unsubscribeRecipient()
-      .then(() => this.updateStatus())
-      .then(updatedEmail => this.incrementReportCount(updatedEmail));
+      .then(() => this.incrementReportCount());
   }
 
-  getSentEmail() {
-    debug('= EmailNotificationService.getSentEmail', this.messageId);
-    return SentEmail.get(this.messageId);
+  isProcessable() {
+    const requiredMetadata = ['listId', 'recipientId', 'campaignId'];
+    const hasAllRequiredMetadata = R.allPass(R.map(R.has, requiredMetadata));
+    return hasAllRequiredMetadata(this.emailMetadata);
   }
 
   unsubscribeRecipient() {
-    return this.getSentEmail()
-      .then(sentEmail => {
-        // There is no need to unubscribe recipient if
-        // it is not a complaint or a hard bounce
-        if (this._shouldUnsubscribe()) {
-          const recipient = { status: this.newStatus };
-          recipient[`${this.newStatus}At`] = moment().unix();
-          return Recipient.update(omitEmpty(recipient), sentEmail.listId, sentEmail.recipientId);
-        }
-        return Promise.resolve({});
-      });
+    const { listId, recipientId } = this.emailMetadata;
+    if (this.shouldUnsubscribe()) {
+      const recipient = { status: this.newStatus };
+      recipient[`${this.newStatus}At`] = moment().unix();
+      return Recipient.update(omitEmpty(recipient), listId, recipientId);
+    }
+    return Promise.resolve({});
   }
 
-  updateStatus() {
-    debug('= EmailNotificationService.updateStatus', this.notification.notificationType);
-    return SentEmail.update({ status: this.newStatus }, this.messageId);
-  }
-
-  incrementReportCount(sentEmail) {
-    debug('= EmailNotificationService.incrementReportCount', JSON.stringify(sentEmail));
+  incrementReportCount() {
+    const { campaignId } = this.emailMetadata;
     switch (this.notification.notificationType.toLowerCase()) {
       case 'bounce':
         const bounceType = this.notification.bounce.bounceType.toLowerCase();
         if (bounceType === 'permanent' || bounceType === 'undetermined') {
           debug('= EmailNotificationService.incrementReportCount', 'Bounce');
-          return Report.incrementBounces(sentEmail.campaignId);
+          return Report.incrementBounces(campaignId);
         }
         debug('= EmailNotificationService.incrementReportCount', 'Bounce', bounceType);
-        return Report.incrementSoftBounces(sentEmail.campaignId);
+        return Report.incrementSoftBounces(campaignId);
       case 'complaint':
         debug('= EmailNotificationService.incrementReportCount', 'Complaint');
-        return Report.incrementComplaints(sentEmail.campaignId);
+        return Report.incrementComplaints(campaignId);
       case 'delivery':
         debug('= EmailNotificationService.incrementReportCount', 'Delivery');
-        return Report.incrementDeliveries(sentEmail.campaignId);
+        return Report.incrementDeliveries(campaignId);
       default:
         return null;
     }
@@ -83,7 +92,7 @@ class EmailNotificationService {
     }
   }
 
-  _isHardBounce() {
+  isHardBounce() {
     if (this.notification.notificationType.toLowerCase() === 'bounce') {
       const bounceType = this.notification.bounce.bounceType.toLowerCase();
       if (bounceType === 'permanent' || bounceType === 'undetermined') {
@@ -93,14 +102,13 @@ class EmailNotificationService {
     return false;
   }
 
-  _isComplaint() {
+  isComplaint() {
     return this.notification.notificationType.toLowerCase() === 'complaint';
   }
 
-  _shouldUnsubscribe() {
-    return this._isHardBounce() || this._isComplaint();
+  shouldUnsubscribe() {
+    return this.isHardBounce() || this.isComplaint();
   }
-
 }
 
 module.exports.EmailNotificationService = EmailNotificationService;

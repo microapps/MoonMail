@@ -25,10 +25,9 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
-    "SENT_EMAILS_TABLE": "$${sentEmailsTable}",
     "REPORTS_TABLE": "$${reportsTable}",
-    "RECIPIENTS_TABLE": "$${recipientsTable}"
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "DEBUG": "true"
   },
   "vpc": {
     "securityGroupIds": [],
