@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test mocha --require choma --require babel-register $(find ./ \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
     "watch": "NODE_ENV=test mocha --watch --require choma  --require babel-register $(find ./ \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')"
   },
-  "author": "",
+  "author": "David García <david.garcia@microapps.com>",
   "license": "ISC",
   "devDependencies": {
     "aws-sdk-mock": "^1.7.0",
