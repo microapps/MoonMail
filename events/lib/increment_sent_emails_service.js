@@ -1,8 +1,6 @@
-'use strict';
-
-import { debug } from './index';
 import { Report } from 'moonmail-models';
 import * as async from 'async';
+import { debug } from './index';
 
 class IncrementSentEmailsService {
   constructor(streamRecords) {
@@ -15,7 +13,7 @@ class IncrementSentEmailsService {
         this.incrementCount(cid, count)
           .then(() => cb())
           .catch(() => cb());
-      }, err => {
+      }, (err) => {
         if (err) {
           debug('= IncrementSentEmailsService.incrementAll', 'Error incrementing clicks', err);
           reject(err);
@@ -35,7 +33,7 @@ class IncrementSentEmailsService {
   get sentByCampaign() {
     if (this.streamRecords) {
       const sentPerCampaign = {};
-      this.streamRecords.forEach(record => {
+      this.streamRecords.forEach((record) => {
         let campaignId = this._getCampaignId(record);
         if (this._isInsert(record) && campaignId) {
           if (sentPerCampaign[campaignId]) {

@@ -10,4 +10,4 @@ const processSesNotification = function processSesNotification(notification = {}
 
 export default {
   processSesNotification
-}
+};
