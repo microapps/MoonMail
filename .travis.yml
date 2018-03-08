@@ -10,6 +10,7 @@ env:
     - TEST_DIR=lists-microservice
     - TEST_DIR=events-router
     - TEST_DIR=emails-microservice
+    - TEST_DIR=campaigns-microservice
 
 script:
 - cd $TEST_DIR && npm install && npm test
@@ -26,4 +27,5 @@ cache:
   - api/node_modules
   - lists-microservice/node_modules
   - emails-microservice/node_modules
+  - campaigns-microservice/node_modules
   - events-router/node_modules
