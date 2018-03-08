@@ -2,7 +2,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import IncrementReportCounters from './IncrementReportCounters';
-import ReportRepo from '../repositories/Report';
+import ReportRepository from '../repositories/Report';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -22,8 +22,8 @@ describe('IncrementReportCounters', () => {
       { type: 'email.notsupported', payload: { campaignId: aCampaignId } }
     ];
 
-    beforeEach(() => sinon.stub(ReportRepo, 'incrementCounters').resolves(true));
-    afterEach(() => ReportRepo.incrementCounters.restore());
+    beforeEach(() => sinon.stub(ReportRepository, 'incrementCounters').resolves(true));
+    afterEach(() => ReportRepository.incrementCounters.restore());
 
     it('increments the appropriate report counters', async () => {
       const expectations = [
@@ -31,9 +31,9 @@ describe('IncrementReportCounters', () => {
         [anotherCampaignId, { complaintsCount: 1 }]
       ];
       await IncrementReportCounters.execute(events);
-      expect(ReportRepo.incrementCounters).to.have.callCount(expectations.length);
+      expect(ReportRepository.incrementCounters).to.have.callCount(expectations.length);
       expectations.forEach((expected) => {
-        expect(ReportRepo.incrementCounters).to.have.been.calledWithExactly(...expected);
+        expect(ReportRepository.incrementCounters).to.have.been.calledWithExactly(...expected);
       });
     });
   });
