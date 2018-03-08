@@ -12,6 +12,11 @@ provider:
   environment:
     REGION: ${self:custom.config.REGION}
     REPORTS_TABLE: ${self:custom.config.REPORTS_TABLE}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
 
 package:
   individually: true
@@ -28,6 +33,7 @@ functions:
     events:
       - stream:
           type: kinesis
+          batchSize: 25
           arn:
             Fn::GetAtt:
               - ReportsStream
