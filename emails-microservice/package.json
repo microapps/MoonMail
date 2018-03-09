@@ -20,6 +20,7 @@
     "sinon-chai": "^2.14.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "joi": "^13.1.2",
     "omit-empty": "^0.4.1",
     "ramda": "^0.25.0"
