@@ -1,13 +1,18 @@
 import aws from 'aws-sdk';
 
-const credentials = new aws.SharedIniFileCredentials({ profile: 'personal' });
-aws.config.credentials = credentials;
-aws.config.region = 'us-east-1';
-const kinesis = new aws.Kinesis();
-const routerStreamName = 'MoonMail-v2-events-router-dev-EventsIngestionStream';
+const stage = 'prod';
+const settings = {
+  dev: { region: 'us-east-1', routerStreamName: 'MoonMail-v2-events-router-dev-EventsIngestionStream', profile: 'personal' },
+  prod: { region: 'eu-west-1', routerStreamName: 'MoonMail-v2-events-router-prod-EventsIngestionStream', profile: 'moonmail-deployer' }
+};
 
-const aCampaignId = 'campaign-id';
-const anotherCampaignId = 'campaign-id-2';
+const credentials = new aws.SharedIniFileCredentials({ profile: settings[stage].profile });
+aws.config.credentials = credentials;
+aws.config.region = settings[stage].region;
+const kinesis = new aws.Kinesis();
+
+const anotherCampaignId = 'my-campaign-id';
+const aCampaignId = 'my-campaign-id-2';
 const events = [
   { type: 'email.delivered', payload: { campaignId: aCampaignId } },
   { type: 'email.delivered', payload: { campaignId: aCampaignId } },
@@ -66,7 +71,7 @@ const buildKinesisPutRecordsParams = function buildKinesisPutRecordsParams(event
     StreamName: streamName
   };
 };
-const publishBatch = function publishEventsBatch(events, streamName = routerStreamName, client = kinesis) {
+const publishBatch = function publishEventsBatch(events, streamName = settings[stage].routerStreamName, client = kinesis) {
   const params = buildKinesisPutRecordsParams(events, streamName, '12345');
   return client.putRecords(params).promise();
 };

@@ -1,5 +1,3 @@
-'use strict';
-
 import { Campaign } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import cuid from 'cuid';
