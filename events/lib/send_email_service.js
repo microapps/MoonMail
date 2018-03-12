@@ -1,7 +1,7 @@
 import UIDGenerator from 'uid-generator';
 import { Promise } from 'bluebird';
 import * as async from 'async';
-import { SES, SNS } from 'aws-sdk';
+import { SES } from 'aws-sdk';
 import { logger } from './index';
 
 class SendEmailService {
@@ -9,7 +9,6 @@ class SendEmailService {
   constructor(queue, lambdaClient, context, state = {}) {
     this.queue = queue;
     this.emailClient = null;
-    this.sns = null;
     this.lambdaClient = lambdaClient;
     this.lambdaName = context.functionName;
     this.context = context;
@@ -29,17 +28,16 @@ class SendEmailService {
       .then(() => this.sendBatch())
       .then(batch => this.deleteBatch(batch))
       .then(() => this.sendNextBatch())
-      .catch(err => logger().info('SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
+      .catch(() => logger().info('SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
   }
 
   sendNextBatch() {
     if (this.timeEnough()) {
       logger().debug('SendEmailService.sendNextBatch', 'Time enough for another batch');
       return this.sendEnqueuedEmails();
-    } else {
-      logger().info('SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
-      return this._checkReputation().then(() => this.invokeLambda());
     }
+    logger().info('SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
+    return this._checkReputation().then(() => this.invokeLambda());
   }
 
   invokeLambda() {
@@ -83,7 +81,7 @@ class SendEmailService {
                 logger().warn('SendEmailService.sendBatch', 'Error', err);
                 if (this._isAbortError(err)) {
                   logger().error('SendEmailService.sendBatch', 'Aborting...');
-                  this._publishSentEmails(sentEmails, () => reject(err));
+                  reject(err);
                 } else if (this._isRetryableError(err)) {
                   logger().warn('SendEmailService.sendBatch', 'Retry');
                   callback();
@@ -97,7 +95,7 @@ class SendEmailService {
                 }
               });
           }, () => {
-            this._publishSentEmails(sentEmails, () => resolve(sentEmailsHandles));
+            resolve(sentEmailsHandles);
           });
         })
         .catch(() => logger().debug('SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
@@ -116,46 +114,6 @@ class SendEmailService {
         }
       });
     });
-  }
-
-  _publishSentEmails(sentEmails, callback) {
-    if (sentEmails.length === 0) return callback();
-    const snsParams = {
-      Message: JSON.stringify(sentEmails),
-      TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
-    };
-    return this.snsClient.publish(snsParams, callback);
-  }
-
-  _publishBounceNotificationIfNeeded(deliverResult) {
-    logger().debug('SendEmailService._publishBounceNotificationIfNeeded', JSON.stringify(deliverResult));
-    if (deliverResult.status === 'BounceDetected') {
-      return this._publishBounceNotification(deliverResult)
-        .then(_ => Promise.resolve(deliverResult));
-    }
-    return Promise.resolve(deliverResult);
-  }
-
-  _publishBounceNotification(deliverResult) {
-    const bounceNotification = {
-      notificationType: 'Bounce',
-      bounce: {
-        bounceType: 'Permanent',
-        metadata: {
-          decription: 'Detected before send',
-          detector: 'Moonmail'
-        }
-      },
-      mail: {
-        messageId: deliverResult.MessageId
-      }
-    };
-    const snsParams = {
-      Message: JSON.stringify(bounceNotification),
-      TopicArn: process.env.EMAIL_NOTIFICATIONS_TOPIC_ARN
-    };
-    logger().debug('SendEmailService._publishBounceNotification', JSON.stringify(snsParams));
-    return this.snsClient.publish(snsParams).promise();
   }
 
   _isAbortError(error) {
@@ -213,14 +171,6 @@ class SendEmailService {
     // for some reason there isn't any riskScore information
     // proceed to send
     return true;
-  }
-
-  get snsClient() {
-    logger().debug('SendEmailService.snsClient', 'Getting SNS client');
-    if (!this.sns) {
-      this.sns = new SNS({ region: process.env.SERVERLESS_REGION || 'us-east-1' });
-    }
-    return this.sns;
   }
 
   setEmailClient(enqueuedEmail) {

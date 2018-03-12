@@ -1,0 +1,49 @@
+service: MoonMail-v2-campaigns
+
+plugins:
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:custom.config.PROFILE}
+  region: ${self:custom.config.REGION}
+  timeout: 300
+  environment:
+    REGION: ${self:custom.config.REGION}
+    REPORTS_TABLE: ${self:custom.config.REPORTS_TABLE}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+package:
+  individually: true
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  config: ${file(./config.${self:custom.currentStage}.json)}
+
+functions:
+  processSesNotification:
+    handler: handler.processEmailNotifications
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 25
+          arn:
+            Fn::GetAtt:
+              - ReportsStream
+              - Arn
+
+resources:
+  Resources:
+    ReportsStream:
+      Type: "AWS::Kinesis::Stream"
+      Properties:
+        Name: ${self:custom.resourcesPrefix}-ReportsStream
+        RetentionPeriodHours: 168
+        ShardCount: ${self:custom.config.KINESIS_SHARDS}

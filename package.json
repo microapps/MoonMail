@@ -17,6 +17,7 @@
     "babelify": "^7.2.0",
     "base64-url": "^1.2.2",
     "bluebird": "^3.4.6",
+    "cf-canary": "0.0.1",
     "serverless-cors-plugin": "^0.4.1",
     "serverless-runtime-babel": "github:serverless/serverless-runtime-babel"
   },
