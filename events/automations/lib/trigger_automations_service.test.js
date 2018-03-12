@@ -104,7 +104,7 @@ describe('TriggerAutomationsService', () => {
           id: sinon.match.string,
           scheduledAt: moment().unix() + subscribeAutomationAction.delay,
           userId,
-          campaign: sinon.match.object,
+          campaign: sinon.match({ body: sinon.match.string, id: sinon.match.string, subject: sinon.match.string }),
           sender,
           recipient: expectedRecipient,
           status: 'scheduled',

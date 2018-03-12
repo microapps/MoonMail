@@ -91,7 +91,7 @@ export default class TriggerAutomationsService {
 
   static _addCampaignToEmail(email, automation) {
     const campaign = automation.campaign;
-    return Object.assign({}, email, {campaign});
+    return Object.assign({}, email, { campaign });
   }
 
   static _precompileEmail(email) {
@@ -111,7 +111,7 @@ export default class TriggerAutomationsService {
       emailParser.unsubscribeUrl
     ])
     .then(result => {
-      const scheduledEmail = Object.assign({}, email, {campaign: {body: result[0], subject: result[1]}});
+      const scheduledEmail = Object.assign({}, email, { campaign: { body: result[0], subject: result[1], id: email.automationActionId } });
       if (result[2]) scheduledEmail.recipient.unsubscribeUrl = result[2];
       return scheduledEmail;
     });
