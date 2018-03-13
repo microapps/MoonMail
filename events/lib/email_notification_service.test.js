@@ -4,12 +4,11 @@ import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
 import 'sinon-as-promised';
 import R from 'ramda';
-import { Report, Recipient } from 'moonmail-models';
+import { Recipient } from 'moonmail-models';
 import { EmailNotificationService } from './email_notification_service';
 import * as softBounce from './fixtures/soft_bounce_notification.json';
 import * as bounce from './fixtures/bounce_notification.json';
 import * as complaint from './fixtures/complaint_notification.json';
-import * as delivery from './fixtures/delivery_notification.json';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -17,10 +16,6 @@ chai.use(chaiAsPromised);
 
 describe('EmailNotificationService', () => {
   let updateRecipientStub;
-  let incrementBouncesStub;
-  let incrementComplaintsStub;
-  let incrementDeliveriesStub;
-  let incrementSoftBouncesStub;
   const recipientId = 'thatUserId';
   const listId = 'some-list-id';
   const campaignId = 'the-campaign-id';
@@ -43,18 +38,10 @@ describe('EmailNotificationService', () => {
 
   beforeEach(() => {
     updateRecipientStub = sinon.stub(Recipient, 'update').resolves(true);
-    incrementBouncesStub = sinon.stub(Report, 'incrementBounces').resolves(true);
-    incrementSoftBouncesStub = sinon.stub(Report, 'incrementSoftBounces').resolves(true);
-    incrementComplaintsStub = sinon.stub(Report, 'incrementComplaints').resolves(true);
-    incrementDeliveriesStub = sinon.stub(Report, 'incrementDeliveries').resolves(true);
   });
 
   afterEach(() => {
     updateRecipientStub.restore();
-    incrementBouncesStub.restore();
-    incrementComplaintsStub.restore();
-    incrementDeliveriesStub.restore();
-    incrementSoftBouncesStub.restore();
   });
 
   describe('#getEmailMetadata()', () => {
@@ -83,6 +70,16 @@ describe('EmailNotificationService', () => {
       });
     });
 
+    context('when the notification is a bounce', () => {
+      it('does not unsubscribe the recipient', (done) => {
+        const emailNotificationService = new EmailNotificationService(withHeaders(softBounce));
+        emailNotificationService.unsubscribeRecipient().then(() => {
+          expect(Recipient.update).to.not.have.been.called;
+          done();
+        });
+      });
+    });
+
     context('when the notification is a complaint', () => {
       it('unsubscribes the recipient with complainedAt timestamp', (done) => {
         const emailNotificationService = new EmailNotificationService(withHeaders(complaint));
@@ -101,65 +98,20 @@ describe('EmailNotificationService', () => {
     });
   });
 
-  describe('#incrementReportCount()', () => {
-    context('when the notification is a bounce', () => {
-      it('increments the bounces count', (done) => {
-        const emailNotificationService = new EmailNotificationService(withHeaders(bounce));
-        emailNotificationService.incrementReportCount().then(() => {
-          expect(incrementBouncesStub).to.have.been.calledWith(emailMetadata.campaignId);
-          done();
-        });
-      });
-    });
-
-    context('when the notification is a complaint', () => {
-      it('increments the complaints count', (done) => {
-        const emailNotificationService = new EmailNotificationService(withHeaders(complaint));
-        emailNotificationService.incrementReportCount().then(() => {
-          expect(incrementComplaintsStub).to.have.been.calledWith(emailMetadata.campaignId);
-          done();
-        });
-      });
-    });
-
-    context('when the notification is a delivery', () => {
-      it('increments the deliveries count', (done) => {
-        const emailNotificationService = new EmailNotificationService(withHeaders(delivery));
-        emailNotificationService.incrementReportCount().then(() => {
-          expect(incrementDeliveriesStub).to.have.been.calledWith(emailMetadata.campaignId);
-          done();
-        });
-      });
-    });
-
-    context('when the notification is a soft bounce', () => {
-      it('increments the soft bounces count', (done) => {
-        const emailNotificationService = new EmailNotificationService(withHeaders(softBounce));
-        emailNotificationService.incrementReportCount().then(() => {
-          expect(incrementSoftBouncesStub).to.have.been.calledWith(emailMetadata.campaignId);
-          done();
-        });
-      });
-    });
-  });
-
   describe('#process', () => {
     context('when the notification has all the needed headers', () => {
       const emailNotificationService = new EmailNotificationService(withHeaders(bounce));
 
       before(() => {
         sinon.stub(emailNotificationService, 'unsubscribeRecipient').resolves(true);
-        sinon.stub(emailNotificationService, 'incrementReportCount').resolves(true);
       });
       after(() => {
         emailNotificationService.unsubscribeRecipient.restore();
-        emailNotificationService.incrementReportCount.restore();
       });
 
-      it('should process it', (done) => {
+      it('should unsubscribes the recipient', (done) => {
         emailNotificationService.process().then(() => {
           expect(emailNotificationService.unsubscribeRecipient).to.have.been.calledOnce;
-          expect(emailNotificationService.incrementReportCount).to.have.been.calledOnce;
           done();
         });
       });
@@ -170,17 +122,14 @@ describe('EmailNotificationService', () => {
 
       before(() => {
         sinon.spy(emailNotificationService, 'unsubscribeRecipient');
-        sinon.spy(emailNotificationService, 'incrementReportCount');
       });
       after(() => {
         emailNotificationService.unsubscribeRecipient.restore();
-        emailNotificationService.incrementReportCount.restore();
       });
 
       it('should skip it', (done) => {
         emailNotificationService.process().then(() => {
           expect(emailNotificationService.unsubscribeRecipient).to.not.have.been.called;
-          expect(emailNotificationService.incrementReportCount).to.not.have.been.called;
           done();
         });
       });

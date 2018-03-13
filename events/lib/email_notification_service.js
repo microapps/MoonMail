@@ -2,7 +2,7 @@ import { Promise } from 'bluebird';
 import R from 'ramda';
 import moment from 'moment';
 import omitEmpty from 'omit-empty';
-import { Report, Recipient } from 'moonmail-models';
+import { Recipient } from 'moonmail-models';
 import { debug } from './index';
 
 class EmailNotificationService {
@@ -34,8 +34,7 @@ class EmailNotificationService {
 
   process() {
     if (!this.isProcessable()) return Promise.resolve(true);
-    return this.unsubscribeRecipient()
-      .then(() => this.incrementReportCount());
+    return this.unsubscribeRecipient();
   }
 
   isProcessable() {
@@ -52,28 +51,6 @@ class EmailNotificationService {
       return Recipient.update(omitEmpty(recipient), listId, recipientId);
     }
     return Promise.resolve({});
-  }
-
-  incrementReportCount() {
-    const { campaignId } = this.emailMetadata;
-    switch (this.notification.notificationType.toLowerCase()) {
-      case 'bounce':
-        const bounceType = this.notification.bounce.bounceType.toLowerCase();
-        if (bounceType === 'permanent' || bounceType === 'undetermined') {
-          debug('= EmailNotificationService.incrementReportCount', 'Bounce');
-          return Report.incrementBounces(campaignId);
-        }
-        debug('= EmailNotificationService.incrementReportCount', 'Bounce', bounceType);
-        return Report.incrementSoftBounces(campaignId);
-      case 'complaint':
-        debug('= EmailNotificationService.incrementReportCount', 'Complaint');
-        return Report.incrementComplaints(campaignId);
-      case 'delivery':
-        debug('= EmailNotificationService.incrementReportCount', 'Delivery');
-        return Report.incrementDeliveries(campaignId);
-      default:
-        return null;
-    }
   }
 
   get newStatus() {
