@@ -18,11 +18,16 @@ const refineResult = function refineKinesisResult(events, subscription, kinesisR
   });
   return { records };
 };
+const refineError = function refineKinesisError(events, subscription, error = {}) {
+  const records = events.map(event => ({ event, subscription, error: error.message }));
+  return { records };
+};
 const publishBatch = function publishEventsBatch(events, subscription) {
   const client = KinesisNotifier.getClient();
   const params = buildKinesisPutRecordsParams(events, subscription.subscribedResource, subscription.type);
   return client.putRecords(params).promise()
-    .then(result => refineResult(events, subscription, result));
+    .then(result => refineResult(events, subscription, result))
+    .catch(err => refineError(events, subscription, err));
 };
 
 const KinesisNotifier = {
