@@ -3,11 +3,31 @@ service: MoonMail-v2-emails
 plugins:
   - serverless-plugin-optimize
 
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  ssmPath: /moonmail/emails-microservice/${self:custom.currentStage}
+  legacyEmailNotificationsTopicArnUsEast1: ${ssm:${self:custom.ssmPath}/legacy-notifications-topic-arn-us-east-1}
+  legacyEmailNotificationsTopicArnUsWest2: ${ssm:${self:custom.ssmPath}/legacy-notifications-topic-arn-us-west-2}
+  legacyEmailNotificationsTopicArnEuWest1: ${ssm:${self:custom.ssmPath}/legacy-notifications-topic-arn-eu-west-1}
+  config: ${file(./config.${self:custom.currentStage}.json)}
+  emailNotificationsTopicName: ${self:custom.resourcesPrefix}-EmailNotificationsTopic
+  emailNotificationsTopicArn:
+    Fn::Join:
+      - ":"
+      - - arn
+        - aws
+        - sns
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - ${self:custom.emailNotificationsTopicName}
+
 provider:
   name: aws
   runtime: nodejs6.10
-  profile: ${self:custom.config.PROFILE}
-  region: ${self:custom.config.REGION}
+  profile: ${opt:profile}
+  region: ${opt:region}
   timeout: 300
   environment:
     REGION: ${self:custom.config.REGION}
@@ -22,22 +42,6 @@ provider:
 package:
   individually: true
 
-custom:
-  defaultStage: dev
-  currentStage: ${opt:stage, self:custom.defaultStage}
-  resourcesPrefix: ${self:service}-${self:custom.currentStage}
-  config: ${file(./config.${self:custom.currentStage}.json)}
-  emailNotificationsTopicName: ${self:custom.resourcesPrefix}-EmailNotificationsTopic
-  emailNotificationsTopicArn:
-    Fn::Join:
-      - ":"
-      - - arn
-        - aws
-        - sns
-        - Ref: AWS::Region
-        - Ref: AWS::AccountId
-        - ${self:custom.emailNotificationsTopicName}
-
 functions:
   processSesNotification:
     handler: handler.processSesNotification
@@ -45,6 +49,15 @@ functions:
       - sns:
           arn: ${self:custom.emailNotificationsTopicArn}
           topicName: ${self:custom.emailNotificationsTopicName}
+      - sns:
+          arn: ${self:custom.legacyEmailNotificationsTopicArnUsEast1}
+          topicName: LegacyEmailNotificationsUsEast1
+      - sns:
+          arn: ${self:custom.legacyEmailNotificationsTopicArnUsWest2}
+          topicName: LegacyEmailNotificationsUsWest2
+      # - sns:
+      #     arn: ${self:custom.legacyEmailNotificationsTopicArnEuWest1}
+      #     topicName: LegacyEmailNotificationsEuWest1
 
 resources:
   Resources:
