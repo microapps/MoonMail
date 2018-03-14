@@ -1,5 +1,6 @@
 import aws from 'aws-sdk';
 import Joi from 'joi';
+import R from 'ramda';
 
 const stage = 'dev';
 const settings = {
@@ -12,7 +13,7 @@ const subscriptionSchema = Joi.object({
   subscriberType: Joi.string().valid(['kinesis', 'firehose']).required(),
   subscribedResource: Joi.string().required()
 });
-const subscriptionsSchema = Joi.array().items(subscriptionSchema);
+const subscriptionsSchema = Joi.array().items(subscriptionSchema).unique((a, b) => R.equals(a, b));
 
 const subscription = {
   type: 'event.type',
@@ -46,7 +47,7 @@ function addSubscription(subscriptions, newSubscription) {
   const params = {
     Name: subscriptionsParameterName,
     Type: 'String',
-    Value: JSON.stringify(newSubscription),
+    Value: JSON.stringify(newSubscriptions),
     Overwrite: true
   };
   return ssm.putParameter(params).promise();
@@ -54,5 +55,6 @@ function addSubscription(subscriptions, newSubscription) {
 
 getSubscriptions()
   .then(subscriptions => addSubscription(subscriptions, subscription))
+  .then(() => getSubscriptions())
   .then(console.log)
   .catch(console.log);
