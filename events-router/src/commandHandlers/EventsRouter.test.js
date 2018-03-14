@@ -6,17 +6,15 @@ import SubscriptionRepo from '../repositories/Subscription';
 import KinesisNotifier from '../notifiers/KinesisNotifier';
 import EventsDeadLetterQueue from '../lib/EventsDeadLetterQueue';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(sinonChai);
 
 describe('EventsRouter', () => {
   describe('.execute', () => {
-    const buildKinesisEvent = (evt) => {
-      return {
-        kinesis: { data: new Buffer(JSON.stringify(evt)).toString('base64') },
-        eventID: 'shardId-000:12345'
-      };
-    };
+    const buildKinesisEvent = evt => ({
+      kinesis: { data: Buffer.from(JSON.stringify(evt)).toString('base64') },
+      eventID: 'shardId-000:12345'
+    });
     const aTypeEvents = [
       { type: 'aType', payload: { the: 'data' } },
       { type: 'aType', payload: { more: 'data' } }
@@ -42,6 +40,7 @@ describe('EventsRouter', () => {
     beforeEach(() => {
       sinon.stub(SubscriptionRepo, 'getAll').resolves(subscriptions);
       sinon.stub(KinesisNotifier, 'publishBatch')
+        .withArgs(sinon.match.any).rejects(new Error('Kinesis error'))
         .withArgs(aTypeEvents, aTypeSubscription).resolves(aTypeResponse)
         .withArgs(anotherTypeEvents, anotherTypeSubscription).resolves(anotherTypeResponse);
       sinon.stub(EventsDeadLetterQueue, 'put').resolves(true);
@@ -69,6 +68,21 @@ describe('EventsRouter', () => {
       expect(EventsDeadLetterQueue.put).to.have.been.calledTwice;
       const expectations = [aTypeResponse.records[0], anotherTypeResponse.records[0]];
       expectations.forEach((expected) => {
+        expect(EventsDeadLetterQueue.put).to.have.been.calledWithExactly(expected);
+      });
+    });
+
+    context('when there is an unexpected error', () => {
+      const unexpectedError = new Error('Boom!');
+
+      beforeEach(() => {
+        SubscriptionRepo.getAll.rejects(unexpectedError);
+      });
+
+      it('should all the whole stream as errored records to DLQ', async () => {
+        await EventsRouter.execute(kinesisStream);
+        expect(EventsDeadLetterQueue.put).to.have.been.calledOnce;
+        const expected = { stream: kinesisStream, error: unexpectedError.message };
         expect(EventsDeadLetterQueue.put).to.have.been.calledWithExactly(expected);
       });
     });

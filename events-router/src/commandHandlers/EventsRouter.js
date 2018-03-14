@@ -21,13 +21,18 @@ const buildEventsSubscriptionPairs = function buildEventsSubscriptionPairs(subsc
 const publishEventsSubscriptionPairs = function publishEventsSubscriptionPairs(eventSubscriptionPairs) {
   return Promise.map(eventSubscriptionPairs, pair => KinesisNotifier.publishBatch(...pair));
 };
+const handleUnexpectedError = function handleUnexpectedError(error, kinesisStream) {
+  const message = { stream: kinesisStream, error: error.message };
+  return EventsDeadLetterQueue.put(message);
+};
 const execute = function routeKinesisEvents(kinesisStream) {
   return SubscriptionRepo.getAll()
     .then(subscriptions => buildEventsSubscriptionPairs(subscriptions, kinesisStream.Records))
     .then(eventSubscriptionPairs => publishEventsSubscriptionPairs(eventSubscriptionPairs))
     .then(results => R.chain(R.prop('records'), results))
     .then(chainedResults => R.filter(R.has('error'), chainedResults))
-    .then(erroredResults => Promise.map(erroredResults, evt => EventsDeadLetterQueue.put(evt)));
+    .then(erroredResults => Promise.map(erroredResults, evt => EventsDeadLetterQueue.put(evt)))
+    .catch(error => handleUnexpectedError(error, kinesisStream));
 };
 
 export default {

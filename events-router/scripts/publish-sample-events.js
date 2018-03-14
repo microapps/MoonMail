@@ -1,6 +1,6 @@
 import aws from 'aws-sdk';
 
-const stage = 'prod';
+const stage = 'dev';
 const settings = {
   dev: { region: 'us-east-1', routerStreamName: 'MoonMail-v2-events-router-dev-EventsIngestionStream', profile: 'personal' },
   prod: { region: 'eu-west-1', routerStreamName: 'MoonMail-v2-events-router-prod-EventsIngestionStream', profile: 'moonmail-deployer' }
@@ -78,4 +78,4 @@ const publishBatch = function publishEventsBatch(events, streamName = settings[s
 
 publishBatch(events)
   .then(console.log)
-  .catch(console.log)
+  .catch(console.log);

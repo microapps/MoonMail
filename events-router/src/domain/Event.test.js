@@ -18,6 +18,14 @@ describe('Event', () => {
       const actual = Event.deserializeKinesisEvent(kinesisEvent);
       expect(actual).to.deep.equal(payload);
     });
+
+    context('when the event is not JSON', () => {
+      it('returns an empty object', () => {
+        const malformedEvent = { kinesis: { data: 'boom!' } };
+        const actual = Event.deserializeKinesisEvent(malformedEvent);
+        expect(actual).to.deep.equal({});
+      });
+    });
   });
 
   describe('.isValid', () => {
