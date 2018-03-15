@@ -1,5 +1,6 @@
 import R from 'ramda';
 import omitEmpty from 'omit-empty';
+import moment from 'moment';
 
 const notificationHeaderValue = R.curry((notification, header) =>
   R.pipe(
@@ -54,6 +55,23 @@ const fromSesNotification = function eventFromSesNotification(sesNotification = 
   };
 };
 
+const fromLinkClick = function eventFromLinkClick({ campaignId, listId, linkId, recipientId, userId, segmentId, httpHeaders = {} }) {
+  return omitEmpty({
+    type: 'email.link.clicked',
+    payload: {
+      campaignId,
+      listId,
+      linkId,
+      recipientId,
+      userId,
+      segmentId,
+      metadata: httpHeaders,
+      timestamp: moment().unix()
+    }
+  });
+};
+
 export default {
-  fromSesNotification
+  fromSesNotification,
+  fromLinkClick
 };
