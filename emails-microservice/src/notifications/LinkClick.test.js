@@ -16,7 +16,7 @@ describe('LinkClick', () => {
         const testCases = [
           { campaignId, listId, linkId, recipientId, userId, segmentId, httpHeaders },
           { campaignId, listId, linkId, recipientId, userId, httpHeaders },
-          // { campaignId, listId, linkId, recipientId, userId }
+          { campaignId, listId, linkId, recipientId, userId }
         ];
         testCases.forEach(testCase => expect(LinkClick.isValid(testCase)).to.be.true);
       });

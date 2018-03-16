@@ -43,4 +43,4 @@ For now, events can be only forwarded to another Kinsesis Streams, more subscrib
 
 2. Configure your subscriptions in a stringified JSON and save them in [AWS Parameter Store](https://serverless.com/blog/serverless-secrets-api-keys/) with the name `/moonmail/events-router/<stage>/event-subscriptions`
 
-3. Deploy the service: `sls deploy -s <stage> -r <region> --profile <aws-profile>
+3. Deploy the service: `sls deploy -s <stage> -r <region> --profile <aws-profile>`

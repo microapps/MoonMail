@@ -16,8 +16,7 @@ describe('Event', () => {
         R.path(['mail', 'headers']),
         R.find(R.propEq('name', header)),
         R.prop('value')
-      )(notification)
-    );
+      )(notification));
     const testCases = [
       {
         input: sesDelivery,
