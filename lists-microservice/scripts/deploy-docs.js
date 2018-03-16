@@ -9,12 +9,12 @@ const Promise = require('bluebird');
 const schemaTraverse = require('json-schema-traverse');
 
 jsf.format('cuid', require('cuid'));
-jsf.option({alwaysFakeOptionals: true});
-jsf.extend('chance', function() {
+jsf.option({ alwaysFakeOptionals: true });
+jsf.extend('chance', () => {
   const Chance = require('chance');
   const chance = new Chance();
   chance.mixin({
-    'metadata': () => ({
+    metadata: () => ({
       name: chance.first(),
       surname: chance.last(),
       countryCode: chance.country(),
@@ -55,9 +55,9 @@ function shiftBasePath(swaggerJson) {
   const prefix = swaggerJson.basePath;
   const paths = Object.keys(swaggerJson.paths).reduce((newPaths, currentPath) => {
     const newPath = `${prefix}${currentPath}`;
-    return Object.assign({}, newPaths, {[newPath]: swaggerJson.paths[currentPath]});
+    return Object.assign({}, newPaths, { [newPath]: swaggerJson.paths[currentPath] });
   }, {});
-  return Object.assign({}, swaggerJson, {paths, basePath: ''});
+  return Object.assign({}, swaggerJson, { paths, basePath: '' });
 }
 
 function addFakerTypes(swaggerJson) {
@@ -88,17 +88,17 @@ function addExamples(swaggerJson) {
   const definitions = swaggerJson.definitions;
   const definitionEntries = Object.entries(definitions);
   return Promise.map(definitionEntries, ([key, schema]) => {
-    const s = Object.assign({}, schema, {definitions});
-    return jsf.resolve(s).then(sample => ({[key]: sample}));
+    const s = Object.assign({}, schema, { definitions });
+    return jsf.resolve(s).then(sample => ({ [key]: sample }));
   })
     .then(samples => samples.reduce((total, el) => Object.assign(total, el), {}))
     .then((examples) => {
       return definitionEntries.reduce((total, [key, schema]) => {
-        total[key] = Object.assign({}, schema, {example: examples[key]});
+        total[key] = Object.assign({}, schema, { example: examples[key] });
         return total;
       }, {});
     })
-    .then(defs => Object.assign({}, swaggerJson, {definitions: defs}));
+    .then(defs => Object.assign({}, swaggerJson, { definitions: defs }));
 }
 
 function generateDocs(swaggerJson) {

@@ -1,6 +1,10 @@
 import R from 'ramda';
 import Api from './src/Api';
+import base64url from 'base64-url';
 import ApiGatewayUtils from './src/lib/utils/ApiGatewayUtils';
+
+const renameKeys = R.curry((keysMap, obj) =>
+  R.reduce((acc, key) => R.assoc(keysMap[key] || key, obj[key], acc), {}, R.keys(obj)));
 
 export function processSesNotification(snsEvent, context, callback) {
   const event = R.pipe(
@@ -13,8 +17,17 @@ export function processSesNotification(snsEvent, context, callback) {
 }
 
 export function processLinkClick(event, context, callback) {
-  console.log(JSON.stringify(event));
-  const { linkUrl } = R.prop('queryStringParameters', event);
-  // return ApiGatewayUtils.redirectTo({ url: linkUrl, callback });
-  return callback(null, ApiGatewayUtils.buildResponse({ body: event }));
+  const { headers } = event;
+  const linkClick = R.pipe(
+    R.pick(['pathParameters', 'queryStringParameters']),
+    R.values,
+    R.mergeAll,
+    R.pick(['campaignId', 'linkId', 'r', 'u', 'l', 's']),
+    renameKeys({ r: 'recipientId', u: 'userId', l: 'listId', s: 'segmentId' }),
+    R.evolve({ userId: base64url.decode }),
+    R.merge({ httpHeaders: headers })
+  )(event);
+  return Api.processLinkClick(linkClick)
+    .then(() => callback(null, true))
+    .catch(err => callback(err));
 }
