@@ -41,10 +41,12 @@ provider:
     REGION: ${self:custom.config.REGION}
     EVENTS_ROUTER_STREAM_NAME:
       Fn::ImportValue: EventsRouterStreamName-${self:custom.currentStage}
+    CLICKS_TABLE: ${self:custom.config.CLICKS_TABLE}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "kinesis:putRecord"
+        - "dynamodb:*"
       Resource: "*"
     - Effect: Allow
       Action:

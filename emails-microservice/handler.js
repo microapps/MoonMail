@@ -49,7 +49,7 @@ export function persistLinkClick(snsEvent, context, callback) {
     R.pathOr({}, ['Records', 0, 'Sns', 'Message']),
     JSON.parse
   )(snsEvent);
-  return Api.persistLinkClick(event)
+  return Api.persistLinkClick(event.payload)
     .then(() => callback(null, true))
     .catch(err => callback(err));
 }
