@@ -38,6 +38,7 @@
     "SERVERLESS_REGION": "${region}",
     "SEND_CAMPAIGN_TOPIC_ARN": "${sendCampaignTopicARN}",
     "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
-    "API_HOST": "${apiHost}"
+    "API_HOST": "${apiHost}",
+    "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}"
   }
 }

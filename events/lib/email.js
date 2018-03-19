@@ -7,7 +7,7 @@ import * as url from 'url';
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId } = {}, options = {footer: true}) {
+  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId } = {}, options = { footer: true }) {
     this.from = fromEmail;
     this.to = to;
     this.body = body;
@@ -17,6 +17,7 @@ class Email {
     this.recipientId = recipientId;
     this.campaignId = campaignId;
     this.apiHost = process.env.API_HOST;
+    this.unsubscribeApiHost = process.env.UNSUBSCRIBE_API_HOST;
     this.options = options;
     this.opensPath = 'links/open';
   }
@@ -77,9 +78,9 @@ class Email {
     const unsubscribePath = `lists/${this.listId}/recipients/${this.recipientId}/unsubscribe`;
     const unsubscribeUrl = {
       protocol: 'https',
-      hostname: this.apiHost,
+      hostname: this.unsubscribeApiHost,
       pathname: unsubscribePath,
-      query: {cid: this.campaignId}
+      query: { cid: this.campaignId }
     };
     return url.format(unsubscribeUrl);
   }

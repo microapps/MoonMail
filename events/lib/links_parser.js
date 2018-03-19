@@ -43,7 +43,7 @@ class LinksParser {
 
   parseLinks(body) {
     return new Promise((resolve) => {
-      const $ = cheerio.load(body, {decodeEntities: false});
+      const $ = cheerio.load(body, { decodeEntities: false });
       let campaignLinks = {
         id: this.campaignId,
         links: {}

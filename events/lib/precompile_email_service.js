@@ -23,7 +23,7 @@ class PrecompileEmailService {
       campaignId: emailParams.campaign.id,
       listId: emailParams.recipient.listId
     },
-    {footer: this._needsFooter(emailParams)});
+    { footer: this._needsFooter(emailParams) });
   }
 
   composeEmail() {
