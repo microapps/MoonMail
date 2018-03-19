@@ -1,6 +1,8 @@
+import Promise from 'bluebird';
 import SesNotification from './notifications/SesNotification';
 import LinkClick from './notifications/LinkClick';
 import Event from './events/Event';
+import InternalEventsClient from './lib/InternalEventsClient';
 import EventsRouterClient from './lib/EventsRouterClient';
 
 const processSesNotification = function processSesNotification(notification = {}) {
@@ -12,7 +14,11 @@ const processSesNotification = function processSesNotification(notification = {}
 const processLinkClick = function processLinkClick(linkClick = {}) {
   if (!LinkClick.isValid(linkClick)) return Promise.resolve(true);
   const event = Event.fromLinkClick(linkClick);
-  return EventsRouterClient.write({ topic: event.type, payload: event });
+  const notifications = [
+    EventsRouterClient.write({ topic: event.type, payload: event }),
+    InternalEventsClient.publish({ event })
+  ];
+  return Promise.all(notifications);
 };
 
 export default {
