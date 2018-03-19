@@ -1,11 +1,10 @@
 import chai from 'chai';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import awsMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';
 import EventsRouterClient from './EventsRouterClient';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(sinonChai);
 
 describe('EventsRouterClient', () => {
@@ -23,7 +22,7 @@ describe('EventsRouterClient', () => {
     });
 
     it('should write the event to the Kinesis Stream', async () => {
-      const payload = {my: 'payload'};
+      const payload = { my: 'payload' };
       const topic = 'the-topic';
       await EventsRouterClient.write({ topic, payload, client: kinesisStub });
       const expected = {

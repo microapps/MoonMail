@@ -1,5 +1,3 @@
-'use strict';
-
 import * as AWS from 'aws-sdk';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
