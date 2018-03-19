@@ -25,6 +25,7 @@
     "bluebird": "^3.5.1",
     "joi": "^13.1.2",
     "moment": "^2.21.0",
+    "moonmail-models": "github:microapps/moonmail-models",
     "omit-empty": "^0.4.1",
     "ramda": "^0.25.0"
   }

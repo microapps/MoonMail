@@ -9,7 +9,7 @@ import ApiGatewayUtils from './src/lib/utils/ApiGatewayUtils';
 const { expect } = chai;
 
 describe('handler', () => {
-  describe('processSesNotification', () => {
+  describe('.processSesNotification', () => {
     before(() => sinon.stub(Api, 'processSesNotification').resolves(true));
     after(() => Api.processSesNotification.restore());
 
@@ -24,7 +24,7 @@ describe('handler', () => {
     });
   });
 
-  describe('processLinkClick', () => {
+  describe('.processLinkClick', () => {
     before(() => sinon.stub(Api, 'processLinkClick').resolves(true));
     after(() => Api.processLinkClick.restore());
     const campaignId = 'campaign-id';
@@ -95,6 +95,21 @@ describe('handler', () => {
           expect(res).to.deep.equal(expected);
           return done();
         });
+      });
+    });
+  });
+
+  describe('.persistLinkClick', () => {
+    before(() => sinon.stub(Api, 'persistLinkClick').resolves(true));
+    after(() => Api.persistLinkClick.restore());
+
+    it('parses the SNS event and forwards it to Api.persistLinkClick', (done) => {
+      const event = { the: 'event' };
+      const snsEvent = { Records: [{ Sns: { Message: JSON.stringify(event) } }] };
+      handler.persistLinkClick(snsEvent, {}, (err) => {
+        if (err) return done(err);
+        expect(Api.persistLinkClick).to.have.been.calledWithExactly(event);
+        return done();
       });
     });
   });

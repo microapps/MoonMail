@@ -1,6 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import { Click } from 'moonmail-models';
 import Api from './Api';
 import Event from './events/Event';
 import InternalEventsClient from './lib/InternalEventsClient';
@@ -85,6 +86,27 @@ describe('Api', () => {
       it('does not publish an event to the internal events client', async () => {
         await Api.processLinkClick({ not: 'valid' });
         expect(InternalEventsClient.publish).to.not.have.been.called;
+      });
+    });
+  });
+
+  describe('.persistLinkClick', () => {
+    beforeEach(() => sinon.stub(Click, 'save').resolves(true));
+    afterEach(() => Click.save.restore());
+
+    context('when the link click is valid', () => {
+      const click = { recipientId: 'rid', listId: 'lid', campaignId: 'cid', linkId: 'lkid', userId: 'uid' };
+
+      it('should save the link click in the database', async () => {
+        await Api.persistLinkClick(click);
+        expect(Click.save).to.have.been.calledWithExactly(click);
+      });
+    });
+
+    context('when the link click is not valid', () => {
+      it('should not save the click', async () => {
+        await Api.persistLinkClick({ not: 'valid' });
+        expect(Click.save).not.to.have.been.called;
       });
     });
   });

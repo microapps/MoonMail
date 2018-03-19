@@ -7,8 +7,7 @@ const notificationHeaderValue = R.curry((notification, header) =>
     R.path(['mail', 'headers']),
     R.find(R.propEq('name', header)),
     R.prop('value')
-  )(notification)
-);
+  )(notification));
 
 const payloadHeadersMapping = {
   userId: 'X-Moonmail-User-ID',

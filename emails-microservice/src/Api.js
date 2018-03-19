@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import { Click } from 'moonmail-models';
 import SesNotification from './notifications/SesNotification';
 import LinkClick from './notifications/LinkClick';
 import Event from './events/Event';
@@ -21,7 +22,13 @@ const processLinkClick = function processLinkClick(linkClick = {}) {
   return Promise.all(notifications);
 };
 
+const persistLinkClick = function persistLinkClick(linkClick = {}) {
+  if (!LinkClick.isValid(linkClick)) return Promise.resolve(true);
+  return Click.save(linkClick);
+};
+
 export default {
   processSesNotification,
-  processLinkClick
+  processLinkClick,
+  persistLinkClick
 };
