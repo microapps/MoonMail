@@ -66,6 +66,15 @@ functions:
               paths:
                 campaignId: true
                 linkId: true
+    environment:
+      LINK_CLICK_TOPIC_ARN:
+        Ref: SNSTopicLinkClick
+  persistLinkClick:
+    handler: handler.persistLinkClick
+    events:
+      - sns:
+          topicName: linkClick
+          displayName: Notifies link clicks
 
 
 resources:

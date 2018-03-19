@@ -43,3 +43,7 @@ export function processLinkClick(event, context, callback) {
     .then(() => ApiGatewayUtils.redirectTo({ url, callback }))
     .catch(() => ApiGatewayUtils.redirectTo({ url, callback }));
 }
+
+export function persistLinkClick(event, context, callback) {
+  return callback(null, true);
+}
