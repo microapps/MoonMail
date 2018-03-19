@@ -45,5 +45,6 @@ export function processLinkClick(event, context, callback) {
 }
 
 export function persistLinkClick(event, context, callback) {
+  console.log(JSON.stringify(event));
   return callback(null, true);
 }

@@ -54,7 +54,12 @@ describe('Api', () => {
         userId: 'user-id',
         httpHeaders: { 'User-Agent': 'Firefox' }
       };
-      const event = Event.fromLinkClick(linkClick);
+      const event = {
+        type: 'my.type',
+        payload: { my: 'payload' }
+      };
+      before(() => sinon.stub(Event, 'fromLinkClick').returns(event));
+      after(() => Event.fromLinkClick.restore());
 
       it('publishes an event to the events router', async () => {
         const expected = {

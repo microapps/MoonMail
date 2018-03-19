@@ -15,12 +15,18 @@ custom:
   emailNotificationsTopicArn:
     Fn::Join:
       - ":"
-      - - arn
-        - aws
-        - sns
+      - - arn:aws:sns
         - Ref: AWS::Region
         - Ref: AWS::AccountId
         - ${self:custom.emailNotificationsTopicName}
+  linkClickTopicName: ${self:custom.resourcesPrefix}-LinkClickTopic
+  linkClickTopicArn:
+    Fn::Join:
+      - ":"
+      - - arn:aws:sns
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - ${self:custom.linkClickTopicName}
   serverless-offline:
     babelOptions:
       presets: ["es2015"]
@@ -40,6 +46,10 @@ provider:
       Action:
         - "kinesis:putRecord"
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - SNS:Publish
+      Resource: ${self:custom.linkClickTopicArn}
 
 package:
   individually: true
@@ -67,13 +77,12 @@ functions:
                 campaignId: true
                 linkId: true
     environment:
-      LINK_CLICK_TOPIC_ARN:
-        Ref: SNSTopicLinkClick
+      LINK_CLICK_TOPIC_ARN: ${self:custom.linkClickTopicArn}
   persistLinkClick:
     handler: handler.persistLinkClick
     events:
       - sns:
-          topicName: linkClick
+          topicName: ${self:custom.linkClickTopicName}
           displayName: Notifies link clicks
 
 
