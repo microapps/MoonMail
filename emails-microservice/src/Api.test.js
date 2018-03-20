@@ -158,25 +158,4 @@ describe('Api', () => {
       });
     });
   });
-
-  describe('.persistLinkClick', () => {
-    beforeEach(() => sinon.stub(Click, 'save').resolves(true));
-    afterEach(() => Click.save.restore());
-
-    context('when the link click is valid', () => {
-      const click = { recipientId: 'rid', listId: 'lid', campaignId: 'cid', linkId: 'lkid', userId: 'uid' };
-
-      it('should save the link click in the database', async () => {
-        await Api.persistLinkClick(click);
-        expect(Click.save).to.have.been.calledWithExactly(click);
-      });
-    });
-
-    context('when the link click is not valid', () => {
-      it('should not save the click', async () => {
-        await Api.persistLinkClick({ not: 'valid' });
-        expect(Click.save).not.to.have.been.called;
-      });
-    });
-  });
 });

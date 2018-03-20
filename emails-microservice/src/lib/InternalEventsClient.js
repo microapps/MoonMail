@@ -11,8 +11,8 @@ function publishToSnsTopic(event, topicArn, snsClient = null) {
 
 function publish({ event, client }) {
   const eventTopicMapping = {
-    'email.link.clicked': process.env.LINK_CLICK_TOPIC_ARN,
-    'email.opened': process.env.EMAIL_OPEN_TOPIC_ARN
+    'email.link.clicked': process.env.EMAIL_EVENT_TOPIC_ARN,
+    'email.opened': process.env.EMAIL_EVENT_TOPIC_ARN
   };
   const topicArn = eventTopicMapping[event.type];
   return publishToSnsTopic(event, topicArn, client);

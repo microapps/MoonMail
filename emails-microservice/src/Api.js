@@ -31,11 +31,6 @@ const processEmailOpen = function processEmailOpen(emailOpen = {}) {
   return Api.processEmailEvent(emailOpen, EmailOpen.isValid, Event.fromEmailOpen);
 };
 
-const persistLinkClick = function persistLinkClick(linkClick = {}) {
-  if (!LinkClick.isValid(linkClick)) return Promise.resolve(true);
-  return Click.save(linkClick);
-};
-
 const persistEmailEvent = function persistEmailEvent(emailEvent = {}) {
   const eventTypeRepositoryMapping = {
     'email.opened': { repository: Open, validator: EmailOpen.isValid },
@@ -52,7 +47,6 @@ const Api = {
   processEmailEvent,
   processLinkClick,
   processEmailOpen,
-  persistLinkClick,
   persistEmailEvent
 };
 

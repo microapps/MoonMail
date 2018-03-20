@@ -54,16 +54,6 @@ export function processEmailOpen(event, context, callback) {
     .catch(() => callback(null, ApiGatewayUtils.buildResponse({})));
 }
 
-export function persistLinkClick(snsEvent, context, callback) {
-  const event = R.pipe(
-    R.pathOr({}, ['Records', 0, 'Sns', 'Message']),
-    JSON.parse
-  )(snsEvent);
-  return Api.persistLinkClick(event.payload)
-    .then(() => callback(null, true))
-    .catch(err => callback(err));
-}
-
 export function persistEmailEvent(snsEvent, context, callback) {
   const event = R.pipe(
     R.pathOr({}, ['Records', 0, 'Sns', 'Message']),

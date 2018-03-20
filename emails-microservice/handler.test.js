@@ -126,21 +126,6 @@ describe('handler', () => {
     });
   });
 
-  describe('.persistLinkClick', () => {
-    before(() => sinon.stub(Api, 'persistLinkClick').resolves(true));
-    after(() => Api.persistLinkClick.restore());
-
-    it('parses the SNS event and forwards it to Api.persistLinkClick', (done) => {
-      const event = { type: 'event', payload: { the: 'payload' } };
-      const snsEvent = { Records: [{ Sns: { Message: JSON.stringify(event) } }] };
-      handler.persistLinkClick(snsEvent, {}, (err) => {
-        if (err) return done(err);
-        expect(Api.persistLinkClick).to.have.been.calledWithExactly(event.payload);
-        return done();
-      });
-    });
-  });
-
   describe('.persistEmailEvent', () => {
     before(() => sinon.stub(Api, 'persistEmailEvent').resolves(true));
     after(() => Api.persistEmailEvent.restore());
