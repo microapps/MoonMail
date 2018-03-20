@@ -70,7 +70,24 @@ const fromLinkClick = function eventFromLinkClick({ campaignId, listId, linkId, 
   });
 };
 
+const fromEmailOpen = function fromEmailOpen({ campaignId, listId, linkId, recipientId, userId, segmentId, httpHeaders = {} }) {
+  return omitEmpty({
+    type: 'email.opened',
+    payload: {
+      campaignId,
+      listId,
+      linkId,
+      recipientId,
+      userId,
+      segmentId,
+      metadata: httpHeaders,
+      timestamp: moment().unix()
+    }
+  });
+};
+
 export default {
   fromSesNotification,
-  fromLinkClick
+  fromLinkClick,
+  fromEmailOpen
 };

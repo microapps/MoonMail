@@ -108,4 +108,46 @@ describe('Event', () => {
       testCases.forEach(({ input, out }) => expect(Event.fromLinkClick(input)).to.deep.equal(out));
     });
   });
+
+  describe('.fromEmailOpen', () => {
+    const campaignId = 'campaign-id';
+    const linkId = 'link-id';
+    const listId = 'list-id';
+    const recipientId = 'recipient-id';
+    const userId = 'user-id';
+    const segmentId = 'segment-id';
+    const httpHeaders = { Host: 'localhost', 'User-Agent': 'Firefox' };
+    const timestamp = 56789;
+
+    const testCases = [
+      {
+        input: { campaignId, listId, linkId, recipientId, userId, segmentId, httpHeaders },
+        out: {
+          type: 'email.opened',
+          payload: { campaignId, listId, linkId, recipientId, userId, segmentId, timestamp, metadata: httpHeaders }
+        }
+      },
+      {
+        input: { campaignId, listId, linkId, recipientId, userId, httpHeaders },
+        out: {
+          type: 'email.opened',
+          payload: { campaignId, listId, linkId, recipientId, userId, timestamp, metadata: httpHeaders }
+        }
+      },
+      {
+        input: { campaignId, listId, linkId, recipientId, userId },
+        out: {
+          type: 'email.opened',
+          payload: { campaignId, listId, linkId, recipientId, userId, timestamp }
+        }
+      }
+    ];
+
+    before(() => sinon.stub(momentProto, 'unix').returns(timestamp));
+    after(() => momentProto.unix.restore());
+
+    it('generates a valid event', () => {
+      testCases.forEach(({ input, out }) => expect(Event.fromEmailOpen(input)).to.deep.equal(out));
+    });
+  });
 });
