@@ -5,6 +5,7 @@ import { Click } from 'moonmail-models';
 import Api from './Api';
 import Event from './events/Event';
 import LinkClick from './notifications/LinkClick';
+import EmailOpen from './notifications/EmailOpen';
 import InternalEventsClient from './lib/InternalEventsClient';
 import EventsRouterClient from './lib/EventsRouterClient';
 import validNotification from './notifications/fixtures/delivery.json';
@@ -90,6 +91,18 @@ describe('Api', () => {
       await Api.processLinkClick(event);
       expect(Api.processEmailEvent).to.have.been.calledWithExactly(
         event, LinkClick.isValid, Event.fromLinkClick);
+    });
+  });
+
+  describe('.processEmailOpen', () => {
+    before(() => sinon.stub(Api, 'processEmailEvent').resolves(true));
+    after(() => Api.processEmailEvent.restore());
+
+    it('delegates on processEmailEvent with correct params', async () => {
+      const event = { the: 'event' };
+      await Api.processEmailOpen(event);
+      expect(Api.processEmailEvent).to.have.been.calledWithExactly(
+        event, EmailOpen.isValid, Event.fromEmailOpen);
     });
   });
 
