@@ -42,6 +42,7 @@ provider:
     EVENTS_ROUTER_STREAM_NAME:
       Fn::ImportValue: EventsRouterStreamName-${self:custom.currentStage}
     CLICKS_TABLE: ${self:custom.config.CLICKS_TABLE}
+    OPENS_TABLE: ${self:custom.config.OPENS_TABLE}
   iamRoleStatements:
     - Effect: "Allow"
       Action:

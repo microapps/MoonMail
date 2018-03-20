@@ -3,7 +3,6 @@ import Joi from 'joi';
 const clickSchema = Joi.object({
   campaignId: Joi.string().required(),
   listId: Joi.string().required(),
-  linkId: Joi.string().required(),
   recipientId: Joi.string().required(),
   userId: Joi.string().required(),
   segmentId: Joi.string(),
