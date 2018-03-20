@@ -23,13 +23,7 @@ const processEmailEvent = function processEmailEvent(event = {}, validator, pars
 };
 
 const processLinkClick = function processLinkClick(linkClick = {}) {
-  if (!LinkClick.isValid(linkClick)) return Promise.resolve(true);
-  const event = Event.fromLinkClick(linkClick);
-  const notifications = [
-    EventsRouterClient.write({ topic: event.type, payload: event }),
-    InternalEventsClient.publish({ event })
-  ];
-  return Promise.all(notifications);
+  return Api.processEmailEvent(linkClick, LinkClick.isValid, Event.fromLinkClick);
 };
 
 const persistLinkClick = function persistLinkClick(linkClick = {}) {
@@ -37,9 +31,11 @@ const persistLinkClick = function persistLinkClick(linkClick = {}) {
   return Click.save(linkClick);
 };
 
-export default {
+const Api = {
   processSesNotification,
   processLinkClick,
   persistLinkClick,
   processEmailEvent
 };
+
+export default Api;

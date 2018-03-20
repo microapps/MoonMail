@@ -4,6 +4,7 @@ import sinonChai from 'sinon-chai';
 import { Click } from 'moonmail-models';
 import Api from './Api';
 import Event from './events/Event';
+import LinkClick from './notifications/LinkClick';
 import InternalEventsClient from './lib/InternalEventsClient';
 import EventsRouterClient from './lib/EventsRouterClient';
 import validNotification from './notifications/fixtures/delivery.json';
@@ -32,60 +33,6 @@ describe('Api', () => {
       it('does not publish an event to the router', async () => {
         await Api.processSesNotification({ invalid: 'notification' });
         expect(EventsRouterClient.write).to.not.have.been.called;
-      });
-    });
-  });
-
-  describe('.processLinkClick', () => {
-    beforeEach(() => {
-      sinon.stub(EventsRouterClient, 'write').resolves(true);
-      sinon.stub(InternalEventsClient, 'publish').resolves(true);
-    });
-    afterEach(() => {
-      EventsRouterClient.write.restore();
-      InternalEventsClient.publish.restore();
-    });
-
-    context('when the link click is valid', () => {
-      const linkClick = {
-        campaignId: 'campaign-id',
-        listId: 'list-id',
-        linkId: 'link-id',
-        recipientId: 'recipient-id',
-        userId: 'user-id',
-        httpHeaders: { 'User-Agent': 'Firefox' }
-      };
-      const event = {
-        type: 'my.type',
-        payload: { my: 'payload' }
-      };
-      before(() => sinon.stub(Event, 'fromLinkClick').returns(event));
-      after(() => Event.fromLinkClick.restore());
-
-      it('publishes an event to the events router', async () => {
-        const expected = {
-          topic: event.type,
-          payload: event
-        };
-        await Api.processLinkClick(linkClick);
-        expect(EventsRouterClient.write).to.have.been.calledWithExactly(expected);
-      });
-
-      it('publishes an event to the link clicks topic', async () => {
-        await Api.processLinkClick(linkClick);
-        expect(InternalEventsClient.publish).to.have.been.calledWithExactly({ event });
-      });
-    });
-
-    context('when the link click is not valid', () => {
-      it('does not publish an event to the events router', async () => {
-        await Api.processLinkClick({ not: 'valid' });
-        expect(EventsRouterClient.write).to.not.have.been.called;
-      });
-
-      it('does not publish an event to the internal events client', async () => {
-        await Api.processLinkClick({ not: 'valid' });
-        expect(InternalEventsClient.publish).to.not.have.been.called;
       });
     });
   });
@@ -131,6 +78,18 @@ describe('Api', () => {
         await Api.processEmailEvent(invalidEvent, validator, null);
         expect(InternalEventsClient.publish).to.not.have.been.called;
       });
+    });
+  });
+
+  describe('.processLinkClick', () => {
+    before(() => sinon.stub(Api, 'processEmailEvent').resolves(true));
+    after(() => Api.processEmailEvent.restore());
+
+    it('delegates on processEmailEvent with correct params', async () => {
+      const event = { the: 'event' };
+      await Api.processLinkClick(event);
+      expect(Api.processEmailEvent).to.have.been.calledWithExactly(
+        event, LinkClick.isValid, Event.fromLinkClick);
     });
   });
 
