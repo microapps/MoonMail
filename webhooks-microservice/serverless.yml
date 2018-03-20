@@ -1,0 +1,199 @@
+service: serverless-webhook
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${self:custom.config.REGION}
+  environment:
+    WEBHOOKTABLENAME: ${self:custom.webhookTableName}
+    FAILEDREQUESTTABLENAME: ${self:custom.failedRequestTableName}
+    JSONSECRET: ${self:custom.jsonSecret}
+    REQUESTATTEMPTS: ${self:custom.requestAttempts}
+    REQUESTRETRYDELAY: ${self:custom.requestRetryDelay}
+    REQUESTTIMER: ${self:custom.requestTimer}
+    REQUESTTIMERMULTIPLIER: ${self:custom.requestTimerMultiplier}
+    MAXREQUESTATTEMPTS: ${self:custom.maxRequestAttempts}
+    TRIGGERWBFUNCTIONNAME: ${self:custom.resourcesPrefix}-triggerWebhooks
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: "*"
+
+custom:
+  webpackIncludeModules: true
+
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+
+  defaultWebHookTableName: webhooks
+  webhookTableName: ${self:custom.config.WEBHOOKTABLE, self:custom.defaultWebHookTableName}-${self:custom.currentStage}
+
+  defaultPathName: webhook
+  pathName: ${self:custom.config.PATHNAME, self:custom.defaultPathName}
+
+  defaultFailedRequestTableName: failed-requests
+  failedRequestTableName: ${self:custom.config.FAILEDREQUESTTABLE, self:custom.defaultFailedRequestTableName}-${self:custom.currentStage}
+
+  defaultJsonSecret: micro-apps
+  jsonSecret: ${self:custom.config.JSONSECRET, self:custom.defaultJsonSecret}-${self:custom.currentStage}
+
+  defaultRequestAttempts: 3
+  requestAttempts: ${self:custom.config.REQUESTATTEMPTS, self:custom.defaultRequestAttempts}
+
+  defaultRequestRetryDelay: 2000
+  requestRetryDelay: ${self:custom.config.REQUESTRETRYDELAY, self:custom.defaultRequestRetryDelay}
+
+  defaultRequestTimer: 60000
+  requestTimer: ${self:custom.config.REQUESTTIMER, self:custom.defaultRequestTimer}
+
+  defaultRequestTimerMultiplier: 2
+  requestTimerMultiplier: ${self:custom.config.REQUESTTIMERMULTIPLIER, self:custom.defaultRequestTimerMultiplier}
+
+  defaultMaxRequestAttempts: 10
+  maxRequestAttempts: ${self:custom.config.MAXREQUESTATTEMPTS, self:custom.defaultMaxRequestAttempts}
+
+  config: ${file(./config.${self:custom.currentStage}.json)}
+
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+
+functions:
+  create:
+    handler: handler.create
+    name: ${self:custom.resourcesPrefix}-createWebhook
+    events:
+      - http:
+          path: ${self:custom.pathName}
+          method: post
+          cors: true
+  readAll:
+    handler: handler.readAll
+    name: ${self:custom.resourcesPrefix}-readAllWebhooks
+    events:
+      - http:
+          path: ${self:custom.pathName}
+          method: get
+          cors: true
+  readOne:
+    handler: handler.readOne
+    name: ${self:custom.resourcesPrefix}-readOneWebhook
+    events:
+      - http:
+          path: ${self:custom.pathName}/{id}
+          method: get
+          cors: true
+  update:
+    handler: handler.update
+    name: ${self:custom.resourcesPrefix}-updateWebhook
+    events:
+      - http:
+          path: ${self:custom.pathName}/{id}
+          method: put
+          cors: true
+  delete:
+    handler: handler.delete
+    name: ${self:custom.resourcesPrefix}-deleteWebhook
+    events:
+      - http:
+          path: ${self:custom.pathName}/{id}
+          method: delete
+          cors: true
+  handleWebhookEvents:
+    handler: src/handlerWebhookEvents.handlerWebhookEvents
+    name: ${self:custom.resourcesPrefix}-handleWebhookEvents
+    events:
+      - http:
+          path: ${self:custom.pathName}/handleWebhookEvents
+          method: get
+          cors: true
+  sniffFailedRequests:
+    handler: src/snifferFailedRequests.sniffFailedWebhookRequests
+    name: ${self:custom.resourcesPrefix}-sniffFailedRequests
+    events:
+      - schedule: rate(1 minute)
+  triggerWebhooks:
+    handler: src/triggerWebhooks.triggerWebbhook
+    name: ${self:custom.resourcesPrefix}-triggerWebhooks
+
+resources:
+  Resources:
+    WebhooksDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+          -
+            AttributeName: wb
+            AttributeType: S
+          -
+            AttributeName: userId
+            AttributeType: S
+          -
+            AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes: 
+        - IndexName: wb-index
+          KeySchema: 
+          - AttributeName: wb
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1  
+        - IndexName: userId-index
+          KeySchema: 
+          - AttributeName: userId
+            KeyType: HASH
+          Projection: 
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.webhookTableName}
+    FailedRequestsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.failedRequestTableName}
