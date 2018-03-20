@@ -80,6 +80,19 @@ functions:
                 linkId: true
     environment:
       LINK_CLICK_TOPIC_ARN: ${self:custom.linkClickTopicArn}
+  processEmailOpen:
+    handler: handler.processEmailOpen
+    events:
+      - http:
+          path: /links/open/{campaignId}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                campaignId: true
+    environment:
+      EMAIL_OPEN_TOPIC_ARN: ${self:custom.linkClickTopicArn}
   persistLinkClick:
     handler: handler.persistLinkClick
     events:
