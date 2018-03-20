@@ -90,6 +90,50 @@ describe('Api', () => {
     });
   });
 
+  describe('.processEmailEvent', () => {
+    beforeEach(() => {
+      sinon.stub(EventsRouterClient, 'write').resolves(true);
+      sinon.stub(InternalEventsClient, 'publish').resolves(true);
+    });
+    afterEach(() => {
+      EventsRouterClient.write.restore();
+      InternalEventsClient.publish.restore();
+    });
+
+    context('when the event is valid', () => {
+      const emailEvent = { campaignId: 'campaign-id', listId: 'list-id' };
+      const moonmailEvent = { type: 'my.type', payload: emailEvent };
+      const validator = sinon.stub().withArgs(emailEvent).returns(true);
+      const parser = sinon.stub().withArgs(emailEvent).returns(moonmailEvent);
+
+      it('publishes an event to the events router', async () => {
+        const expected = { topic: moonmailEvent.type, payload: moonmailEvent };
+        await Api.processEmailEvent(emailEvent, validator, parser);
+        expect(EventsRouterClient.write).to.have.been.calledWithExactly(expected);
+      });
+
+      it('publishes an internal event', async () => {
+        await Api.processEmailEvent(emailEvent, validator, parser);
+        expect(InternalEventsClient.publish).to.have.been.calledWithExactly({ event: moonmailEvent });
+      });
+    });
+
+    context('when the link click is not valid', () => {
+      const invalidEvent = { not: 'valid' };
+      const validator = sinon.stub().withArgs(invalidEvent).returns(false);
+
+      it('does not publish an event to the events router', async () => {
+        await Api.processEmailEvent(invalidEvent, validator, null);
+        expect(EventsRouterClient.write).to.not.have.been.called;
+      });
+
+      it('does not publish an event to the internal events client', async () => {
+        await Api.processEmailEvent(invalidEvent, validator, null);
+        expect(InternalEventsClient.publish).to.not.have.been.called;
+      });
+    });
+  });
+
   describe('.persistLinkClick', () => {
     beforeEach(() => sinon.stub(Click, 'save').resolves(true));
     afterEach(() => Click.save.restore());

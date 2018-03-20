@@ -12,6 +12,16 @@ const processSesNotification = function processSesNotification(notification = {}
   return EventsRouterClient.write({ topic: event.type, payload: event });
 };
 
+const processEmailEvent = function processEmailEvent(event = {}, validator, parser) {
+  if (!validator(event)) return Promise.resolve(true);
+  const moonmailEvent = parser(event);
+  const notifications = [
+    EventsRouterClient.write({ topic: moonmailEvent.type, payload: moonmailEvent }),
+    InternalEventsClient.publish({ event: moonmailEvent })
+  ];
+  return Promise.all(notifications);
+};
+
 const processLinkClick = function processLinkClick(linkClick = {}) {
   if (!LinkClick.isValid(linkClick)) return Promise.resolve(true);
   const event = Event.fromLinkClick(linkClick);
@@ -30,5 +40,6 @@ const persistLinkClick = function persistLinkClick(linkClick = {}) {
 export default {
   processSesNotification,
   processLinkClick,
-  persistLinkClick
+  persistLinkClick,
+  processEmailEvent
 };
