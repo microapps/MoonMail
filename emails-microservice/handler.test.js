@@ -99,6 +99,33 @@ describe('handler', () => {
     });
   });
 
+  describe('.processEmailOpen', () => {
+    before(() => sinon.stub(Api, 'processEmailOpen').resolves(true));
+    after(() => Api.processEmailOpen.restore());
+    const campaignId = 'campaign-id';
+    const linkId = 'link-id';
+    const recipientId = 'recipient-id';
+    const userId = 'user-id';
+    const encodedUserId = base64url.encode(userId);
+    const listId = 'list-id';
+    const segmentId = 'segment-id';
+    const httpHeaders = { 'User-Agent': 'Firefox' };
+    const emailOpen = { linkId, campaignId, userId, listId, recipientId, httpHeaders };
+    const apiGatewayEvent = {
+      headers: httpHeaders,
+      pathParameters: { campaignId, linkId },
+      queryStringParameters: { r: recipientId, u: encodedUserId, l: listId, s: segmentId }
+    };
+
+    it('parses the HTTP request and forwards it to Api.processEmailOpen', (done) => {
+      handler.processEmailOpen(apiGatewayEvent, {}, (err) => {
+        if (err) return done(err);
+        expect(Api.processEmailOpen).to.have.been.calledWithMatch(emailOpen);
+        return done();
+      });
+    });
+  });
+
   describe('.persistLinkClick', () => {
     before(() => sinon.stub(Api, 'persistLinkClick').resolves(true));
     after(() => Api.persistLinkClick.restore());

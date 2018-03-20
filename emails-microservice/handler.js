@@ -12,6 +12,18 @@ const addHttpsIfNoProtocol = function addHttpsToUrl(url) {
   }
   return uri;
 };
+const httpRequestToEmailEvent = (request) => {
+  const { headers } = request;
+  return R.pipe(
+    R.pick(['pathParameters', 'queryStringParameters']),
+    R.values,
+    R.mergeAll,
+    R.pick(['campaignId', 'linkId', 'r', 'u', 'l', 's']),
+    renameKeys({ r: 'recipientId', u: 'userId', l: 'listId', s: 'segmentId' }),
+    R.evolve({ userId: base64url.decode }),
+    R.merge({ httpHeaders: headers })
+  )(request);
+};
 
 export function processSesNotification(snsEvent, context, callback) {
   const event = R.pipe(
@@ -29,19 +41,17 @@ export function processLinkClick(event, context, callback) {
     decodeURIComponent,
     addHttpsIfNoProtocol
   )(event);
-  const { headers } = event;
-  const linkClick = R.pipe(
-    R.pick(['pathParameters', 'queryStringParameters']),
-    R.values,
-    R.mergeAll,
-    R.pick(['campaignId', 'linkId', 'r', 'u', 'l', 's']),
-    renameKeys({ r: 'recipientId', u: 'userId', l: 'listId', s: 'segmentId' }),
-    R.evolve({ userId: base64url.decode }),
-    R.merge({ httpHeaders: headers })
-  )(event);
+  const linkClick = httpRequestToEmailEvent(event);
   return Api.processLinkClick(linkClick)
     .then(() => ApiGatewayUtils.redirectTo({ url, callback }))
     .catch(() => ApiGatewayUtils.redirectTo({ url, callback }));
+}
+
+export function processEmailOpen(event, context, callback) {
+  const emailOpen = httpRequestToEmailEvent(event);
+  return Api.processEmailOpen(emailOpen)
+    .then(() => callback(null, ApiGatewayUtils.buildResponse({})))
+    .catch(() => callback(null, ApiGatewayUtils.buildResponse({})));
 }
 
 export function persistLinkClick(snsEvent, context, callback) {
