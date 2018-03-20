@@ -63,3 +63,13 @@ export function persistLinkClick(snsEvent, context, callback) {
     .then(() => callback(null, true))
     .catch(err => callback(err));
 }
+
+export function persistEmailEvent(snsEvent, context, callback) {
+  const event = R.pipe(
+    R.pathOr({}, ['Records', 0, 'Sns', 'Message']),
+    JSON.parse
+  )(snsEvent);
+  return Api.persistEmailEvent(event)
+    .then(() => callback(null, true))
+    .catch(err => callback(err));
+}

@@ -140,4 +140,19 @@ describe('handler', () => {
       });
     });
   });
+
+  describe('.persistEmailEvent', () => {
+    before(() => sinon.stub(Api, 'persistEmailEvent').resolves(true));
+    after(() => Api.persistEmailEvent.restore());
+
+    it('parses the SNS event and forwards it to Api.persistEmailEvent', (done) => {
+      const event = { type: 'event', payload: { the: 'payload' } };
+      const snsEvent = { Records: [{ Sns: { Message: JSON.stringify(event) } }] };
+      handler.persistEmailEvent(snsEvent, {}, (err) => {
+        if (err) return done(err);
+        expect(Api.persistEmailEvent).to.have.been.calledWithExactly(event);
+        return done();
+      });
+    });
+  });
 });

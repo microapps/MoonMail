@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { Click } from 'moonmail-models';
+import { Click, Open } from 'moonmail-models';
 import SesNotification from './notifications/SesNotification';
 import LinkClick from './notifications/LinkClick';
 import EmailOpen from './notifications/EmailOpen';
@@ -36,12 +36,24 @@ const persistLinkClick = function persistLinkClick(linkClick = {}) {
   return Click.save(linkClick);
 };
 
+const persistEmailEvent = function persistEmailEvent(emailEvent = {}) {
+  const eventTypeRepositoryMapping = {
+    'email.opened': { repository: Open, validator: EmailOpen.isValid },
+    'email.link.clicked': { repository: Click, validator: LinkClick.isValid }
+  };
+  const { repository, validator } = eventTypeRepositoryMapping[emailEvent.type] || {};
+  const { payload } = emailEvent;
+  if (!validator || !validator(payload)) return Promise.resolve(true);
+  return repository.save(payload);
+};
+
 const Api = {
   processSesNotification,
-  processLinkClick,
-  persistLinkClick,
   processEmailEvent,
-  processEmailOpen
+  processLinkClick,
+  processEmailOpen,
+  persistLinkClick,
+  persistEmailEvent
 };
 
 export default Api;
