@@ -101,7 +101,7 @@ describe('Email', () => {
   describe('#appendOpensPixel()', () => {
     it('appends the opens tracking image', (done) => {
       const emailWithTags = new Email(emailWithTagsParams, { footer: false });
-      const opensTrackingUrl = `https://${apiHost}/links/open/${campaignId}?r=${recipientId}`;
+      const opensTrackingUrl = `https://${apiHost}/links/open/${campaignId}?r=${recipientId}&l=${listId}`;
       const imgTrackingTag = `<img src="${opensTrackingUrl}" width="1" height="1" />`;
       expect(emailWithTags.appendOpensPixel(bodyTemplate)).to.eventually.contain(imgTrackingTag).notify(done);
     });

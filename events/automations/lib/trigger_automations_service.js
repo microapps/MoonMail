@@ -31,22 +31,24 @@ export default class TriggerAutomationsService {
   static _eventsByTriggeredAutomation(footprintEvents) {
     logger().debug('_eventsByTriggeredAutomation', JSON.stringify(footprintEvents));
     const footprints = Object.keys(footprintEvents);
-    return Promise.reduce(footprints, (total, fp) =>
-      AutomationAction.allByStatusAndFootprint('active', fp)
-        .then(automations => automations.items || [])
-        .then(automations => automations.map(automation => ({automation, events: footprintEvents[fp]})))
-        .then(automationEvents => total.concat(automationEvents))
-        .catch(() => total)
-    , []);
+    return Promise.reduce(
+      footprints, (total, fp) =>
+        AutomationAction.allByStatusAndFootprint('active', fp)
+          .then(automations => automations.items || [])
+          .then(automations => automations.map(automation => ({ automation, events: footprintEvents[fp] })))
+          .then(automationEvents => total.concat(automationEvents))
+          .catch(() => total)
+      , []
+    );
   }
 
   static _scheduleEmails(eventsByAutomations) {
     logger().debug('_scheduleEmails', JSON.stringify(eventsByAutomations));
-    return Promise.map(eventsByAutomations, el => this._scheduleAutomationEmails(el), {concurrency: 5});
+    return Promise.map(eventsByAutomations, el => this._scheduleAutomationEmails(el), { concurrency: 5 });
   }
 
-  static _scheduleAutomationEmails({automation, events}) {
-    logger().debug('_scheduleAutomationEmails', JSON.stringify({automation, events}));
+  static _scheduleAutomationEmails({ automation, events }) {
+    logger().debug('_scheduleAutomationEmails', JSON.stringify({ automation, events }));
     return this._fetchAutomationSender(automation)
       .then(sender => this._buildCommonEmailParams(sender, automation))
       .then(commonEmailParams => this._buildEmails(commonEmailParams, automation, events))
@@ -55,14 +57,14 @@ export default class TriggerAutomationsService {
   }
 
   static _fetchAutomationSender(automation) {
-    logger().debug('_fetchAutomationSender', JSON.stringify({automation}));
-    const payload = {userId: automation.userId, senderId: automation.senderId};
+    logger().debug('_fetchAutomationSender', JSON.stringify({ automation }));
+    const payload = { userId: automation.userId, senderId: automation.senderId };
     logger().debug('_fetchAutomationSender', JSON.stringify(payload));
     return FunctionsClient.execute(this.fetchSenderFunctionName, payload);
   }
 
   static _buildCommonEmailParams(sender, automationAction) {
-    logger().debug('_buildCommonEmailParams', JSON.stringify({automationAction, sender}));
+    logger().debug('_buildCommonEmailParams', JSON.stringify({ automationAction, sender }));
     return {
       id: cuid(),
       userId: automationAction.userId,
@@ -85,12 +87,12 @@ export default class TriggerAutomationsService {
   }
 
   static _addRecipientToEmail(email, event) {
-    const recipient = event.payload.recipient;
-    return Promise.resolve(Object.assign({}, email, {recipient}));
+    const { recipient } = event.payload;
+    return Promise.resolve(Object.assign({}, email, { recipient }));
   }
 
   static _addCampaignToEmail(email, automation) {
-    const campaign = automation.campaign;
+    const { campaign } = automation;
     return Object.assign({}, email, { campaign });
   }
 
@@ -102,17 +104,17 @@ export default class TriggerAutomationsService {
       subject: email.campaign.subject,
       metadata: email.recipient.metadata,
       recipientId: email.recipient.id,
-      campaignId: email.id,
-      listId: email.recipient.listId
-    }, {footer: false});
+      campaignId: email.automationActionId,
+      listId: email.recipient.listId,
+      userId: email.userId
+    }, { footer: false });
     return Promise.all([
       emailParser.renderBody().then(body => emailParser.appendOpensPixel(body)),
       emailParser.renderSubject(),
       emailParser.unsubscribeUrl
-    ])
-    .then(result => {
-      const scheduledEmail = Object.assign({}, email, { campaign: { body: result[0], subject: result[1], id: email.automationActionId } });
-      if (result[2]) scheduledEmail.recipient.unsubscribeUrl = result[2];
+    ]).then(([body, subject, unsubscribeUrl]) => {
+      const scheduledEmail = Object.assign({}, email, { campaign: { body, subject, id: email.automationActionId } });
+      if (unsubscribeUrl) scheduledEmail.recipient.unsubscribeUrl = unsubscribeUrl;
       return scheduledEmail;
     });
   }

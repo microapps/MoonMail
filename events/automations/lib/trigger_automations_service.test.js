@@ -9,7 +9,7 @@ import TriggerAutomationsService from './trigger_automations_service';
 import FootprintCalculator from '../../lib/footprint_calculator';
 import FunctionsClient from '../../lib/functions_client';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(sinonChai);
 
 const campaignId = 'campaign-id';
@@ -23,9 +23,9 @@ const sender = {
   fromName: 'From Name'
 };
 const fetchSenderFunctionName = 'function-name';
-const eventGenerator = (type, payload, options = {}) => {
-  return {type, payload: Object.assign({}, payload, options)};
-};
+const eventGenerator = (type, payload, options = {}) => ({
+  type, payload: Object.assign({}, payload, options)
+});
 const recipientSubscribeEvtGen = (options) => {
   const payload = {
     recipient: {
@@ -33,15 +33,15 @@ const recipientSubscribeEvtGen = (options) => {
       email: faker.internet.email(),
       listId,
       userId,
-      metadata: {name: faker.name.firstName()}
+      metadata: { name: faker.name.firstName() }
     }
   };
   return eventGenerator('list.recipient.subscribe', payload, options);
 };
 const campaignOpenEvtGen = (options) => {
   const payload = {
-    recipient: {id: faker.random.alphaNumeric(5), listId, userId},
-    campaign: {id: campaignId, userId}
+    recipient: { id: faker.random.alphaNumeric(5), listId, userId },
+    campaign: { id: campaignId, userId }
   };
   return eventGenerator('campaign.open', payload, options);
 };
@@ -55,7 +55,7 @@ const automationActionGenerator = (options = {}) => {
     type: 'list.recipient.subscribe',
     delay: 3600,
     status: 'active',
-    campaign: {subject: 'Email subject {{name}}', body: 'Email body {{name}}'},
+    campaign: { subject: 'Email subject {{name}}', body: 'Email body {{name}}' },
     name: faker.commerce.productName()
   };
   const automation = Object.assign({}, defaults, options);
@@ -66,18 +66,18 @@ const automationActionGenerator = (options = {}) => {
 describe('TriggerAutomationsService', () => {
   describe('.execute()', () => {
     const subscribeAutomationAction = automationActionGenerator();
-    const openAutomation = automationActionGenerator({type: 'campaign.open'});
+    const openAutomation = automationActionGenerator({ type: 'campaign.open' });
     let automationStub;
 
     beforeEach(() => {
       automationStub = sinon.stub(AutomationAction, 'allByStatusAndFootprint')
         .withArgs('active', subscribeAutomationAction.footprint)
-        .resolves({items: [subscribeAutomationAction]})
+        .resolves({ items: [subscribeAutomationAction] })
         .withArgs('active', openAutomation.footprint)
-        .resolves({items: [openAutomation]});
+        .resolves({ items: [openAutomation] });
       sinon.stub(ScheduledEmail, 'saveAll').resolves(true);
       sinon.stub(FunctionsClient, 'execute')
-        .withArgs(fetchSenderFunctionName, {userId, senderId})
+        .withArgs(fetchSenderFunctionName, { userId, senderId })
         .resolves(sender);
       process.env.API_HOST = apiHost;
       process.env.FETCH_SENDER_FN_NAME = fetchSenderFunctionName;
@@ -98,7 +98,7 @@ describe('TriggerAutomationsService', () => {
         const expectedRecipient = Object.assign(
           {},
           event.payload.recipient,
-          {unsubscribeUrl: sinon.match.string}
+          { unsubscribeUrl: sinon.match.string }
         );
         const expectedEmail = {
           id: sinon.match.string,

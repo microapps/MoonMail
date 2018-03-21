@@ -1,19 +1,20 @@
-'use strict';
-
-import { debug } from './index';
+import omitEmpty from 'omit-empty';
+import base64url from 'base64-url';
 import * as Liquid from 'liquid-node';
 import * as url from 'url';
+import { debug } from './index';
 
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId } = {}, options = { footer: true }) {
+  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId, userId } = {}, options = { footer: true }) {
     this.from = fromEmail;
     this.to = to;
     this.body = body;
     this.subject = subject;
     this.metadata = metadata;
     this.listId = listId;
+    this.userId = base64url.encode(userId || '');
     this.recipientId = recipientId;
     this.campaignId = campaignId;
     this.apiHost = process.env.API_HOST;
@@ -58,9 +59,13 @@ class Email {
         hostname: this.apiHost,
         pathname: `${this.opensPath}/${this.campaignId}`
       };
-      if (this.recipientId) opensUrlObj.query = {r: this.recipientId};
+      opensUrlObj.query = this._trackingQueryString();
       return url.format(opensUrlObj);
     }
+  }
+
+  _trackingQueryString() {
+    return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
   }
 
   _appendFooter(body) {
