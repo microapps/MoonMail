@@ -1,10 +1,10 @@
 import AWS from 'aws-sdk'
-import { queryAll } from './webhooks/webhook-handler'
+import { queryAllWb } from './webhooks/webhook-handler'
 
 module.exports.handlerWebhookEvents = (event, context, callback) => {
     event = [
-        { event: 'unsubscribe', subject: 'list', subjectID: '1', userID: '321' },
-        { event: 'sent', subject: 'campaign', subjectID: 'abc', userID: '' }
+        { event: 'unsubscribe', item: 'list', itemId: '1', userId: '321' },
+        { event: 'sent', item: 'campaign', itemId: 'abc', userId: '' }
     ]
 
     getWebhooks(event)
@@ -25,10 +25,10 @@ const handleError = (e, callback) => {
     }
 }
 
-const setEventUserID = async (items, newUserID) => {
-    if (items && items.length > 0 && newUserID) {
+const setEventUserID = async (items, newUserId) => {
+    if (items && items.length > 0 && newUserId) {
         for (const i in items) {
-            items[i].userID = newUserID
+            items[i].userId = newUserId
         }
         return items
     } else {
@@ -37,15 +37,15 @@ const setEventUserID = async (items, newUserID) => {
 }
 
 const dbParams = (event) => {
-    const subjectID = event.subjectID || ''
-    return event.event + '-' + event.subject + '-' + subjectID
+    const itemId = event.itemId || ''
+    return event.event + '-' + event.item + '-' + itemId
 }
 
 const readAllAndSetUserID = async (event) => { //switches webhook userID (creator) to event userID (the one related to the event)
     try {
         const params = dbParams(event)
-        const { Items } = await queryAll(params)
-        return await setEventUserID(Items, event.userID)
+        const { Items } = await queryAllWb(params)
+        return await setEventUserID(Items, event.userId)
     } catch (e) {
         throw e
     }

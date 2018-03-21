@@ -8,8 +8,8 @@ export default async function create(data) {
         data.id = uuid.v1()
         data.createdAt = new Date().getTime()
         data.updatedAt = new Date().getTime()
-        const subjectID = data.subjectID || ''
-        data.wb = data.event+'-'+data.subject+'-'+subjectID
+        const itemId = data.itemId || ''
+        data.wb = data.event+'-'+data.item+'-'+itemId
 
         const params = {
             TableName: process.env.WEBHOOKTABLENAME,

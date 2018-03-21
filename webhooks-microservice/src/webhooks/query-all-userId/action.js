@@ -2,14 +2,16 @@
 
 import AWS from 'aws-sdk'
 
-export default async function queryAll(expressionValue) {
+export default async function queryAllUserId(expressionValue) {
     try {
         const params = {
             TableName: process.env.WEBHOOKTABLENAME,
-            IndexName: 'wb-index',
-            KeyConditionExpression: 'wb = :wb',
-            ExpressionAttributeValues: { ':wb': expressionValue }
+            IndexName: 'userId-index',
+            KeyConditionExpression: 'userId = :userId',
+            ExpressionAttributeValues: { ':userId': expressionValue }
         }
+
+        console.log(expressionValue)
         
         const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -17,4 +19,4 @@ export default async function queryAll(expressionValue) {
     } catch (e) {
         throw e.toString()
     }
-};
+}

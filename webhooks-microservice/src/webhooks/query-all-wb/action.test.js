@@ -2,7 +2,7 @@
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
-import queryAll from './action'
+import queryAllWb from './action'
 
 const expect = chai.expect
 
@@ -39,7 +39,7 @@ describe('reads all webhooks', () => {
             })
 
             it('should register a webhook', async () => {
-                const webhooks = await queryAll()
+                const webhooks = await queryAllWb()
 
                 expect(webhooks).to.have.length(2)
                 expect(webhooks[0]).to.have.property('subject')
@@ -80,7 +80,7 @@ describe('reads all webhooks', () => {
 
             it('should throw an error', async () => {
                 try {
-                    await queryAll()
+                    await queryAllWb()
                 } catch (e) {
                     expect(e).to.equal('error')
                 }

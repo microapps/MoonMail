@@ -56,7 +56,7 @@ const checkRequestWebhookExistence = async (request) => {
     try {
         const webhook = JSON.parse(request.webhook)
         const existingWebhook = await readOne(webhook.id)
-        if (!existingWebhook || !existingWebhook.Item || existingWebhook.Item.wb != webhook.wb || existingWebhook.Item.webhook != webhook.webhook) { return false }
+        if (!existingWebhook || !existingWebhook.Item || existingWebhook.Item.wb != webhook.wb || existingWebhook.Item.url != webhook.url) { return false }
         return true
     } catch (e) {
         console.log(e)

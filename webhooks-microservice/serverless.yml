@@ -147,6 +147,9 @@ resources:
             AttributeName: wb
             AttributeType: S
           -
+            AttributeName: userId
+            AttributeType: S
+          -
             AttributeName: createdAt
             AttributeType: N
         KeySchema:
@@ -165,6 +168,15 @@ resources:
           ProvisionedThroughput: 
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1  
+        - IndexName: userId-index
+          KeySchema: 
+          - AttributeName: userId
+            KeyType: HASH
+          Projection: 
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

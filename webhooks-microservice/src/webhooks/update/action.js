@@ -6,8 +6,8 @@ export default async function update(id, data) {
     try {
         data.id = id
         data.updatedAt = new Date().getTime()
-        const subjectID = data.subjectID || ''
-        data.wb = data.event+'-'+data.subject+'-'+subjectID
+        const itemId = data.itemId || ''
+        data.wb = data.event+'-'+data.item+'-'+itemId
 
         const updateParams = {
             TableName: process.env.WEBHOOKTABLENAME,

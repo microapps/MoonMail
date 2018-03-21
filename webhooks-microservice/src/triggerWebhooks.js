@@ -3,7 +3,7 @@ import { create, remove, update } from './failed-webhooks/webhook-handler'
 
 module.exports.triggerWebbhook = (event, context, callback) => {
     const requestBody = getRequestBody(event.webhook)
-    const params = getRequestParams(event.webhook.webhook, requestBody, event.attempts)
+    const params = getRequestParams(event.webhook.url, requestBody, event.attempts)
 
     request(params, (err, response, body) => {
         handleResponseCode(response.statusCode, event)
@@ -30,10 +30,10 @@ const getRequestParams = (url, body, attempts = process.env.REQUESTATTEMPTS, del
 
 const getRequestBody = (webhook) => {
     return {
-        subject: webhook.subject,
-        subjectID: webhook.subjectID,
+        item: webhook.item,
+        itemId: webhook.itemId,
         event: webhook.event,
-        userID: webhook.userID
+        userId: webhook.userId
     }
 }
 
