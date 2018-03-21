@@ -1,4 +1,4 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 
@@ -10,8 +10,6 @@ export default async function queryAllUserId(expressionValue) {
             KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: { ':userId': expressionValue }
         }
-
-        console.log(expressionValue)
         
         const dynamoDb = new AWS.DynamoDB.DocumentClient();
 

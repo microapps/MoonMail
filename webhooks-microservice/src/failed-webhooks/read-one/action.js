@@ -1,4 +1,4 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 
@@ -7,7 +7,7 @@ export default async function readOne(id) {
         const params = {
             TableName: process.env.FAILEDREQUESTTABLENAME,
             Key: {
-                id: id
+                id
             }
         };
 

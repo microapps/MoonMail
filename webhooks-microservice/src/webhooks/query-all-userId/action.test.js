@@ -1,4 +1,4 @@
-'use strict'
+
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
@@ -13,21 +13,17 @@ describe('reads all webhooks', () => {
 
     const successConnection = function () {
         return {
-            query: (params) => {
-                return {
+            query: () => ({
                     promise: async () => data
-                }
-            }
+                })
         }
     }
 
     const failureConnection = function () {
         return {
-            query: (params) => {
-                return {
+            query: () => ({
                     promise: async () => { throw 'error' }
-                }
-            }
+                })
         }
     }
 

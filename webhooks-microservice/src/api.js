@@ -1,7 +1,7 @@
-'use strict';
+
 
 import { create, queryAllUserId, readOne, remove, update } from './webhooks/webhook-handler'
-import { decryptToken, createToken } from './auth-token'
+import { decryptToken } from './auth-token'
 import Logger from './logger';
 import { validateParams, paramsTypes, responses, httpErrors } from './api-utils'
 
@@ -33,7 +33,6 @@ const readAllWebhooks = async (event, context, cb) => {
         const params = user.id
 
         const webhooks = await queryAllUserId(params)
-        console.log(webhooks)
 
         cb(responses.success(webhooks.Items))
     } catch (e) {
@@ -52,7 +51,7 @@ const readOneWebhook = async (event, context, cb) => {
 
         const webhook = await readOne(event.pathParameters.id)
         if (!webhook || !webhook.Item) throw httpErrors.notFound
-        if (webhook.Item.userId != user.id) throw httpErrors.unauthorized
+        if (webhook.Item.userId !== user.id) throw httpErrors.unauthorized
 
         cb(responses.success(webhook.Item))
     } catch (e) {
@@ -71,7 +70,7 @@ const updateWebhook = async (event, context, cb) => {
 
         const webhook = await readOne(event.pathParameters.id)
         if (!webhook || !webhook.Item) throw httpErrors.notFound
-        if (webhook.Item.userId != user.id) throw httpErrors.unauthorized
+        if (webhook.Item.userId !== user.id) throw httpErrors.unauthorized
 
         await validateParams(Object.assign(data, event.pathParameters), paramsTypes.UPDATE)
         
@@ -95,9 +94,9 @@ const removeWebhook = async (event, context, cb) => {
 
         const webhook = await readOne(event.pathParameters.id)
         if (!webhook || !webhook.Item) throw httpErrors.notFound
-        if (webhook.Item.userId != user.id) throw httpErrors.unauthorized
+        if (webhook.Item.userId !== user.id) throw httpErrors.unauthorized
 
-        const deletedWebhook = await remove(event.pathParameters.id)
+        await remove(event.pathParameters.id)
 
         cb(responses.success(webhook.Item.id))
     } catch (e) {

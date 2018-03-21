@@ -1,4 +1,4 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 
@@ -7,7 +7,7 @@ export default async function update(id, data) {
         data.id = id
         data.updatedAt = new Date().getTime()
         const itemId = data.itemId || ''
-        data.wb = data.event+'-'+data.item+'-'+itemId
+        data.wb = `${data.event}-${data.item}-${itemId}`
 
         const updateParams = {
             TableName: process.env.WEBHOOKTABLENAME,
@@ -17,7 +17,7 @@ export default async function update(id, data) {
         const getParams = {
             TableName: process.env.WEBHOOKTABLENAME,
             Key: {
-                id: id
+                id
             }
         }
 

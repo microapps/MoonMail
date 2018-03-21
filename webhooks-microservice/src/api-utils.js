@@ -58,30 +58,24 @@ const responseHeaders = {
 }
 
 const responses = {
-    success: (data = {}, code = 200) => {
-        return {
+    success: (data = {}, code = 200) => ({
             'statusCode': code,
             'headers': responseHeaders,
             'body': JSON.stringify({ items: data })
-        }
-    },
-    error: (error) => {
-        return {
+        }),
+    error: (error) => ({
             'statusCode': error.code || 500,
             'headers': responseHeaders,
             'body': JSON.stringify({ err: error })
-        }
-    }
+        })
 }
 
-const validateParams = (params, eventType) => {
-    return new Promise((resolve, reject) => {
-        Joi.validate(params, requestParams[eventType], { abortEarly: false }, (err, validate) => {
+const validateParams = (params, eventType) => new Promise((resolve, reject) => {
+        Joi.validate(params, requestParams[eventType], { abortEarly: false }, (err) => {
             if (err) reject(err.toString())
             else resolve(true)
         })
     })
-}
 
 
 module.exports = {

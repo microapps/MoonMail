@@ -1,4 +1,4 @@
-'use strict'
+
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
@@ -7,28 +7,22 @@ import readOne from './action'
 const expect = chai.expect
 
 describe('read one webhook', () => {
-    let webhookID
-    let webhookData
     const id = '123'
     const data = { subject: "list", subjectId: "1", event: "subscribe", webhook: "update-test1.com/webhook", userID: 'abc-123', createdAt: 'day1', updatedAt: 'day1' }
 
     const successConnection = function () {
         return {
-            get: (params) => {
-                return {
+            get: () => ({
                     promise: async () => data
-                }
-            }
+                })
         }
     }
 
     const failureConnection = function () {
         return {
-            get: (params) => {
-                return {
+            get: () => ({
                     promise: async () => { throw 'error' }
-                }
-            }
+                })
         }
     }
 
@@ -36,7 +30,6 @@ describe('read one webhook', () => {
 
         context('when the event is valid, one webhook should be retrieved', () => {
             before(() => {
-                webhookID = id
                 AWS.DynamoDB.DocumentClient = successConnection
             })
 
@@ -62,7 +55,6 @@ describe('read one webhook', () => {
 
         context('when connection goes wrong, an error should be thrown', () => {
             before(() => {
-                webhookID = id
                 AWS.DynamoDB.DocumentClient = failureConnection
             })
 

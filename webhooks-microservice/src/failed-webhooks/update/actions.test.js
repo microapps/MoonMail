@@ -1,4 +1,4 @@
-'use strict'
+
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
@@ -16,26 +16,20 @@ describe('update webhook', () => {
 
     const successConnection = function () {
         return {
-            put: (params) => {
-                return {
-                    promise: async () => response.oldData //dynamoDB put can only retrive old values
-                }
-            },
-            get: (params) => {
-                return {
-                    promise: async () => response.newData //a new get is made to get updated values
-                }
-            }
+            put: () => ({
+                    promise: async () => response.oldData // dynamoDB put can only retrive old values
+                }),
+            get: () => ({
+                    promise: async () => response.newData // a new get is made to get updated values
+                })
         }
     }
 
     const failureConnection = function () {
         return {
-            put: (params) => {
-                return {
+            put: () => ({
                     promise: async () => { throw 'error' }
-                }
-            }
+                })
         }
     }
 

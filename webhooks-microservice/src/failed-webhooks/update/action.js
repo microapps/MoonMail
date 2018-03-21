@@ -1,21 +1,22 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 
 export default async function update(id, data) {
     try {
-        data.id = id
-        data.updatedAt = new Date().getTime()
+        const localData = data
+        localData.id = id
+        localData.updatedAt = new Date().getTime()
 
         const updateParams = {
             TableName: process.env.FAILEDREQUESTTABLENAME,
-            Item: data
+            Item: localData
         }
 
         const getParams = {
             TableName: process.env.FAILEDREQUESTTABLENAME,
             Key: {
-                id: id
+                id
             }
         }
 

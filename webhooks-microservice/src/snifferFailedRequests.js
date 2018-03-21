@@ -15,22 +15,19 @@ module.exports.sniffFailedWebhookRequests = (event, context, callback) => {
 
 const handleError = (e, callback) => {
     if (e === 'NO-FAILED-REQUESTS-FOUND') {
-        console.log(e)
         callback(null)
     } else {
         callback(e)
     }
 }
 
-const checkTotalAttempts = (failedRequest) => {
-    return (parseInt(failedRequest.totalAttempts) >= parseInt(process.env.MAXREQUESTATTEMPTS))
-}
+const checkTotalAttempts = (failedRequest) => (parseInt(failedRequest.totalAttempts) >= parseInt(process.env.MAXREQUESTATTEMPTS))
 
 const checkTimer = (failedRequest) => {
     const timeToCall = parseInt(failedRequest.updatedAt) + parseInt(failedRequest.timer)
     const now = new Date().getTime()
     if (now >= timeToCall) return true
-    else return false
+    return false
 }
 
 const removeRequest = async (failedRequest) => {
@@ -49,7 +46,7 @@ const invokeTrigger = async (payload) => {
 
 const checkRequests = (requests) => {
     if (requests && requests.Items && requests.Items.length > 0) return requests.Items
-    else throw 'NO-FAILED-REQUESTS-FOUND'
+    throw 'NO-FAILED-REQUESTS-FOUND'
 }
 
 const checkRequestWebhookExistence = async (request) => {
@@ -67,18 +64,18 @@ const invokerPayload = (failedRequest) => {
     const webhook = JSON.parse(failedRequest.webhook)
     delete failedRequest.webhook
     return {
-        webhook: webhook,
-        failedRequest: failedRequest,
+        webhook,
+        failedRequest,
         source: 'sniffer',
         attempts: 1
     }
 }
 
-//todo: consider rebuilding, messy code
-const filterRequests = async (failedRequests) => { //remove old registers, check timer, create lists of promises
+// todo: consider rebuilding, messy code
+const filterRequests = async (failedRequests) => { // remove old registers, check timer, create lists of promises
     try {
-        let failedRequestsPromises = []
-        let removableRequests = []
+        const failedRequestsPromises = []
+        const removableRequests = []
 
         for (const i in failedRequests) {
             if (!await checkRequestWebhookExistence(failedRequests[i])) {

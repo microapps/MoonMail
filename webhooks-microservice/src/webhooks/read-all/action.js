@@ -1,8 +1,8 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 
-export default async function readAll(expressionValue) {
+export default async function readAll() {
     try {
         const params = {
             TableName: process.env.WEBHOOKTABLENAME

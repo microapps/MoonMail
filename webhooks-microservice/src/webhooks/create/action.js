@@ -1,4 +1,4 @@
-'use strict';
+
 
 import AWS from 'aws-sdk'
 import uuid from 'uuid'
@@ -9,7 +9,7 @@ export default async function create(data) {
         data.createdAt = new Date().getTime()
         data.updatedAt = new Date().getTime()
         const itemId = data.itemId || ''
-        data.wb = data.event+'-'+data.item+'-'+itemId
+        data.wb = `${data.event}-${data.item}-${itemId}`
 
         const params = {
             TableName: process.env.WEBHOOKTABLENAME,

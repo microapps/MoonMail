@@ -1,4 +1,4 @@
-'use strict'
+
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
@@ -7,28 +7,22 @@ import remove from './action'
 const expect = chai.expect
 
 describe('delete webhook', () => {
-    let webhookID
-    let webhookData
     const id = '123'
     const data = { subject: "list", subjectId: "1", event: "subscribe", webhook: "update-test1.com/webhook", userID: 'abc-123', createdAt: 'day1', updatedAt: 'day1' }
 
     const successConnection = function () {
         return {
-            delete: (params) => {
-                return {
+            delete: () => ({
                     promise: async () => data
-                }
-            }
+                })
         }
     }
 
     const failureConnection = function () {
         return {
-            delete: (params) => {
-                return {
+            delete: () => ({
                     promise: async () => { throw 'error' }
-                }
-            }
+                })
         }
     }
 
@@ -36,7 +30,6 @@ describe('delete webhook', () => {
 
         context('when the event is valid a webhook is deleted', () => {
             before(() => {
-                webhookID = id
                 AWS.DynamoDB.DocumentClient = successConnection
             })
 
@@ -62,7 +55,6 @@ describe('delete webhook', () => {
 
         context('when connection goes wrong, an error should be thrown', () => {
             before(() => {
-                webhookID = id
                 AWS.DynamoDB.DocumentClient = failureConnection
             })
 

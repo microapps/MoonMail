@@ -16,34 +16,28 @@ function customRetryStrategy(err, response, body) {
     return err || response.statusCode < 200 || response.statusCode > 299
 }
 
-const getRequestParams = (url, body, attempts = process.env.REQUESTATTEMPTS, delay = process.env.REQUESTRETRYDELAY) => {
-    return {
-        url: url,
+const getRequestParams = (url, body, attempts = process.env.REQUESTATTEMPTS, delay = process.env.REQUESTRETRYDELAY) => ({
+        url,
         method: 'POST',
-        body: body,
+        body,
         json: true,
         maxAttempts: attempts,
         retryDelay: delay,
         retryStrategy: customRetryStrategy
-    }
-}
+    })
 
-const getRequestBody = (webhook) => {
-    return {
+const getRequestBody = (webhook) => ({
         item: webhook.item,
         itemId: webhook.itemId,
         event: webhook.event,
         userId: webhook.userId
-    }
-}
+    })
 
-const failedRequestParams = (webhook, totalAttempts = 0, timer = process.env.REQUESTTIMER) => {
-    return {
+const failedRequestParams = (webhook, totalAttempts = 0, timer = process.env.REQUESTTIMER) => ({
         timer: timer * process.env.REQUESTTIMERMULTIPLIER,
         webhook: JSON.stringify(webhook),
         totalAttempts: parseInt(totalAttempts)+1
-    }
-}
+    })
 
 const handleResponseCode = async (responseCode, event) => {
     if (parseInt(responseCode) < 200 || parseInt(responseCode) > 299 && event.source == 'handler') {

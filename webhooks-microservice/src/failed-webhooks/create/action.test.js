@@ -1,4 +1,4 @@
-'use strict'
+
 
 import AWS from 'aws-sdk'
 import * as chai from 'chai'
@@ -7,27 +7,21 @@ import create from './action'
 const expect = chai.expect
 
 describe('create webhook', () => {
-    let webhookID
-    let webhookData
     const data = { subject: "list", subjectId: "1", event: "subscribe", webhook: "update-test1.com/webhook", userID: 'abc-123', createdAt: 'day1', updatedAt: 'day1' }
 
     const successConnection = function () {
         return {
-            put: (params) => {
-                return {
+            put: () => ({
                     promise: async () => data
-                }
-            }
+                })
         }
     }
 
     const failureConnection = function () {
         return {
-            put: (params) => {
-                return {
+            put: () => ({
                     promise: async () => { throw 'error' }
-                }
-            }
+                })
         }
     }
 

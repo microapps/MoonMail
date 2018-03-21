@@ -31,17 +31,17 @@ const setEventUserID = async (items, newUserId) => {
             items[i].userId = newUserId
         }
         return items
-    } else {
+    } 
         return items
-    }
+    
 }
 
 const dbParams = (event) => {
     const itemId = event.itemId || ''
-    return event.event + '-' + event.item + '-' + itemId
+    return `${event.event  }-${  event.item  }-${  itemId}`
 }
 
-const readAllAndSetUserID = async (event) => { //switches webhook userID (creator) to event userID (the one related to the event)
+const readAllAndSetUserID = async (event) => { // switches webhook userID (creator) to event userID (the one related to the event)
     try {
         const params = dbParams(event)
         const { Items } = await queryAllWb(params)
@@ -53,10 +53,10 @@ const readAllAndSetUserID = async (event) => { //switches webhook userID (creato
 
 const getWebhooks = async (events) => {
     try {
-        let dbPromises = []
+        const dbPromises = []
 
         for (const i in events) {
-            let promise = readAllAndSetUserID(events[i])
+            const promise = readAllAndSetUserID(events[i])
             dbPromises.push(promise)
         }
 
@@ -66,29 +66,25 @@ const getWebhooks = async (events) => {
     }
 }
 
-const reduceWebhooks = async (webhooks) => {
-    return webhooks.reduce((wb1, wb2) => [...wb1, ...wb2])
-}
+const reduceWebhooks = async (webhooks) => webhooks.reduce((wb1, wb2) => [...wb1, ...wb2])
 
 const checkWebhooks = async (webhooks) => {
     if (webhooks && webhooks.length > 0) {
         return webhooks
-    } else {
+    } 
         throw 'NO-WEBHOOKS-FOUND'
-    }
+    
 }
 
-const invokerPayload = (webhook) => {
-    return {
-        webhook: webhook,
+const invokerPayload = (webhook) => ({
+        webhook,
         source: 'handler',
         attempts: process.env.REQUESTATTEMPTS
-    }
-}
+    })
 
 const invokeAllWebhooks = async (webhooks) => { // consider recursion for big pile of webhooks
     try {
-        let webhookPromises = []
+        const webhookPromises = []
         for (const i in webhooks) {
             const payload = invokerPayload(webhooks[i])
             webhookPromises.push(invokeTrigger(payload))

@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+// import * as fs from 'fs'; //todo: integrate certificate
 import * as jwt from 'jsonwebtoken';
 import { httpErrors } from './api-utils'
 
