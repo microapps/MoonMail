@@ -43,7 +43,11 @@ const buildPayloadFromNotification = function buildPayloadFromNotification(sesNo
     const newObj = { [key]: val };
     return Object.assign({}, acc, newObj);
   }, {});
-  return omitEmpty(Object.assign({}, headerPayload, notifycationPayload));
+  const timestamp = R.pipe(
+    R.path([R.toLower(sesNotification.notificationType), 'timestamp']),
+    t => moment(t).unix()
+  )(sesNotification);
+  return omitEmpty(Object.assign({}, headerPayload, notifycationPayload, { timestamp }));
 };
 
 const fromSesNotification = function eventFromSesNotification(sesNotification = {}) {

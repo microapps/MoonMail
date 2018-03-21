@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import R from 'ramda';
-import { fn as momentProto } from 'moment';
+import moment from 'moment';
 import Event from './Event';
 import sesDelivery from './fixtures/ses_delivery.json';
 import sesBounce from './fixtures/ses_bounce.json';
@@ -27,7 +27,8 @@ describe('Event', () => {
             listId: notificationHeaderValue(sesDelivery, 'X-Moonmail-List-ID'),
             recipientId: notificationHeaderValue(sesDelivery, 'X-Moonmail-Recipient-ID'),
             segmentId: notificationHeaderValue(sesDelivery, 'X-Moonmail-Segment-ID'),
-            campaignId: notificationHeaderValue(sesDelivery, 'X-Moonmail-Campaign-ID')
+            campaignId: notificationHeaderValue(sesDelivery, 'X-Moonmail-Campaign-ID'),
+            timestamp: moment(sesDelivery.delivery.timestamp).unix()
           }
         }
       },
@@ -41,7 +42,8 @@ describe('Event', () => {
             recipientId: notificationHeaderValue(sesComplaint, 'X-Moonmail-Recipient-ID'),
             segmentId: notificationHeaderValue(sesComplaint, 'X-Moonmail-Segment-ID'),
             campaignId: notificationHeaderValue(sesComplaint, 'X-Moonmail-Campaign-ID'),
-            feedbackType: R.path(['complaint', 'complaintFeedbackType'], sesComplaint)
+            feedbackType: R.path(['complaint', 'complaintFeedbackType'], sesComplaint),
+            timestamp: moment(sesComplaint.complaint.timestamp).unix()
           }
         }
       },
@@ -56,7 +58,8 @@ describe('Event', () => {
             segmentId: notificationHeaderValue(sesBounce, 'X-Moonmail-Segment-ID'),
             campaignId: notificationHeaderValue(sesBounce, 'X-Moonmail-Campaign-ID'),
             bounceType: R.path(['bounce', 'bounceType'], sesBounce),
-            bounceSubType: R.path(['bounce', 'bounceSubType'], sesBounce)
+            bounceSubType: R.path(['bounce', 'bounceSubType'], sesBounce),
+            timestamp: moment(sesBounce.bounce.timestamp).unix()
           }
         }
       }
@@ -101,8 +104,8 @@ describe('Event', () => {
       }
     ];
 
-    before(() => sinon.stub(momentProto, 'unix').returns(timestamp));
-    after(() => momentProto.unix.restore());
+    before(() => sinon.stub(moment.fn, 'unix').returns(timestamp));
+    after(() => moment.fn.unix.restore());
 
     it('generates a valid event', () => {
       testCases.forEach(({ input, out }) => expect(Event.fromLinkClick(input)).to.deep.equal(out));
@@ -143,8 +146,8 @@ describe('Event', () => {
       }
     ];
 
-    before(() => sinon.stub(momentProto, 'unix').returns(timestamp));
-    after(() => momentProto.unix.restore());
+    before(() => sinon.stub(moment.fn, 'unix').returns(timestamp));
+    after(() => moment.fn.unix.restore());
 
     it('generates a valid event', () => {
       testCases.forEach(({ input, out }) => expect(Event.fromEmailOpen(input)).to.deep.equal(out));
