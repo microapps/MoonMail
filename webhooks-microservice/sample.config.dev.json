@@ -1,0 +1,13 @@
+{
+  "REGION": "us-east-1",
+  "LOG_LEVEL": "info",
+  "WEBHOOKTABLE": "webhooks",
+  "FAILEDREQUESTTABLE": "failed-requests",
+  "JSONSECRET": "micro-apps",
+  "PATHNAME": "webhook",
+  "REQUESTATTEMPS": 3,
+  "REQUESTRETRYDELAY": 2000,
+  "REQUESTTIMER": 60000,
+  "REQUESTTIMERMULTIPLIER": 2,
+  "MAXREQUESTATTEMPTS": 10
+}
