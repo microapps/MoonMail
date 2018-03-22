@@ -2,10 +2,10 @@ import AWS from 'aws-sdk'
 import { queryAllWb } from './webhooks/webhook-handler'
 
 module.exports.handlerWebhookEvents = (event, context, callback) => {
-    event = [
-        { event: 'unsubscribe', item: 'list', itemId: '1', userId: '321' },
-        { event: 'sent', item: 'campaign', itemId: 'abc', userId: '' }
-    ]
+    // event = [
+    //     { event: 'unsubscribe', item: 'list', itemId: '1', userId: '321' },
+    //     { event: 'sent', item: 'campaign', itemId: 'abc', userId: '' }
+    // ]
 
     getWebhooks(event)
         .then(checkWebhooks)
