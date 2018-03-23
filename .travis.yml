@@ -11,6 +11,7 @@ env:
     - TEST_DIR=events-router
     - TEST_DIR=emails-microservice
     - TEST_DIR=campaigns-microservice
+    - TEST_DIR=webhooks-microservice
 
 script:
 - cd $TEST_DIR && npm install && npm test
