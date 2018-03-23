@@ -1,6 +1,6 @@
 # Webhooks Microservice
 
-Serverless service which provides a CRUD for webhooks and all the logic for requests and retries.
+Serverless service that provides a CRUD for webhooks and all the logic for requests and retries.
 
 ## Installation
 
@@ -71,7 +71,7 @@ The Handler receives a list of events and looks for all the webhooks that match 
 
 Here all that is done is a search in Webhook's table and then, for each webhook found matching the event criteria, a Trigger will be called.
 
-All the code related to the Handler can be found at `src/handlerWebhookEvents`.
+All the code related to the Handler can be found at [src/handlerWebhookEvents](src/handlerWebhookEvents.js).
 
 ### Trigger
 
@@ -93,7 +93,7 @@ If after a new attempt the final status code is still a failure (not >= 200 && <
 - Status code is in the range 200-299 and Source is Sniffer:
 If a new attempt results in a 200 status code and the source is the Sniffer, the record for this failed request will be removed and the operation will be considered a success.
 
-All the code related to the Handler can be found at `src/triggerWbhooks`.
+All the code related to the Handler can be found at [src/triggerWbhooks](src/triggerWebhooks.js).
 
 ### Sniffer
 
@@ -108,9 +108,9 @@ If the found failed request has reached its maximum number of attemps, this requ
 - A Failed Request is found, but its timer it not up yet:
 If the found request was updated three minutes ago, but its timer is set to four minutes, then this request is ignored and will be called another moment when its timer condition is satisfied.
 
-Finally if none of the above conditions fail then the Trigger will be called for the found failed request.
+Finally, if none of the above conditions fail then the Trigger will be called for the found failed request.
 
-All the code related to the Handler can be found at `src/snifferFailedRequests`.
+All the code related to the Handler can be found at [src/snifferFailedRequests](src/snifferFailedRequests.js).
 
 ### Timer and Attempts
 
