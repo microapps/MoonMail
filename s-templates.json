@@ -119,8 +119,6 @@
   "automationsIndex": "${project}-${stage}-automationsIndex",
   "automationsFootprintStatusIndex": "${project}-${stage}-automationsFootprintStatusIndex",
   "automationStatusIndex": "${project}-${stage}-automationStatusIndex",
-  "recipientsEmailIndex": "${project}-${stage}-recipientsEmailIndex",
-  "recipientsStatusIndex": "${project}-${stage}-recipientsStatusIndex",
   "esRecipientsIndexName": "mm_${stage}_recipients_index",
   "esRecipientsIndexType": "recipients",
   "usersTable": "${project}-${stage}-users",
