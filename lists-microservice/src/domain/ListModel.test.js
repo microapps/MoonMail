@@ -21,10 +21,8 @@ describe('ListModel', () => {
           expected: [{ metadataAttributes: ['existing', 'attributes', 'the', 'new'] }, 456, 123]
         }
       ];
-      const promises = suite.map((testCase) => {
-        return ListModel.appendMetadataAttributes(...testCase.input)
-          .then(_ => expect(ListModel.update).to.have.been.calledWithExactly(...testCase.expected));
-      });
+      const promises = suite.map(testCase => ListModel.appendMetadataAttributes(...testCase.input)
+        .then(_ => expect(ListModel.update).to.have.been.calledWithExactly(...testCase.expected)));
       return Promise.all(promises).then(done());
     });
 

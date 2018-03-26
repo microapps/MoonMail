@@ -84,11 +84,12 @@
     ]
   },
   "fetchSenderFunctionName": "${project}-users-fetchSender",
-  "createSegmentFunctionName": "${project}-segments-createSegment",
-  "getSegmentFunctionName": "${project}-segments-getSegment",
-  "updateSegmentFunctionName": "${project}-segments-updateSegment",
-  "listSegmentMembersFunctionName": "${project}-segments-listSegmentMembers",
-  "listSegmentsFunctionName": "${project}-segments-listSegments",
+  "createSegmentFunctionName": "${project}-lists-${stage}-createSegment",
+  "getSegmentFunctionName": "${project}-lists-${stage}-getSegment",
+  "updateSegmentFunctionName": "${project}-lists-${stage}-updateSegment",
+  "listSegmentMembersFunctionName": "${project}-lists-${stage}-listSegmentMembers",
+  "listSegmentsFunctionName": "${project}-lists-${stage}-listSegments",
+  "listRecipientsFunctionName": "${project}-lists-${stage}-searchRecipientsRaw",
   "searchRecipientsFunctionName": "${project}-recipients-searchRecipients",
   "checkSubscriptionLimitsFunctionName": "${project}-subscriptions-checkSubscriptionLimits",
   "getSubscriptionDetailsFunctionName": "${project}-subscriptions-getSubscriptionDetails",
@@ -146,7 +147,6 @@
   "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
   "listsExportBucket": "list-exports.moonmail.${stage}.${region}",
   "screenshotsFunctionName": "moonmail-screenshots-service-${stage}-takeScreenshotFromHtml",
-  "listRecipientsFunctionName": "${project}-lists-${stage}-searchRecipientsRaw",
   "responses": {
     "302": {
       "statusCode": "302",

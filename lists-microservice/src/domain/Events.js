@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import moment from 'moment';
 import isoCountryCodes from 'iso-3166-2';
 import RecipientModel from './RecipientModel';
 
@@ -6,6 +7,10 @@ const listRecipientImported = 'lists.recipientImported';
 const listRecipientCreated = 'lists.recipientCreated';
 const listRecipientUpdated = 'lists.recipientUpdated';
 const listRecipientDeleted = 'lists.recipientDeleted';
+
+const emailDelivered = 'email.delivered';
+const emailClicked = 'email.link.clicked';
+const emailOpened = 'email.opened';
 
 const alpha2CountryCodes = Object.values(isoCountryCodes.codes);
 
@@ -71,6 +76,48 @@ const eventSchemas = {
         id: Joi.string().required()
       })
     })
+  },
+  [emailDelivered]: {
+    schema: Joi.object({
+      type: emailDelivered,
+      payload: Joi.object({
+        userId: Joi.string(),
+        listId: Joi.string(),
+        recipientId: Joi.string(),
+        campaignId: Joi.string(),
+        segmentId: Joi.string(),
+        timestamp: Joi.number()
+      })
+    })
+  },
+  [emailClicked]: {
+    schema: Joi.object({
+      type: emailClicked,
+      payload: Joi.object({
+        userId: Joi.string(),
+        listId: Joi.string(),
+        recipientId: Joi.string(),
+        campaignId: Joi.string(),
+        segmentId: Joi.string(),
+        linkId: Joi.string(),
+        metadata: Joi.object(),
+        timestamp: Joi.number()
+      })
+    })
+  },
+  [emailOpened]: {
+    schema: Joi.object({
+      type: emailOpened,
+      payload: Joi.object({
+        userId: Joi.string(),
+        listId: Joi.string(),
+        recipientId: Joi.string(),
+        campaignId: Joi.string(),
+        segmentId: Joi.string(),
+        metadata: Joi.object(),
+        timestamp: Joi.number()
+      })
+    })
   }
 };
 
@@ -123,6 +170,9 @@ export default {
   listRecipientCreated,
   listRecipientUpdated,
   listRecipientDeleted,
+  emailDelivered,
+  emailClicked,
+  emailOpened,
   isValid,
   validate,
   buildRecipientCreatedEvent,

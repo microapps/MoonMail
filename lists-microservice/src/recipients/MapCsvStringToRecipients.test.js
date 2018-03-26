@@ -18,7 +18,7 @@ const metadataMapping = {
   'Date of Birth': 'dob'
 };
 const mappingWithSystemMetadata = Object.assign({}, metadataMapping, { 'Country Code': 'systemMedatadata__countryCode' });
-const expectValidRecipient = recipient => {
+const expectValidRecipient = (recipient) => {
   expect(recipient).to.have.property('email').that.is.a('string');
   expect(recipient).to.have.property('userId', userId);
   expect(recipient).to.have.property('listId', listId);
@@ -28,7 +28,7 @@ const expectValidRecipient = recipient => {
   expect(metadata).to.have.property('country').that.is.a('string');
   expect(metadata).to.have.property('dob').that.is.a('string');
 };
-const expectValidRecipientWithSystemMetadata = recipient => {
+const expectValidRecipientWithSystemMetadata = (recipient) => {
   expectValidRecipient(recipient);
   expect(recipient.systemMetadata).to.have.property('countryCode').that.is.a('string');
 };

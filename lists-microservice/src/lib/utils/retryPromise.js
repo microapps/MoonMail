@@ -10,7 +10,7 @@
 
 // async function retry(promise, { maxRetries }) {
 
-//   return Promise.each([...Array(maxRetries).keys()], attempt => promise 
+//   return Promise.each([...Array(maxRetries).keys()], attempt => promise
 //   for (let i = 0; i <= maxRetries; i++) {
 //     try {
 //       await promise;

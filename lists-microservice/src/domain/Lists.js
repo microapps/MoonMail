@@ -65,6 +65,6 @@ const Lists = {
   setImportingStarted,
   setAsProcessed,
   updateMetadataAttrsAndImportStatusFromEvents
-}
+};
 
 export default Lists;

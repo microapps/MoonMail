@@ -7,7 +7,6 @@ import * as unliverableRecipientsQuery from '../fixtures/undeliverableRecipients
 
 describe('RecipientESModel', () => {
   describe('search', () => {
-
     before(() => {
       const expectedQuery = searchRecipientsEsQuery.default;
       sinon.stub(ElasticSearch, 'search')
@@ -31,7 +30,6 @@ describe('RecipientESModel', () => {
   });
 
   describe('undeliverableRecipients', () => {
-
     before(() => {
       const expectedQuery = unliverableRecipientsQuery.default;
       sinon.stub(ElasticSearch, 'search')

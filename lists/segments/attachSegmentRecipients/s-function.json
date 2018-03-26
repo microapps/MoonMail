@@ -31,6 +31,7 @@
     "LIST_SEGMENT_ID_INDEX_NAME": "$${segmentIdIndex}",
     "ES_RECIPIENTS_INDEX_NAME": "$${esRecipientsIndexName}",
     "ES_RECIPIENTS_INDEX_TYPE": "$${esRecipientsIndexType}",
+    "LIST_SEGMENT_MEMBERS_FUNCTION": "$${listSegmentMembersFunctionName}",
     "ES_HOST": "${esHost}",
     "ES_REGION": "${esRegion}",
     "LOG_LEVEL": "info"

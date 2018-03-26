@@ -67,5 +67,5 @@ async function importRecipientsCsvCommand(importRecipientsParams, context) {
 }
 
 export default {
-  importRecipientsCsvFromS3,
+  importRecipientsCsvFromS3
 };

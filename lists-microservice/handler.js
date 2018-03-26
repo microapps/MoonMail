@@ -1,7 +1,9 @@
 import PublicHttpApi from './src/PublicHttpApi';
 import RecipientCommands from './src/RecipientCommands';
-import RecipientEventProcessors from './src/RecipientEventProcessors';
+import EventProcessors from './src/EventProcessors';
 import RecipientQueries from './src/RecipientQueries';
+import SegmentCommands from './src/SegmentCommands';
+import SegmentQueries from './src/SegmentQueries';
 
 // The public HTTP Api endpoints
 module.exports.createRecipient = PublicHttpApi.createRecipient;
@@ -18,8 +20,18 @@ module.exports.importRecipientsCsvFromS3 = RecipientCommands.importRecipientsCsv
 // module.exports.recipientImportedProcessor = RecipientEventProcessors.recipientImportedProcessor;
 // module.exports.recipientCreatedProcessor = RecipientEventProcessors.recipientCreatedProcessor;
 // module.exports.recipientUpdatedProcessor = RecipientEventProcessors.recipientUpdatedProcessor;
-module.exports.eventStreamProcessor = RecipientEventProcessors.eventStreamProcessor;
-module.exports.syncRecipientStreamWithES = RecipientEventProcessors.syncRecipientStreamWithES;
+module.exports.eventStreamProcessor = EventProcessors.eventStreamProcessor;
+module.exports.syncRecipientStreamWithES = EventProcessors.syncRecipientStreamWithES;
 
 // Recipient queries
 module.exports.searchRecipientsRaw = RecipientQueries.searchRecipients;
+
+// SegmentCommands
+module.exports.createSegment = SegmentCommands.createSegment;
+module.exports.updateSegment = SegmentCommands.updateSegment;
+
+// Segment queries
+module.exports.getSegment = SegmentQueries.getSegment;
+module.exports.listSegmentMembers = SegmentQueries.listSegmentMembers;
+module.exports.listSegments = SegmentQueries.listSegments;
+

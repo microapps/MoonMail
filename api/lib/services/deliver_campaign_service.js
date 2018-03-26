@@ -8,11 +8,10 @@ import FunctionsClient from '../functions_client';
 
 
 class DeliverCampaignService {
-
   constructor(snsClient, { campaign, campaignId, user } = {}) {
     this.snsClient = snsClient;
     this.campaign = campaign;
-    this.campaignMetadata = {address: user.address};
+    this.campaignMetadata = { address: user.address };
     this.campaignId = campaignId;
     this.userId = user.id;
     this.userPlan = user.plan || 'free';
@@ -55,14 +54,9 @@ class DeliverCampaignService {
 
   _getSegmentMembersCount(campaign) {
     const segmentId = campaign.segmentId;
-    return FunctionsClient.execute(process.env.LIST_SEGMENT_MEMBERS_FUNCTION, {
-      segmentId,
-      options: {
-        conditions: [
-          { condition: { queryType: 'match', fieldToQuery: 'status', searchTerm: 'subscribed' }, conditionType: 'filter' }
-        ]
-      }
-    }).then(response => response.total);
+    const [listId] = campaign.listIds;
+    return FunctionsClient.execute(process.env.LIST_SEGMENT_MEMBERS_FUNCTION, { listId, segmentId })
+      .then(response => response.total);
   }
 
   _getListRecipientsCount() {
@@ -199,7 +193,7 @@ class DeliverCampaignService {
     debug('= DeliverCampaignService.invokeLambda', lambdaName);
     const payload = { userId: this.userId, currentState: { sentCampaignsInLastDay: sentCampaignsInLastDay + 1, recipientsCount, totalRecipients } };
     return FunctionsClient.execute(lambdaName, payload)
-      .then(response => response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({}));
+      .then(response => (response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({})));
   }
 
   _getTotalRecipients() {

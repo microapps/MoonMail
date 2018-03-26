@@ -1,4 +1,4 @@
-import omitEmpty from 'omit-empty';
+import Promise from 'bluebird';
 import Events from './domain/Events';
 import Recipients from './domain/Recipients';
 import Lists from './domain/Lists';
@@ -6,6 +6,8 @@ import EventLog from './EventLog';
 import RecipientModel from './domain/RecipientModel';
 import RecipientESModel from './domain/RecipientESModel';
 import MapCsvStringToRecipients from './recipients/MapCsvStringToRecipients';
+import ListSegments from './domain/ListSegments';
+import RecipientActivities from './domain/RecipientActivities';
 
 function publishRecipientImportedEvents(recipientsBatch, importId, batchFirstIndex, total) {
   const eventsBatch = recipientsBatch
@@ -62,6 +64,27 @@ function deleteRecipientEs(recipient) {
   return RecipientESModel.remove(globalId);
 }
 
+function processCampaignActivity(events) {
+  const eventTypeMapping = {
+    [Events.emailDelivered]: 'received',
+    [Events.emailClicked]: 'clicked',
+    [Events.emailOpened]: 'opened'
+  };
+  const activities = events.map((event) => {
+    const eventType = eventTypeMapping[event.type];
+    return {
+      activityType: 'campaignActivity',
+      event: eventType,
+      campaignId: event.payload.campaignId,
+      timestamp: event.payload.timestamp,
+      recipientId: event.payload.recipientId,
+      listId: event.payload.listId
+    };
+  });
+
+  return Promise.map(activities, activity => RecipientActivities.appendRecipientActivity(activity), { concurrency: 1 });
+}
+
 async function fetchUndeliverableRecipients({ listId }) {
   const batchSize = 250;
   const start = 0;
@@ -92,5 +115,13 @@ export default {
   createRecipientEs: Recipients.createEs,
   updateRecipientEs: Recipients.updateEs,
   deleteRecipientEs,
-  fetchUndeliverableRecipients
+  fetchUndeliverableRecipients,
+  createSegment: ListSegments.create,
+  updateSegment: ListSegments.update,
+  listSegments: ListSegments.list,
+  deleteSegment: ListSegments.remove,
+  getSegmentMembers: ListSegments.getMembers,
+  getSegment: ListSegments.get,
+  createActivity: RecipientActivities.create,
+  processCampaignActivity
 };

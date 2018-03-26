@@ -9,18 +9,18 @@ describe('Lists', () => {
       create: ListModel.create,
       update: ListModel.update,
       delete: ListModel.delete,
-      find: ListModel.find,
+      find: ListModel.find
     };
     Object.entries(delegatedMethods).forEach(([method, delegate]) => {
       expect(Lists[method]).to.equal(delegate);
-    })
+    });
   });
 
   describe('.all', () => {
     const userId = 'user-id';
-    const lists = [ { list: 1 }, { list: 2 }];
+    const lists = [{ list: 1 }, { list: 2 }];
 
-    before(() => sinon.stub(ListModel, 'allBy').resolves(lists))
+    before(() => sinon.stub(ListModel, 'allBy').resolves(lists));
     after(() => ListModel.allBy.restore());
 
     it('gets all the lists by userId', async () => {
@@ -33,9 +33,9 @@ describe('Lists', () => {
 
   describe('.allRecursive', () => {
     const userId = 'user-id';
-    const lists = [ { list: 1 }, { list: 2 }];
+    const lists = [{ list: 1 }, { list: 2 }];
 
-    before(() => sinon.stub(ListModel, 'allBy').resolves(lists))
+    before(() => sinon.stub(ListModel, 'allBy').resolves(lists));
     after(() => ListModel.allBy.restore());
 
     it('gets all the lists by userId', async () => {
@@ -69,7 +69,7 @@ describe('Lists', () => {
       const newImportFields = { status: 'success', finishedAt: 7890 };
       const updatedImportStatus = {
         [timestamp]: Object.assign({}, currentImport, newImportFields)
-      }
+      };
       await Lists.updateImportStatus(userId, listId, importId, newImportFields);
       expect(ListModel.update).to.have.been.calledWithMatch({ importStatus: updatedImportStatus }, userId, listId);
     });
@@ -94,7 +94,7 @@ describe('Lists', () => {
     });
 
     it('sets the import as started', async () => {
-      const res = await Lists.setImportingStarted(userId, listId, importId)
+      const res = await Lists.setImportingStarted(userId, listId, importId);
       expect(Lists.updateImportStatus).to.have.been.calledWithMatch(userId, listId, importId, { status: 'importing', createdAt: sinon.match.number });
       expect(ListModel.update).to.have.been.calledWithExactly({ processed: false }, userId, listId);
     });
@@ -112,7 +112,7 @@ describe('Lists', () => {
     });
 
     it('sets the import as started', async () => {
-      const res = await Lists.setAsProcessed(userId, listId)
+      const res = await Lists.setAsProcessed(userId, listId);
       expect(ListModel.update).to.have.been.calledWithExactly({ processed: true }, userId, listId);
     });
   });

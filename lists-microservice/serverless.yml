@@ -4,7 +4,7 @@ plugins:
   - serverless-plugin-optimize
   - serverless-offline
   - serverless-aws-documentation
-  - serverless-domain-manager
+  #- serverless-domain-manager
 
 provider:
   name: aws
@@ -17,15 +17,17 @@ provider:
     LOG_LEVEL: ${self:custom.config.LOG_LEVEL}
     LISTS_TABLE: ${self:custom.config.LISTS_TABLE}
     RECIPIENTS_TABLE: ${self:custom.config.RECIPIENTS_TABLE}
+    LIST_SEGMENTS_TABLE: ${self:custom.config.LIST_SEGMENTS_TABLE}
     ES_HOST: ${self:custom.config.ES_HOST}
     ES_REGION: ${self:custom.config.ES_REGION}
-    LIST_RECIPIENT_STREAM_NAME: ListEventStream
+    LIST_RECIPIENT_STREAM_NAME: ${self:custom.resourcesPrefix}-listEventStream  
     IOT_ENDPOINT: ${file(./config.${self:custom.currentStage}.json):IOT_ENDPOINT}
     GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
     ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
     ES_RECIPIENTS_INDEX_TYPE: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_TYPE}
     DEAD_LETTER_QUEUE_URL:
       Ref: ListMicroserviceDeadLetterQueue
+    RECIPIENTS_ACTIVITY_S3_BUCKET: ${file(./config.${self:custom.currentStage}.json):RECIPIENTS_ACTIVITY_S3_BUCKET}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -33,6 +35,7 @@ provider:
         - "dynamodb:*"
         - "lambda:*"
         - "kinesis:*"
+        - "firehorse:*"
         - "s3:*"
         - "sqs:*"
         - "logs:*"
@@ -568,19 +571,88 @@ functions:
                 description: "OK"
                 responseModels:
                   "application/json": Lists
+  createSegment:
+    handler: handler.createSegment
+    name: ${self:custom.resourcesPrefix}-createSegment
 
+  updateSegment:
+   handler: handler.updateSegment
+   name: ${self:custom.resourcesPrefix}-updateSegment
+
+  deleteSegment:
+    handler: handler.deleteSegment
+    name: ${self:custom.resourcesPrefix}-deleteSegment
+
+  getSegment:
+    handler: handler.getSegment
+    name: ${self:custom.resourcesPrefix}-getSegment
+
+  listSegments:
+    handler: handler.listSegments
+    name: ${self:custom.resourcesPrefix}-listSegments
+
+  listSegmentMembers:
+    handler: handler.listSegmentMembers
+    name: ${self:custom.resourcesPrefix}-listSegmentMembers
+  
 resources:
   Resources:
     ListEventStream:
       Type: AWS::Kinesis::Stream
       Properties:
-        Name: ListEventStream
+        Name: ${self:custom.resourcesPrefix}-listEventStream
         ShardCount: 1
     ListMicroserviceDeadLetterQueue:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: ListMicroserviceDeadLetterQueue
         MessageRetentionPeriod: 1209600
+    # FirehoseToS3Role:
+    #   Type: AWS::IAM::Role
+    #   Properties:
+    #     RoleName: FirehoseToS3Role
+    #     AssumeRolePolicyDocument:
+    #       Statement:
+    #       - Effect: Allow
+    #         Principal:
+    #           Service:
+    #           - firehose.amazonaws.com
+    #         Action:
+    #         - sts:AssumeRole
+    #     Policies:
+    #     - PolicyName: FirehoseToS3Policy
+    #       PolicyDocument:
+    #         Statement:
+    #           - Effect: Allow
+    #             Action:
+    #             - s3:AbortMultipartUpload
+    #             - s3:GetBucketLocation
+    #             - s3:GetObject
+    #             - s3:ListBucket
+    #             - s3:ListBucketMultipartUploads
+    #             - s3:PutObject
+    #             Resource: '*'
+    # RecipientActivityBucket:
+    #   Type: AWS::S3::Bucket
+    #   DeletionPolicy: Retain
+    #   Properties:
+    #     BucketName: ${env:RECIPIENTS_ACTIVITY_S3_BUCKET}
+    # ServerlessKinesisFirehose:
+    #   Type: AWS::KinesisFirehose::DeliveryStream
+    #   Properties:
+    #     DeliveryStreamName: ${self:custom.resourcesPrefix}-firehorseRecipientsActivityS3
+    #     S3DestinationConfiguration:
+    #       BucketARN:
+    #         Fn::Join:
+    #         - ''
+    #         - - 'arn:aws:s3:::'
+    #           - Ref: RecipientActivityBucket
+    #       BufferingHints:
+    #         IntervalInSeconds: "60"
+    #         SizeInMBs: "1"
+    #       CompressionFormat: "UNCOMPRESSED"
+    #       Prefix: "firehorse/"
+    #       RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }
   Outputs:
     ListEventStreamARN:
       Description: ListEventStream Kinesis Stream ARN

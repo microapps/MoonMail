@@ -1,0 +1,19 @@
+{
+  "segment": {
+    "listId": "cjdkea6fc000001qssrv61ymk",
+    "userId": "google-oauth2|113373534076241986701",
+    "name": "my segment",
+    "conditionMatch": "all",
+    "conditions": [
+      {
+        "conditionType": "campaignActivity",
+        "condition": {
+          "queryType": "received",
+          "match": "all",
+          "fieldToQuery": "time",
+          "searchTerm": "2000"
+        }
+      }
+    ]
+  }
+}

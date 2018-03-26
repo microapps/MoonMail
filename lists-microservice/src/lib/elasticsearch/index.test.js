@@ -5,22 +5,10 @@ const dummyEsClient = {
   index() { },
   search() { },
   delete() { }
-}
+};
 
 describe('ElasticSearch', () => {
-  describe('#buildQueryBuilders', () => {
-    const conditions = [
-      { condition: { queryType: 'match', fieldToQuery: 'subscriberOrigin', searchTerm: 'signupForm' }, conditionType: 'filter' },
-      { condition: { queryType: 'range', fieldToQuery: 'createdAt', searchTerm: { gte: 'now-30d/d' } }, conditionType: 'filter' }
-    ];
-
-    it('builds the query using the conditions', () => {
-      const query = ElasticSearch.buildQueryFilters(conditions).build();
-      expect(query).to.deep.equals({ query: { bool: { filter: { bool: { must: [{ match: { subscriberOrigin: 'signupForm' } }, { range: { createdAt: { gte: 'now-30d/d' } } }] } } } } });
-    });
-  });
-
-  describe('#createOrUpdateDocument', () => {
+  describe('.createOrUpdateDocument', () => {
     before(() => sinon.stub(dummyEsClient, 'index').resolves());
     after(() => dummyEsClient.index.restore());
 
@@ -30,7 +18,7 @@ describe('ElasticSearch', () => {
     });
   });
 
-  describe('#deleteDocument', () => {
+  describe('.deleteDocument', () => {
     before(() => sinon.stub(dummyEsClient, 'delete').resolves());
     after(() => dummyEsClient.delete.restore());
 
@@ -40,7 +28,7 @@ describe('ElasticSearch', () => {
     });
   });
 
-  describe('#search', () => {
+  describe('.search', () => {
     before(() => sinon.stub(dummyEsClient, 'search').resolves());
     after(() => dummyEsClient.search.restore());
 

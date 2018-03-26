@@ -1,18 +1,20 @@
 import AWS from 'aws-sdk';
 import AWSESConnection from 'http-aws-es';
 import Elasticsearch from 'elasticsearch';
-import bodyBuilder from 'bodybuilder';
 import App from '../../App';
 
 let _esClient = null;
+
+function getClient() {
+  return _esClient || createClient({});
+}
 
 function awsCredentials() {
   return new AWS.EnvironmentCredentials('AWS');
 }
 
 function getDocument(indexName, indexType, id, esClient = null) {
-  const client = _esClient || esClient || createClient({});
-  App.logger().debug('ElasticSearch.get', id);
+  const client = esClient || getClient();
   return client.get({
     index: indexName,
     type: indexType,
@@ -21,7 +23,7 @@ function getDocument(indexName, indexType, id, esClient = null) {
 }
 
 function deleteDocument(indexName, indexType, id, esClient = null) {
-  const client = _esClient || esClient || createClient({});
+  const client = esClient || getClient();
   return client.delete({
     index: indexName,
     type: indexType,
@@ -30,7 +32,7 @@ function deleteDocument(indexName, indexType, id, esClient = null) {
 }
 
 function createOrUpdateDocument(indexName, indexType, id, item, esClient = null) {
-  const client = _esClient || esClient || createClient({});
+  const client = esClient || getClient();
 
   return client.index({
     index: indexName,
@@ -40,8 +42,20 @@ function createOrUpdateDocument(indexName, indexType, id, item, esClient = null)
   });
 }
 
+function update(indexName, indexType, id, body, esClient = null) {
+  const client = esClient || getClient();
+
+  return client.update({
+    index: indexName,
+    type: indexType,
+    id,
+    body
+  });
+}
+
 function search(indexName, indexType, queryBody, esClient = null) {
-  const client = _esClient || esClient || createClient({});
+  const client = esClient || getClient();
+
   const esQueryRequest = {
     index: indexName,
     type: indexType,
@@ -51,26 +65,6 @@ function search(indexName, indexType, queryBody, esClient = null) {
   return client.search(esQueryRequest);
 }
 
-// {
-//   "bool" : {
-//      "must" :     [], // ANDs (Query scope)
-//      "should" :   [], // ORs (Query scope)
-//      "must_not" : [], // NOTs (Query scope)
-//      "filter":    []  // (Filter scope) Filters: currently supports AND operations between all filters
-//   }
-// }
-
-// Note that to perform term queries we need to access the .keyword field instead of the raw one
-// For more details visit https://www.elastic.co/guide/en/elasticsearch/reference/5.3/multi-fields.html
-function buildQueryFilters(conditions) {
-  return conditions
-    .filter(conditionObject => conditionObject.conditionType === 'filter') // we only support must queries for now
-    .reduce((aggregatedBody, nextCondition) => {
-      const fieldToQuery = nextCondition.condition.queryType.match(/term/) ? `${nextCondition.condition.fieldToQuery}.keyword` : nextCondition.condition.fieldToQuery;
-      return aggregatedBody.filter(nextCondition.condition.queryType, fieldToQuery, nextCondition.condition.searchTerm);
-    }, bodyBuilder());
-}
-
 function createClient({ credentials = awsCredentials(), elasticSearchHost = process.env.ES_HOST, elasticSearchRegion = process.env.ES_REGION }) {
   if (!_esClient) {
     const options = {
@@ -78,7 +72,16 @@ function createClient({ credentials = awsCredentials(), elasticSearchHost = proc
       connectionClass: AWSESConnection,
       awsConfig: new AWS.Config({ region: elasticSearchRegion })
     };
-    _esClient = new Elasticsearch.Client(options);
+    if (process.env.NODE_ENV === 'test') {
+      _esClient = new Elasticsearch.Client({
+        host: process.env.ES_HOST
+        // log: {
+        //   level: 'trace'
+        // }
+      });
+    } else {
+      _esClient = new Elasticsearch.Client(options);
+    }
   }
   return _esClient;
 }
@@ -87,6 +90,7 @@ export default {
   createOrUpdateDocument,
   getDocument,
   deleteDocument,
+  update,
   search,
-  buildQueryFilters
+  getClient
 };

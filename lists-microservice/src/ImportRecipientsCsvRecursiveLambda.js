@@ -4,7 +4,6 @@ import Api from './Api';
 
 // FIXME: This mixes bussines logic and application logic
 export default class ImportRecipientsCsvRecursiveLamda extends SimpleStatefulRecursiveService {
-
   static async execute(params, lambdaClient, context) {
     const instance = new ImportRecipientsCsvRecursiveLamda(params, lambdaClient, context);
     await instance.execute();

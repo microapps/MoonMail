@@ -91,6 +91,7 @@ export default {
   updateEs: RecipientESModel.update,
   deleteEs: RecipientESModel.remove,
   searchByListAndConditions: RecipientESModel.searchByListAndConditions,
+  searchSubscribedByListAndConditions: RecipientESModel.searchSubscribedByListAndConditions,
   search: RecipientESModel.search,
   createBatchFromEvents,
   importFromEvents,

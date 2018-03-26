@@ -23,14 +23,15 @@ Subscriptions have the following structure:
 [
   { "type": "a.type", "subscriberType": "kinesis", "subscribedResource": "A-Stream-Name" },
   { "type": "a.type", "subscriberType": "kinesis", "subscribedResource": "Some-Stream-Name" },
-  { "type": "another.type", "subscriberType": "kinesis", "subscribedResource": "Anoter-Stream-Name" }
+  { "type": "another.type", "subscriberType": "kinesis", "subscribedResource": "Anoter-Stream-Name" },
+  { "type": "another.type.2", "subscriberType": "firehorse", "subscribedResource": "A-Delivery-Stream-Name" }
 ]
 ```
 
 Messages with certain type will be forwarded to the configured resource. If the type doesn't match any subscriptions' type, it's dismissed.
 
 ## Subscribers
-For now, events can be only forwarded to another Kinsesis Streams, more subscriber types (`SQS`, `SNS`, `Lambda`, etc.) to come.
+For now, events can be only forwarded to another Kinsesis Streams and Kinesis Firehorse, more subscriber types (`SQS`, `SNS`, `Lambda`, etc.) to come.
 
 ## Set up
 1. Create the configuration file with the name `config.<stage-name>.json` and include the following variables:

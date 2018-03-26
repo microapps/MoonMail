@@ -1,0 +1,21 @@
+{
+  "mm_<stage>_recipients_index": {
+    "aliases": {},
+    "mappings": {
+      "recipients": {
+        "properties": {
+          "systemMetadata": {
+            "properties": {
+              "location": {
+                "type": "geo_point"
+              }
+            }
+          },
+          "campaignActivity": {
+            "type": "nested"
+          }
+        }
+      }
+    }
+  }
+}

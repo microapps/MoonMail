@@ -3,9 +3,9 @@ import Promise from 'bluebird';
 import { SimpleStatefulRecursiveService } from 'recursive-lambda';
 import { logger } from '../../lib/index';
 import Segments from '../../lib/segments/index';
+import FunctionsClient from '../FunctionsClient';
 
 export default class PopulateRecipientsToPrecompileEmailService extends SimpleStatefulRecursiveService {
-
   static create(params, lambdaClient, context) {
     return new PopulateRecipientsToPrecompileEmailService(params, lambdaClient, context);
   }
@@ -15,6 +15,8 @@ export default class PopulateRecipientsToPrecompileEmailService extends SimpleSt
     this.eventMessage = JSON.parse(params.eventMessage);
     this.processingOffset = params.processingOffset;
     this.segmentId = this.eventMessage.campaign.segmentId;
+    const [listId] = this.eventMessage.campaign.listIds;
+    this.listId = listId;
 
     this.initState({
       processingOffset: this.processingOffset,
@@ -44,7 +46,8 @@ export default class PopulateRecipientsToPrecompileEmailService extends SimpleSt
 
   action(state = {}) {
     if (state.processCompleted) return this.completeExecution();
-    return this.attachRecipients(state);
+    return this.attachRecipients(state)
+      .catch(console.log);
   }
 
   get executionInvariant() {
@@ -61,7 +64,12 @@ export default class PopulateRecipientsToPrecompileEmailService extends SimpleSt
   }
 
   _getRecipientsBatch(state) {
-    return Segments.listSubscribedMembers(this.segmentId, { from: state.processingOffset, size: this.batchSize() });
+    return FunctionsClient.execute(process.env.LIST_SEGMENT_MEMBERS_FUNCTION, {
+      listId: this.listId,
+      segmentId: this.segmentId,
+      options: { from: state.processingOffset, size: this.batchSize() }
+    });
+    // return Segments.listSubscribedMembers(this.segmentId, );
   }
 
   _populateRecipientsBatch(recipients) {
