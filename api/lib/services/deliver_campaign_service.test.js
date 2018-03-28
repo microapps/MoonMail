@@ -33,6 +33,8 @@ describe('DeliverCampaignService', () => {
   const updatedCampaign = { userId, senderId, subject, listIds, name, body: updatedBody, id: campaignId, status: 'draft' };
   const updatedCampaignWithSegmentId = { userId, senderId, subject, segmentId, name, body: updatedBody, id: campaignId, status: 'draft' };
   const nonReadyCampaign = { userId, subject, name, body: updatedBody, id: campaignId };
+  const user = { id: userId, plan: freeUserPlan, phoneNumber: '123456789', address: { city: 'A Coruña' } }
+  const userWithPlan = { id: userId, plan: 'plan', phoneNumber: '123456789', address: { city: 'A Coruña' } }
 
   describe('#sendCampaign', () => {
     before(() => {
@@ -42,7 +44,7 @@ describe('DeliverCampaignService', () => {
 
     context('when the user has exceeded the subscription quota', () => {
       before(() => {
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignId, userId, userPlan: freeUserPlan });
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, user });
         sinon.stub(Campaign, 'sentLastNDays').resolves(100);
         sinon.stub(deliverCampaignService, '_getRecipientsCount').resolves(10);
         sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
@@ -64,7 +66,7 @@ describe('DeliverCampaignService', () => {
 
     context('when the campaign is not ready to be sent', () => {
       before(() => {
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignId, userId, userPlan: freeUserPlan });
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignId, user });
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(Campaign, 'get').resolves(nonReadyCampaign);
         sinon.stub(List, 'get').resolves({ userId, id: listIds[0], name: 'Some list', subscribedCount: 25 });
@@ -89,7 +91,7 @@ describe('DeliverCampaignService', () => {
     context('when only campaign id and user id were provided', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(campaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignId, userId, userPlan: freeUserPlan });
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignId, user });
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({ userId, id: listIds[0], name: 'Some list', subscribedCount: 25 });
@@ -141,7 +143,7 @@ describe('DeliverCampaignService', () => {
       });
 
       it('fetches the campaign from DB and sends it to the topic', (done) => {
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, userId, userPlan: 'plan' });
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, user: userWithPlan });
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         deliverCampaignService.sendCampaign().then((result) => {
@@ -163,17 +165,16 @@ describe('DeliverCampaignService', () => {
 
       context('and campaign metadata was provided', () => {
         it('should include it in the canonical message', done => {
-          const campaignMetadata = {address: {city: 'A Coruña'}};
-          deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, campaignMetadata, userId, userPlan: 'plan' });
+          deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, user: userWithPlan });
           sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
           sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
           deliverCampaignService.sendCampaign().then((result) => {
             const snsPayload = JSON.parse(snsClient.publish.lastCall.args[0].Message);
             const actualMetadata = snsPayload.campaign.metadata;
-            expect(actualMetadata).to.deep.equal(campaignMetadata);
+            expect(actualMetadata).to.deep.equal({address: userWithPlan.address});
             done();
           })
-          .catch(err => done(err));
+            .catch(err => done(err));
         });
       });
     });
@@ -181,7 +182,7 @@ describe('DeliverCampaignService', () => {
     context('when the destination is a segment portion instead of lists', () => {
       before(() => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaignWithSegmentId);
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaignWithSegmentId, campaignId, userId, userPlan: 'plan' });
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign: campaignWithSegmentId, campaignId, user: userWithPlan });
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({ userId, id: listIds[0], name: 'Some list', subscribedCount: 25 });

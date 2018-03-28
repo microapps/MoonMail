@@ -14,7 +14,7 @@ export function respond(event, cb) {
       if (event.campaignId && event.scheduleAt) {
         const userId = user.id;
         const userPlan = user.plan;
-        const deliverService = new DeliverCampaignService(null, { campaignId: event.campaignId, userId, userPlan });
+        const deliverService = new DeliverCampaignService(null, { campaignId: event.campaignId, user });
         deliverService.checkUserQuota()
           .then(() => Campaign.schedule(userId, event.campaignId, event.scheduleAt))
           .then(res => cb(null, res))
