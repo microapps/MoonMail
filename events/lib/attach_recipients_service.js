@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import { debug } from './index';
-import { Recipient, Campaign } from 'moonmail-models';
+import { Recipient, User } from 'moonmail-models';
 import * as async from 'async';
 
 class AttachRecipientsService {
@@ -97,22 +97,26 @@ class AttachRecipientsService {
 
   async _notifyToSendSMS() {
     debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
-
-    const userID = this.campaignMessage.userId
-    const campaignId = this.campaignMessage.campaign.id
-
-    const campaign = await Campaign.get(userID, campaignId)
-
-    if (campaign && campaign.scheduledAt && campaign.notifyWhenSent) {
-      const snsParams = {
-        TopicArn: process.env.SEND_SMS_TOPIC_ARN,
-        Message: 'Remember to build the message'
-      };
-
-      return this.snsClient.publish(snsParams).promise();
+    try {  
+      const userId = this.campaignMessage.userId;
+      const campaign = this.campaignMessage.campaign;
+  
+      const user = await User.get(userId);
+  
+      if (campaign && campaign.scheduledAt && user && user.receiveSMSNotifications != false && user.phoneNumber) {
+        const snsParams = {
+          Message: 'MoonMail here. Your campaign with ' + campaign.listIds.length + ' recipients has been sent. {{shortened-url-of-campaign}}', //should be an env var
+          MessageStructure: 'string',
+          PhoneNumber: user.phoneNumber
+        };
+  
+        return this.snsClient.publish(snsParams).promise();
+      }
+  
+      return Promise.resolve()      
+    } catch (error) {
+      debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(error));
     }
-
-    return 'NO-SMS-TO-BE-SENT'
   }
 
   _wait(time) {
