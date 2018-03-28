@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import { debug } from './index';
 import { Recipient } from 'moonmail-models';
+import { User } from './user';
 import * as async from 'async';
 
 class AttachRecipientsService {
@@ -19,7 +20,8 @@ class AttachRecipientsService {
     return this._notifyAttachSegmentMembers(this._buildAttachSegmentMembersMessage())
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   notifyAttachListRecipients() {
@@ -27,7 +29,8 @@ class AttachRecipientsService {
     return Promise.map(this.campaignMessage.campaign.listIds, listId => this._notifyAttachListRecipients(this._buildAttachListRecipientsMessage(listId)), { concurrency: 5 })
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   _buildAttachListRecipientsMessage(listId) {
@@ -91,6 +94,30 @@ class AttachRecipientsService {
       Message: JSON.stringify({ QueueName: this.campaignMessage.userId.replace('|', '_') })
     };
     return this.snsClient.publish(snsParams).promise();
+  }
+
+  async _notifyToSendSMS() {
+    debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
+    try {  
+      const userId = this.campaignMessage.userId;
+      const campaign = this.campaignMessage.campaign;
+  
+      const user = await User.get(userId);
+  
+      if (campaign && campaign.scheduledAt && user && user.receiveSMSNotifications != false && user.phoneNumber) {
+        const snsParams = {
+          Message: `MoonMail: We have just sent your campaign ${ campaign.name  }. https://app.moonmail.io/campaigns/${ campaign.id  }/preview`,
+          MessageStructure: 'string',
+          PhoneNumber: user.phoneNumber
+        };
+  
+        return this.snsClient.publish(snsParams).promise();
+      }
+  
+      return Promise.resolve()      
+    } catch (error) {
+      debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(error));
+    }
   }
 
   _wait(time) {
