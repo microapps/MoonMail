@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import { debug } from './index';
-import { Recipient } from 'moonmail-models';
+import { Recipient, Campaign } from 'moonmail-models';
 import * as async from 'async';
 
 class AttachRecipientsService {
@@ -19,7 +19,8 @@ class AttachRecipientsService {
     return this._notifyAttachSegmentMembers(this._buildAttachSegmentMembersMessage())
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   notifyAttachListRecipients() {
@@ -27,7 +28,8 @@ class AttachRecipientsService {
     return Promise.map(this.campaignMessage.campaign.listIds, listId => this._notifyAttachListRecipients(this._buildAttachListRecipientsMessage(listId)), { concurrency: 5 })
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   _buildAttachListRecipientsMessage(listId) {
@@ -91,6 +93,26 @@ class AttachRecipientsService {
       Message: JSON.stringify({ QueueName: this.campaignMessage.userId.replace('|', '_') })
     };
     return this.snsClient.publish(snsParams).promise();
+  }
+
+  async _notifyToSendSMS() {
+    debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
+
+    const userID = this.campaignMessage.userId
+    const campaignId = this.campaignMessage.campaign.id
+
+    const campaign = await Campaign.get(userID, campaignId)
+
+    if (campaign && campaign.scheduledAt && campaign.notifyWhenSent) {
+      const snsParams = {
+        TopicArn: process.env.SEND_SMS_TOPIC_ARN,
+        Message: 'Remember to build the message'
+      };
+
+      return this.snsClient.publish(snsParams).promise();
+    }
+
+    return 'NO-SMS-TO-BE-SENT'
   }
 
   _wait(time) {
