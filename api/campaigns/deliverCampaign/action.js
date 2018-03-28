@@ -13,11 +13,7 @@ export function respond(event, cb) {
     .then(decoded => getUserContext(decoded.sub))
     .then(user => {
       debug('= deliverCampaign.action', 'Getting campaign', JSON.stringify(user));
-      const userId = user.id;
-      const userPlan = user.plan;
-      const appendFooter = user.appendFooter;
-      const campaignMetadata = {address: user.address};
-      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, campaignMetadata, userId, userPlan, appendFooter});
+      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, user});
       deliverService.sendCampaign()
         .then(res => cb(null, res))
         .catch(err => cb(ApiErrors.response(err)));

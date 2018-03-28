@@ -39,6 +39,7 @@ describe('AttachRecipientsService', () => {
         sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
         sinon.stub(service, '_notifyToSendEmails').resolves(true);
         sinon.stub(service, '_wait').resolves(true);
+        sinon.stub(service, '_notifyToSendSMS').resolves(true);
       });
 
       it('notifies to lists recipients attachers', (done) => {
@@ -62,6 +63,7 @@ describe('AttachRecipientsService', () => {
           expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;
           expect(service._notifyToSendEmails).to.have.been.calledOnce;
           expect(service._wait).to.have.been.calledOnce;
+          expect(service._notifyToSendSMS).to.have.been.calledOnce;
           done();
         }).catch(err => done(err));
       });
@@ -99,6 +101,7 @@ describe('AttachRecipientsService', () => {
         sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
         sinon.stub(service, '_notifyToSendEmails').resolves(true);
         sinon.stub(service, '_wait').resolves(true);
+        sinon.stub(service, '_notifyToSendSMS').resolves(true);
       });
 
       it('notifies to segment recipients attachers', (done) => {
@@ -115,6 +118,7 @@ describe('AttachRecipientsService', () => {
           expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;
           expect(service._notifyToSendEmails).to.have.been.calledOnce;
           expect(service._wait).to.have.been.calledOnce;
+          expect(service._notifyToSendSMS).to.have.been.calledOnce;
           done();
         }).catch(err => done(err));
       });
@@ -124,6 +128,7 @@ describe('AttachRecipientsService', () => {
         service._notifyToUpdateCampaignStatus.restore();
         service._notifyToSendEmails.restore();
         service._wait.restore();
+        service._notifyToSendSMS.restore();
       });
     });
   });
