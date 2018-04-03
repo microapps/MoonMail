@@ -105,7 +105,7 @@ class AttachRecipientsService {
   
       if (campaign && campaign.scheduledAt && user && user.receiveSMSNotifications != false && user.phoneNumber) {
         const snsParams = {
-          Message: 'MoonMail here. Your campaign with ' + campaign.listIds.length + ' recipients has been sent. {{shortened-url-of-campaign}}', //should be an env var
+          Message: `MoonMail: We have just sent your campaign ${ campaign.name  }. https://app.moonmail.io/campaigns/${ campaign.id  }/preview`,
           MessageStructure: 'string',
           PhoneNumber: user.phoneNumber
         };
