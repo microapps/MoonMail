@@ -40,12 +40,9 @@ function eventStreamProcessor(event, context, callback) {
       return value;
     };
 
-    const fetchEvents = (eventStream, eventType) => {
-      return LambdaUtils
-        .parseKinesisStreamTopicEvents(eventStream, eventType)
-        .map(validateEvent);
-    };
-
+    const fetchEvents = (eventStream, eventType) => LambdaUtils
+      .parseKinesisStreamTopicEvents(eventStream, eventType)
+      .map(validateEvent);
 
     const recipientImportedEvents = fetchEvents(event, Events.listRecipientImported);
     const recipientCreatedEvents = fetchEvents(event, Events.listRecipientCreated);
@@ -53,7 +50,7 @@ function eventStreamProcessor(event, context, callback) {
     return Api.importRecipientsBatch(recipientImportedEvents, broadcastImportStatus)
       .then(() => Api.createRecipientsBatch(recipientCreatedEvents))
       .then(() => Api.updateRecipientsBatch(recipientUpdatedEvents))
-      .then(result => callback(null, { success: true }))
+      .then(() => callback(null, { success: true }))
       .catch((err) => {
         App.logger().error(err);
         callback(err);
@@ -168,16 +165,14 @@ function syncRecipientStreamWithES(event, context, callback) {
   const events = LambdaUtils
     .parseDynamoDBStreamEvent(event);
 
-  return Promise.map(events, evt => {
-    return syncRecipientRecordWithES(evt)
-      .catch((err) => {
-        App.logger().error(err);
-        if ((err.name || '').match(/ValidationError/)) return Promise.resolve(err);
-        // During migration we don't want to explode if we can't remove the recipient from ES
-        if ((err.displayName || '').match(/NotFound/)) return Promise.resolve(err);
-        return Promise.reject(err);
-      });
-  }, { concurrency: 10 })
+  return Promise.map(events, evt => syncRecipientRecordWithES(evt)
+    .catch((err) => {
+      App.logger().error(err);
+      if ((err.name || '').match(/ValidationError/)) return Promise.resolve(err);
+      // During migration we don't want to explode if we can't remove the recipient from ES
+      if ((err.displayName || '').match(/NotFound/)) return Promise.resolve(err);
+      return Promise.reject(err);
+    }), { concurrency: 10 })
     .then(result => callback(null, result))
     .catch((err) => {
       App.logger().error(err);

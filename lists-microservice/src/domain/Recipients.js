@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import _ from 'lodash';
 import RecipientModel from './RecipientModel';
 import RecipientESModel from './RecipientESModel';
 
@@ -18,7 +19,9 @@ function importFromEvents(recipientImportedEvents) {
 function createBatchFromEvents(recipientCreatedEvents) {
   const recipients = recipientCreatedEvents
     .map(event => event.payload.recipient);
-  return RecipientModel.batchCreate(recipients)
+
+  const recipientsToSave = deduplicateRecipientsByListId(recipients);
+  return RecipientModel.batchCreate(recipientsToSave)
     .then((data) => {
       if (data.UnprocessedItems) {
         if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
@@ -28,9 +31,7 @@ function createBatchFromEvents(recipientCreatedEvents) {
 }
 
 function updateBatchFromEvents(recipientUpdatedEvents) {
-  return Promise.map(recipientUpdatedEvents, (recipientUpdatedEvent) => {
-    return RecipientModel.update(recipientUpdatedEvent.payload.data, recipientUpdatedEvent.payload.listId, recipientUpdatedEvent.payload.id);
-  }, { concurrency: 2 });
+  return Promise.map(recipientUpdatedEvents, recipientUpdatedEvent => RecipientModel.update(recipientUpdatedEvent.payload.data, recipientUpdatedEvent.payload.listId, recipientUpdatedEvent.payload.id), { concurrency: 2 });
 }
 
 function fixMetadataAttrs(m) {
@@ -41,6 +42,12 @@ function fixMetadataAttrs(m) {
       acum[key.toString()] = m[key].toString();
       return acum;
     }, {});
+}
+
+function deduplicateRecipientsByListId(recipients) {
+  const recipientsByListId = _.groupBy(recipients, 'listId');
+  const uniqueRecipientsByListId = _.mapValues(recipientsByListId, rcpts => _.uniqBy(rcpts, 'email'));
+  return _.flatten(Object.values(uniqueRecipientsByListId));
 }
 
 function cleanseRecipientAttributes(recipient) {
