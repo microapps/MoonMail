@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-- '6.11'
+- '8.10'
 before_install:
-- npm install -g npm@latest && npm install
+- npm install -g yarn@latest && yarn install
 env:
   matrix:
     - TEST_DIR=events
@@ -14,10 +14,10 @@ env:
     - TEST_DIR=webhooks-microservice
 
 script:
-- cd $TEST_DIR && npm install && npm test
+- cd $TEST_DIR && yarn install && yarn test
 - |
   if [[ $TEST_DIR == "lists-microservice" && $TRAVIS_PULL_REQUEST == "false" ]]; then
-    npm run test:system;
+    yarn run test:system;
   fi
 
 cache:
