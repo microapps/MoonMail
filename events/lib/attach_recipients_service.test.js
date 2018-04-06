@@ -101,6 +101,7 @@ describe('AttachRecipientsService', () => {
         sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
         sinon.stub(service, '_notifyToSendEmails').resolves(true);
         sinon.stub(service, '_wait').resolves(true);
+        sinon.stub(service, '_notifyToSendSMS').resolves(true);
       });
 
       it('notifies to segment recipients attachers', (done) => {
@@ -127,7 +128,7 @@ describe('AttachRecipientsService', () => {
         service._notifyToUpdateCampaignStatus.restore();
         service._notifyToSendEmails.restore();
         service._wait.restore();
-        service._._notifyToSendSMS.restore();
+        service._notifyToSendSMS.restore();
       });
     });
   });

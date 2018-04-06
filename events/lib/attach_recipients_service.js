@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import { debug } from './index';
-import { Recipient, User } from 'moonmail-models';
+import { Recipient } from 'moonmail-models';
+import { User } from './user';
 import * as async from 'async';
 
 class AttachRecipientsService {
