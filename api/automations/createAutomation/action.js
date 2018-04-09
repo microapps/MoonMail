@@ -19,10 +19,10 @@ export default function respond(event, cb) {
 }
 
 function createAutomation(userId, event) {
-  const baseAutomation = {id: cuid(), userId, status: 'paused'};
+  const baseAutomation = { id: cuid(), userId, status: 'paused' };
   const automation = Object.assign({}, event.automation, baseAutomation);
   const checkParams = paramsChecker(['userId', 'listId', 'senderId', 'id']);
   return checkParams(automation)
-    .then(automation => Automation.save(automation))
+    .then(validAutomation => Automation.save(validAutomation))
     .then(() => automation);
 }

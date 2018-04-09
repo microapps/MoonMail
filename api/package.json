@@ -42,6 +42,7 @@
     "moment-round": "^1.0.1",
     "moonmail-models": "github:microapps/moonmail-models#a5e8b31",
     "omit-empty": "^0.4.1",
+    "ramda": "^0.25.0",
     "request": "^2.74.0",
     "request-promise": "^4.1.1",
     "winston": "^2.3.1"

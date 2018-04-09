@@ -17,11 +17,7 @@ const listId = 'list-id';
 const userId = 'user-id';
 const senderId = 'sender-id';
 const apiHost = 'api.moonmail.io';
-const sender = {
-  id: senderId,
-  emailAddress: 'sender@email.com',
-  fromName: 'From Name'
-};
+const sender = { id: senderId, emailAddress: 'sender@email.com', fromName: 'From Name' };
 const fetchSenderFunctionName = 'function-name';
 const eventGenerator = (type, payload, options = {}) => ({
   type, payload: Object.assign({}, payload, options)
@@ -67,10 +63,27 @@ describe('TriggerAutomationsService', () => {
   describe('.execute()', () => {
     const subscribeAutomationAction = automationActionGenerator();
     const openAutomation = automationActionGenerator({ type: 'campaign.open' });
+    const notOpenedAutomation = automationActionGenerator({
+      type: 'campaing.not.opened',
+      triggerEventType: 'email.delivered',
+      id: 'not-opened-automation-id',
+      conditions: [{
+        type: 'aggregationCount',
+        resource: 'recipient.activity',
+        filters: [
+          { campaignId: { eq: 'not-opened-automation-id' } },
+          { eventType: { eq: 'email.opened' } }
+        ],
+        count: 0,
+        delay: 300
+      }]
+    });
     let automationStub;
 
     beforeEach(() => {
       automationStub = sinon.stub(AutomationAction, 'allByStatusAndFootprint')
+        .withArgs('active', notOpenedAutomation.footprint)
+        .resolves({ items: [notOpenedAutomation] })
         .withArgs('active', subscribeAutomationAction.footprint)
         .resolves({ items: [subscribeAutomationAction] })
         .withArgs('active', openAutomation.footprint)

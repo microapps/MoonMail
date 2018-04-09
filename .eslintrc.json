@@ -9,7 +9,8 @@
       ],
       "max-len": 0,
       "no-use-before-define": 0,
-      "object-curly-newline": 0
+      "object-curly-newline": 0,
+      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js", "**/*.spec.js"]}]
     },
     "parser": "babel-eslint",
     "extends": "airbnb/base"

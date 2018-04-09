@@ -8,33 +8,63 @@ describe('FootprintCalculator', () => {
     const listId = 'list-id';
     const campaignId = 'campaign-id';
     const listSubscribeType = 'list.recipient.subscribe';
-    const listAutomation = {userId, listId, type: listSubscribeType};
-    const listEvent = {
-      payload: {recipient: {listId, userId}},
-      type: listSubscribeType
-    };
     const listFootprint = base64url.encode(`${listId}${listSubscribeType}${userId}`);
     const openType = 'campaign.open';
-    const openAutomation = {userId, id: campaignId, type: openType};
-    const openEvent = {
-      type: openType,
-      payload: {recipient: {listId, userId}, campaign: {id: campaignId}}
-    };
     const openFootprint = base64url.encode(`${campaignId}${openType}${userId}`);
+    const deliverType = 'email.delivered';
+    const deliverFootprint = base64url.encode(`${campaignId}${deliverType}${userId}`);
 
-    it('should calculate the correct footprint', () => {
-      const automations = [
-        {input: listAutomation, expected: listFootprint},
-        {input: openAutomation, expected: openFootprint}
-      ];
+    context('when the input is an event', () => {
+      const openEvent = {
+        type: openType,
+        payload: { recipient: { listId, userId }, campaign: { id: campaignId } }
+      };
+      const listEvent = {
+        payload: { recipient: { listId, userId } },
+        type: listSubscribeType
+      };
+      const deliverEvent = {
+        payload: { listId, userId, campaignId },
+        type: deliverType
+      };
       const events = [
-        {input: listEvent, expected: listFootprint},
-        {input: openEvent, expected: openFootprint}
+        { input: listEvent, expected: listFootprint },
+        { input: deliverEvent, expected: deliverFootprint },
+        { input: openEvent, expected: openFootprint }
       ];
-      automations.forEach(a => expect(FootprintCalculator
-        .calculate(a.input, 'automation')).to.equal(a.expected));
-      events.forEach(e => expect(FootprintCalculator
-        .calculate(e.input, 'event')).to.equal(e.expected));
+
+      it('should calculate the correct footprint', () => {
+        events.forEach(e => expect(FootprintCalculator
+          .calculate(e.input, 'event')).to.equal(e.expected));
+      });
+    });
+
+    context('when the input is a legacy automation without event type', () => {
+      const listAutomation = { userId, listId, type: listSubscribeType };
+      const openAutomation = { userId, id: campaignId, type: openType };
+
+      it('calculates the footprint based on the type', () => {
+        const automations = [
+          { input: listAutomation, expected: listFootprint },
+          { input: openAutomation, expected: openFootprint }
+        ];
+        automations.forEach(a => expect(FootprintCalculator
+          .calculate(a.input, 'automation')).to.equal(a.expected));
+      });
+    });
+
+    context('when the input is an automation with event type', () => {
+      const listAutomation = { userId, listId, triggerEventType: listSubscribeType, type: 'whatever' };
+      const openAutomation = { userId, id: campaignId, triggerEventType: openType, type: 'whatever' };
+
+      it('calculates the footprint based on the triggerEventType', () => {
+        const automations = [
+          { input: listAutomation, expected: listFootprint },
+          { input: openAutomation, expected: openFootprint }
+        ];
+        automations.forEach(a => expect(FootprintCalculator
+          .calculate(a.input, 'automation')).to.equal(a.expected));
+      });
     });
   });
 });

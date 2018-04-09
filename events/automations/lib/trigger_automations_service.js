@@ -37,7 +37,7 @@ export default class TriggerAutomationsService {
           .then(automations => automations.items || [])
           .then(automations => automations.map(automation => ({ automation, events: footprintEvents[fp] })))
           .then(automationEvents => total.concat(automationEvents))
-          .catch(() => total)
+          .catch((err) => total)
       , []
     );
   }

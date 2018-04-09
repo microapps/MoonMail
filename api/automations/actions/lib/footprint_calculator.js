@@ -2,7 +2,8 @@ import base64url from 'base64-url';
 
 const footprintPropertiesByType = {
   'list.recipient.subscribe': ['userId', 'listId'],
-  'campaign.open': ['userId', 'campaignId']
+  'campaign.open': ['userId', 'campaignId'],
+  'email.delivered': ['userId', 'campaignId']
 };
 
 function automationActionToFootprintAdapter(automation = {}) {
@@ -15,9 +16,10 @@ function automationActionToFootprintAdapter(automation = {}) {
 
 function calculate(params) {
   const normalizedProperties = automationActionToFootprintAdapter(params);
-  const footprintProperties = footprintPropertiesByType[params.type];
+  const type = params.triggerEventType || params.type;
+  const footprintProperties = footprintPropertiesByType[type];
   const footprintString = footprintProperties.map(prop => normalizedProperties[prop])
-    .concat(params.type).sort().join('');
+    .concat(type).sort().join('');
   return base64url.encode(footprintString);
 }
 

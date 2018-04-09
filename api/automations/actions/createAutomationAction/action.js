@@ -18,6 +18,6 @@ export default function respond(event, cb) {
 }
 
 function createAutomationAction(userId, event) {
-  const {automationAction, automationId} = event;
-  return CreateAutomationAction.execute({userId, automationAction, automationId});
+  const { automationAction, automationId } = event;
+  return CreateAutomationAction.execute({ userId, automationAction, automationId });
 }
