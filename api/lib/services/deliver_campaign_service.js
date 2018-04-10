@@ -9,15 +9,17 @@ import FunctionsClient from '../functions_client';
 
 class DeliverCampaignService {
 
-  constructor(snsClient, { campaign, campaignId, campaignMetadata, userId, userPlan, appendFooter } = {}) {
+  constructor(snsClient, { campaign, campaignId, user } = {}) {
     this.snsClient = snsClient;
     this.campaign = campaign;
-    this.campaignMetadata = campaignMetadata;
+    this.campaignMetadata = {address: user.address};
     this.campaignId = campaignId;
-    this.userId = userId;
-    this.userPlan = userPlan || 'free';
-    this.appendFooter = appendFooter;
+    this.userId = user.id;
+    this.userPlan = user.plan || 'free';
+    this.appendFooter = user.appendFooter;
     this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
+    this.userPhone = user.phoneNumber;
+    this.userSMSNotification = user.receiveSMSNotifications;
   }
 
   sendCampaign() {
@@ -142,6 +144,11 @@ class DeliverCampaignService {
           segmentId: campaign.segmentId,
           attachments: campaign.attachments,
           metadata: campaignMetadata
+        },
+        user: {
+          id: user.id,
+          phoneNumber: this.userPhone,
+          receiveSMSNotifications: this.userSMSNotification
         }
       }));
     });

@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 import { debug } from './index';
 import { Recipient } from 'moonmail-models';
-import { User } from './user';
 import * as async from 'async';
 
 class AttachRecipientsService {
@@ -99,10 +98,10 @@ class AttachRecipientsService {
   async _notifyToSendSMS() {
     debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
     try {  
-      const userId = this.campaignMessage.userId;
       const campaign = this.campaignMessage.campaign;
-  
-      const user = await User.get(userId);
+      const user = this.campaignMessage.user
+
+      debug('= AttachRecipientsService._notifyToSendSMS', user);
   
       if (campaign && campaign.scheduledAt && user && user.receiveSMSNotifications != false && user.phoneNumber) {
         const snsParams = {
