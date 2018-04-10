@@ -1,0 +1,489 @@
+{
+  "Records": [
+    {
+      "eventID": "c0fad482d82f7e21749fa7cf2731a857",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1523359320,
+        "Keys": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "id": {
+            "S": "enh5em55QGdtYWlsLmNvbQ"
+          }
+        },
+        "NewImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Zhang"
+              },
+              "name": {
+                "S": "Xueying"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "enh5em55QGdtYWlsLmNvbQ"
+          },
+          "riskScore": {
+            "N": "0"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zxyzny@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "OldImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Zhang"
+              },
+              "name": {
+                "S": "Xueying"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "enh5em55QGdtYWlsLmNvbQ"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zxyzny@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "SequenceNumber": "3462631800000000053393318428",
+        "SizeBytes": 513,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-recipients/stream/2016-06-27T12:20:21.826"
+    },
+    {
+      "eventID": "be81d4f78aa5075e6fd2ea9c057c0247",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1523359320,
+        "Keys": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "id": {
+            "S": "enpsdWNreWdpcmxAYW9sLmNvbQ"
+          }
+        },
+        "NewImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "vidal"
+              },
+              "name": {
+                "S": "zayda"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "enpsdWNreWdpcmxAYW9sLmNvbQ"
+          },
+          "riskScore": {
+            "N": "0"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zzluckygirl@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "OldImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "vidal"
+              },
+              "name": {
+                "S": "zayda"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "enpsdWNreWdpcmxAYW9sLmNvbQ"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zzluckygirl@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "SequenceNumber": "3462631900000000053393318429",
+        "SizeBytes": 527,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-recipients/stream/2016-06-27T12:20:21.826"
+    },
+    {
+      "eventID": "dbfa329c92555fccb1bcc7c9527f8a99",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1523359320,
+        "Keys": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "id": {
+            "S": "emVybGF0c0BtYWMuY29t"
+          }
+        },
+        "NewImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Giralt"
+              },
+              "name": {
+                "S": "Isabel"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "emVybGF0c0BtYWMuY29t"
+          },
+          "riskScore": {
+            "N": "0"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zerlats@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "OldImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Giralt"
+              },
+              "name": {
+                "S": "Isabel"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "emVybGF0c0BtYWMuY29t"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zerlats@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "SequenceNumber": "3462632000000000053393318430",
+        "SizeBytes": 505,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-recipients/stream/2016-06-27T12:20:21.826"
+    },
+    {
+      "eventID": "eea62d62d212941875606f426ebbf957",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1523359320,
+        "Keys": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "id": {
+            "S": "emtzbm9kZ3Jhc3NAZ21haWwuY29t"
+          }
+        },
+        "NewImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Newberry"
+              },
+              "name": {
+                "S": "Katherine"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "emtzbm9kZ3Jhc3NAZ21haWwuY29t"
+          },
+          "riskScore": {
+            "N": "0"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zksnodgrass@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "OldImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359328"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Newberry"
+              },
+              "name": {
+                "S": "Katherine"
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "emtzbm9kZ3Jhc3NAZ21haWwuY29t"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "zksnodgrass@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "SequenceNumber": "3462632100000000053393318431",
+        "SizeBytes": 551,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-recipients/stream/2016-06-27T12:20:21.826"
+    },
+    {
+      "eventID": "1dd1032d1e67e856f8660692ffff6d0d",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1523359320,
+        "Keys": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "id": {
+            "S": "dHlsZXJtZWdhd0BnbWFpbC5jb20"
+          }
+        },
+        "NewImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359329"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Megaw "
+              },
+              "name": {
+                "S": "Tyler "
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "dHlsZXJtZWdhd0BnbWFpbC5jb20"
+          },
+          "riskScore": {
+            "N": "0"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "tylermegaw@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "OldImage": {
+          "listId": {
+            "S": "cjftkriuq000001q8ndgro3br"
+          },
+          "createdAt": {
+            "N": "1523359329"
+          },
+          "metadata": {
+            "M": {
+              "surname": {
+                "S": "Megaw "
+              },
+              "name": {
+                "S": "Tyler "
+              }
+            }
+          },
+          "subscriptionOrigin": {
+            "S": "listImport"
+          },
+          "isConfirmed": {
+            "BOOL": true
+          },
+          "id": {
+            "S": "dHlsZXJtZWdhd0BnbWFpbC5jb20"
+          },
+          "userId": {
+            "S": "google-oauth2|113373534076241986701"
+          },
+          "email": {
+            "S": "tylermegaw@example.com"
+          },
+          "status": {
+            "S": "subscribed"
+          }
+        },
+        "SequenceNumber": "3462632200000000053393318432",
+        "SizeBytes": 536,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-recipients/stream/2016-06-27T12:20:21.826"
+    }
+  ]
+}

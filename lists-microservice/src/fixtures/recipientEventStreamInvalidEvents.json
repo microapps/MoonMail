@@ -101,7 +101,7 @@
         "kinesisSchemaVersion": "1.0",
         "partitionKey": "lists.recipientImported",
         "sequenceNumber": "49579552868828174823032604427446109969086057568863780866",
-        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50SW1wb3J0ZWQiLCJwYXlsb2FkIjp7InJlY2lwaWVudCI6eyJlbWFpbCI6Im1pY2hhZWwwMzExMTk4MEBnbWFpbC5jb20iLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsImxpc3RJZCI6ImNqZWg1eWtqOTAwMDAwMW5leG9hNzdrdGgiLCJtZXRhZGF0YSI6eyJuYW1lIjoiU2hhcmsgQm95In19LCJ0b3RhbFJlY2lwaWVudHMiOjE2ODEsInJlY2lwaWVudEluZGV4IjoxNDAxLCJpbXBvcnRJZCI6Imdvb2dsZS1vYXV0aDJ8MTEzMzczNTM0MDc2MjQxOTg2NzAxLmNqZWg1eWtqOTAwMDAwMW5leG9hNzdrdGguMTUxNjAxMDY5NDAwMC5jc3YifX0=",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50SW1wb3J0ZWQiLCJwYXlsb2FkIjp7InJlY2lwaWVudCI6eyJlbWFpbCI6Im1pY2hhZWwwMzExMTk4MEBnbWFpbC5jb20iLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsIm1ldGFkYXRhIjp7Im5hbWUiOiJTaGFyayBCb3kifX0sInRvdGFsUmVjaXBpZW50cyI6MTY4MSwicmVjaXBpZW50SW5kZXgiOjE0MDEsImltcG9ydElkIjoiZ29vZ2xlLW9hdXRoMnwxMTMzNzM1MzQwNzYyNDE5ODY3MDEuY2plaDV5a2o5MDAwMDAxbmV4b2E3N2t0aC4xNTE2MDEwNjk0MDAwLmNzdiJ9fQ==",
         "approximateArrivalTimestamp": 1520439315.249
       },
       "eventSource": "aws:kinesis",

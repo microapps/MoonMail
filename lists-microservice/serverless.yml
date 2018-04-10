@@ -24,6 +24,8 @@ provider:
     GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
     ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
     ES_RECIPIENTS_INDEX_TYPE: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_TYPE}
+    DEAD_LETTER_QUEUE_URL:
+      Ref: ListMicroserviceDeadLetterQueue
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -32,6 +34,7 @@ provider:
         - "lambda:*"
         - "kinesis:*"
         - "s3:*"
+        - "sqs:*"
         - "logs:*"
         - "iot:*"
         - "ec2:CreateNetworkInterface"
@@ -573,6 +576,11 @@ resources:
       Properties:
         Name: ListEventStream
         ShardCount: 1
+    ListMicroserviceDeadLetterQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: ListMicroserviceDeadLetterQueue
+        MessageRetentionPeriod: 1209600
   Outputs:
     ListEventStreamARN:
       Description: ListEventStream Kinesis Stream ARN

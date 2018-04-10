@@ -20,7 +20,7 @@ describe('Recipients', () => {
     };
     Object.entries(delegatedMethods).forEach(([method, delegate]) => {
       expect(Recipients[method]).to.equal(delegate);
-    })
+    });
   });
 
   describe('.createBatchFromEvents', () => {
@@ -49,7 +49,7 @@ describe('Recipients', () => {
           const res = await Recipients.createBatchFromEvents(recipientEvents);
           expect(res).not.to.exist;
         } catch (err) {
-          expect(err.message).to.equal('Unprocessed items');
+          expect(err.message).to.equal('UnprocessedItems');
         }
       });
     });
@@ -86,7 +86,7 @@ describe('Recipients', () => {
           const res = await Recipients.importFromEvents(recipientEvents);
           expect(res).not.to.exist;
         } catch (err) {
-          expect(err.message).to.equal('Unprocessed items');
+          expect(err.message).to.equal('UnprocessedItems');
         }
       });
     });

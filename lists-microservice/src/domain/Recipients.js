@@ -7,10 +7,12 @@ function importFromEvents(recipientImportedEvents) {
   const recipients = recipientImportedEvents
     .map(event => Object.assign({}, event.payload.recipient, { status: RecipientModel.statuses.subscribed, subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport, isConfirmed: true }));
 
-  return RecipientModel.batchCreate(recipients)
+  // TODO: Move me to Recipients
+  const recipientsToSave = deduplicateRecipientsByListId(recipients);
+  return RecipientModel.batchCreate(recipientsToSave)
     .then((data) => {
       if (data.UnprocessedItems) {
-        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
+        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('UnprocessedItems'));
       }
       return data;
     });
@@ -20,11 +22,12 @@ function createBatchFromEvents(recipientCreatedEvents) {
   const recipients = recipientCreatedEvents
     .map(event => event.payload.recipient);
 
+  // TODO: Move me to Recipients
   const recipientsToSave = deduplicateRecipientsByListId(recipients);
   return RecipientModel.batchCreate(recipientsToSave)
     .then((data) => {
       if (data.UnprocessedItems) {
-        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
+        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('UnprocessedItems'));
       }
       return data;
     });
@@ -72,7 +75,7 @@ function cleanseRecipientAttributes(recipient) {
   };
 
   if (!newRecipient.email || !newRecipient.listId || !newRecipient.userId || !newRecipient.id) {
-    return {};
+    return false;
   }
   return newRecipient;
 }
