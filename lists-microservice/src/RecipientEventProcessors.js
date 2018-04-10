@@ -33,26 +33,36 @@ const processNonRetriableError = function processNonRetriableError(event, error)
 };
 
 const buildEventStreamBatchProcessor = function buildEventStreamBatchProcessor(kinesisEvents) {
-  return (eventType, batchProcessor) => {
+  return (eventType, processBatchApiFn) => {
     const validatedEvts = kinesisEvents
       .filter(e => e.partitionKey === eventType)
       .map(e => e.data)
       .map(Events.validate);
 
+    const processBatch = (validatedEvents) => {
+      const validEvents = validatedEvents
+        .filter(e => !e.error)
+        .map(e => e.value);
+
+      const validationErrors = validatedEvents
+        .filter(e => !!e.error)
+        .map(e => e.error);
+
+      // importRecipientsBatch requires broadcastImportStatus
+      // TODO: improve the API so this dont seem out of its place.
+      return processBatchApiFn(validEvents, broadcastImportStatus)
+        .then(() => Promise.map(validationErrors, validationError => processNonRetriableError(validationError._object, validationError)));
+    };
+
     return Promise.resolve(validatedEvts)
-      .then((validatedEvents) => {
-        const validEvents = validatedEvents
-          .filter(e => !e.error)
-          .map(e => e.value);
-
-        const validationErrors = validatedEvents
-          .filter(e => !!e.error)
-          .map(e => e.error);
-
-        // importRecipientsBatch requires broadcastImportStatus
-        // TODO: improve the API so this dont seem out of its place.
-        return batchProcessor(validEvents, broadcastImportStatus)
-          .then(() => Promise.map(validationErrors, validationError => processNonRetriableError(validationError._object, validationError)));
+      .then(processBatch)
+      .catch((err) => {
+        App.logger().error(err);
+        if (err.message.match(/UnprocessedItems/) || (err.code || '').match('ProvisionedThroughputExceededException')) {
+          return Promise.reject(new Error('RetriableError'));
+        }
+        // Send unkonwn errors to the DLQ
+        return Promise.map(kinesisEvents.map(e => e.data), evt => processNonRetriableError(evt, err));
       });
   };
 };
@@ -72,7 +82,7 @@ function eventStreamProcessor(eventStream, context, callback) {
     .then(() => callback(null, { success: true }))
     .catch((err) => {
       App.logger().error(err);
-      if (err.message.match(/UnprocessedItems/) || (err.code || '').match('ProvisionedThroughputExceededException')) {
+      if (err.message.match(/RetriableError/)) {
         return callback(err);
       }
       // Send unkonwn errors to the DLQ
