@@ -115,7 +115,7 @@ class AttachRecipientsService {
   
       return Promise.resolve()      
     } catch (error) {
-      debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(error));
+      debug('= AttachRecipientsService._notifyToSendSMS ERROR', error);
     }
   }
 

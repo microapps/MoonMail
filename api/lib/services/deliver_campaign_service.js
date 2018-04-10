@@ -143,7 +143,8 @@ class DeliverCampaignService {
           listIds: campaign.listIds,
           segmentId: campaign.segmentId,
           attachments: campaign.attachments,
-          metadata: campaignMetadata
+          metadata: campaignMetadata,
+          scheduledAt: campaign.scheduledAt
         },
         user: {
           id: user.id,
