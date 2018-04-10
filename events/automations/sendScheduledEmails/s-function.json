@@ -28,8 +28,7 @@
     "SERVERLESS_REGION": "${region}",
     "AUTOMATION_ACTIONS_TABLE": "$${automationActionsTable}",
     "AUTOMATIONS_TABLE": "$${automationsTable}",
-    "SCHEDULED_EMAILS_TABLE": "$${scheduledEmailsTable}",
-    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}"
+    "SCHEDULED_EMAILS_TABLE": "$${scheduledEmailsTable}"
   },
   "vpc": {
     "securityGroupIds": [],

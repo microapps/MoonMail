@@ -36,7 +36,6 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
     "EMAIL_NOTIFICATIONS_TOPIC_ARN": "${emailNotificationsTopicARN}",
     "GET_USER_DATA_FUNCTION_NAME": "${project}-users-getUserData",
     "API_HOST": "${apiHost}",

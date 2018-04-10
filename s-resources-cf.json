@@ -252,12 +252,6 @@
         "TopicName": "$${attachRecipientsCountTopic}"
       }
     },
-    "SentEmailsTopic": {
-      "Type": "AWS::SNS::Topic",
-      "Properties": {
-        "TopicName": "$${sentEmailsTopic}"
-      }
-    },
     "UnsubscribedRecipientTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -351,32 +345,6 @@
           "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${linksTable}"
-      }
-    },
-    "SentEmailsTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "messageId",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "messageId",
-            "KeyType": "HASH"
-          }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": "${sentEmailsRCU}",
-          "WriteCapacityUnits": "${sentEmailsWCU}"
-        },
-        "TableName": "$${sentEmailsTable}",
-        "StreamSpecification": {
-          "StreamViewType": "NEW_IMAGE"
-        }
       }
     },
     "ReportsTable": {
@@ -1243,12 +1211,6 @@
         "Ref": "EmailNotificationsTopic"
       }
     },
-    "SentEmailsTopicARN": {
-      "Description": "ARN of the SentEmails SNS topic",
-      "Value": {
-        "Ref": "SentEmailsTopic"
-      }
-    },
     "AttachRecipientsTopicARN": {
       "Description": "ARN of the AttachRecipients SNS topic",
       "Value": {
@@ -1353,15 +1315,6 @@
       "Value": {
         "Fn::GetAtt": [
           "RecipientsTable",
-          "StreamArn"
-        ]
-      }
-    },
-    "SentEmailsTableStreamARN": {
-      "Description": "Arn of the SentEmails DynamoDB Table Stream",
-      "Value": {
-        "Fn::GetAtt": [
-          "SentEmailsTable",
           "StreamArn"
         ]
       }
