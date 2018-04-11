@@ -35,45 +35,81 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 
 ## Getting Started
 
-You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version **0.5.x** is required to run the [MoonMail API](http://microapps.github.io/MoonMail/)).
+### Requirements
+- yarn ([Install instructions](https://yarnpkg.com/en/docs/install))
+- serverless [Serverless Framework](https://github.com/serverless/serverless)
 
-    npm -g install serverless@0.5.6
+**Notes about the serverless version**
 
-Install npm packages:
+Version **0.5.x** is required to run several parts of the [MoonMail API](http://microapps.github.io/MoonMail/) such as the **api** and **events** sub-packages, for these, the root of the repository provides the required `s-project.json`, `s-resources-cf.json` and `s-templates.json`. Find more information about how to handle functions with serverless 0.5 [here](https://serverless.readme.io/v0.5.0/docs).
 
-    npm install
-    cd events/
-    npm install
-    cd ../api/
-    npm install
+The rest for the services require serverless **1.x** and they are self-contained, for details on how to manage them you should follow the instructions in their respective README.md
 
-Initialize the Serverless project:
+### Dependencies
 
-    sls project init -c -n your-lower-case-project-name
+Install serverless 0.5 globally:
+```
+yarn global add serverless@0.5.6
+```
+
+
+Install the root project dependencies:
+```
+yarn install
+```
+
+Install the API dependencies:
+```
+cd api && yarn install
+````
+
+Install the event processors' dependencies:
+```
+cd events && yarn install
+```
+
+Installing the dependencies for the rest of the services follows the same convention you just need to **cd** into it and **install** its dependencies.
     
-Add variables to `s-variables-<stage>-<region>`:
+### Initialize and configure the Serverless 0.5 project
 
-    {
-        ...,
-        "apiHost": "yourendpointhost.com"
-    }
+```
+sls project init -c -n your-lower-case-project-name
+```
+    
+Configure the `s-variables-<stage>-<region>.json` files inside the `_meta` directory by providing the [required variables](required-variables.md)
+
+### Deployment
+
+#### Servereless 0.5 resources
 
 Create all the needed resources in your AWS account:
-
-    sls resources deploy
+```
+sls resources deploy
+```
 
 Deploy all the Lambda functions:
-
-    sls function deploy
+```
+sls function deploy
+```
     
 Deploy MoonMail events:
-
-    sls event deploy
+```
+sls event deploy
+```
 
 Create the API Gateway endpoints:
+```
+sls endpoint deploy
+```
 
-    sls endpoint deploy
-    
+**Troubleshooting:** Due to the amount of resources it might be difficult to deploy everything at once but it's totally fine to **cd** into sub-directories of **api** or **events** and perform above-mentioned actions in order to reduce the scope of deployments. Also, using the **dash deploy** subcommand might be useful when deploying independent functions.
+
+If you have any issues in the process we recommend to take a look to the CloudFormation console which will provide insightful information on what's causing the problem.
+
+#### Serverless 1.x resources
+
+To configure and deploy the these you will have to follow the instructions provided in their respective README.md
+
 ## Live demo
 If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://microapps.github.io/MoonMail-UI)
     
@@ -83,7 +119,7 @@ Please pose your questions in [StackOverflow by tagging them with: moonmail](htt
 ## Contributing Guidelines
 Contributions are always welcome! If you'd like to collaborate with us, take into account that:
 
-* We use [ES2015](https://babeljs.io/docs/learn-es2015/) and love OOP.
+* We use ES >= 2015 and [babel](https://github.com/babel/babel) for transpilation.
 * We test with [mocha](https://github.com/mochajs/mocha) + [chai](https://github.com/chaijs/chai) + [sinon](https://github.com/sinonjs/sinon).
 
 Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any question

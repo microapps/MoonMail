@@ -1,0 +1,6 @@
+{
+  "REGION": "<aws-region>",
+  "PROFILE": "<aws-profile>",
+  "CLICKS_TABLE": "MoonMail-v2-dev-clicks",
+  "OPENS_TABLE": "MoonMail-v2-dev-opens"
+}

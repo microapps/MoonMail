@@ -1,7 +1,6 @@
-# MoonMail-v2-lists-microservice
+# MoonMail-v2-campaigns-microservice
 
 ## Configuration
-
 
 You will have to provide a configuration file named
 `config.<stage>.json` see `./sample-config.dev.json` for examples.
