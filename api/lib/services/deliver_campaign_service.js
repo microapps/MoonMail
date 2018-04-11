@@ -137,6 +137,7 @@ class DeliverCampaignService {
         campaign: {
           id: campaign.id,
           subject: campaign.subject,
+          name: campaign.name,
           body: inlinedBody,
           senderId: campaign.senderId,
           precompiled: false,
