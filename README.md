@@ -102,9 +102,27 @@ Create the API Gateway endpoints:
 sls endpoint deploy
 ```
 
-**Troubleshooting:** Due to the amount of resources it might be difficult to deploy everything at once but it's totally fine to **cd** into sub-directories of **api** or **events** and perform above-mentioned actions in order to reduce the scope of deployments. Also, using the **dash deploy** subcommand might be useful when deploying independent functions.
+**Troubleshooting:** 
 
-If you have any issues in the process we recommend to take a look to the CloudFormation console which will provide insightful information on what's causing the problem.
+Due to the amount of resources it might be difficult to deploy everything at once but it's totally fine to **cd** into sub-directories of **api** or **events** and perform above-mentioned actions in order to reduce the scope of deployments. Also, using the **dash deploy** subcommand might be useful when deploying independent functions. Aside from that there are some functions depending on serverless 0.5 which require NodeJS > 4.3 for those you will have to change the runtime version through the **AWS Lambda Console** because it's not supported to do so through serverless on this version.
+
+If the above doesn't solve your issues, there are a couple of things you should double check:
+
+1- Your current serverless version (different parts of the project required different versions), this is how you can do it:
+```
+sls --version
+```
+
+2- You have provided all the [required variables](required-variables.md) in the `_meta` directory.  
+
+3- An `admin.env` file should exist in the root of the project containing the **AWS** profile to be used by the deployments (this only applies for the function and resources depending on sls@0.5), here is an example of how it should look:
+```
+AWS_DEV_PROFILE=moonmail-dev
+AWS_PROD_PROFILE=moonmail-prod  
+```
+
+4- The provided profile in `admin.env` should exist in your `~/.aws/credentials`
+
 
 #### Serverless 1.x resources
 
