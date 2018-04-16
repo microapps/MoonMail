@@ -19,7 +19,7 @@ class DeliverCampaignService {
     this.appendFooter = user.appendFooter;
     this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
     this.userPhone = user.phoneNumber;
-    this.userSMSNotification = user.receiveSMSNotifications;
+    this.userNotifications = user.notifications;
   }
 
   sendCampaign() {
@@ -148,9 +148,9 @@ class DeliverCampaignService {
           scheduledAt: campaign.scheduledAt
         },
         user: {
-          id: user.id,
+          id: this.userId,
           phoneNumber: this.userPhone,
-          receiveSMSNotifications: this.userSMSNotification
+          notifications: this.userNotifications
         }
       }));
     });
