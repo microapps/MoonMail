@@ -19,7 +19,8 @@ class AttachRecipientsService {
     return this._notifyAttachSegmentMembers(this._buildAttachSegmentMembersMessage())
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   notifyAttachListRecipients() {
@@ -27,7 +28,8 @@ class AttachRecipientsService {
     return Promise.map(this.campaignMessage.campaign.listIds, listId => this._notifyAttachListRecipients(this._buildAttachListRecipientsMessage(listId)), { concurrency: 5 })
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._wait(20000))
-      .then(() => this._notifyToSendEmails());
+      .then(() => this._notifyToSendEmails())
+      .then(() => this._notifyToSendSMS());
   }
 
   _buildAttachListRecipientsMessage(listId) {
@@ -91,6 +93,28 @@ class AttachRecipientsService {
       Message: JSON.stringify({ QueueName: this.campaignMessage.userId.replace('|', '_') })
     };
     return this.snsClient.publish(snsParams).promise();
+  }
+
+  async _notifyToSendSMS() {
+    debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
+    try {  
+      const campaign = this.campaignMessage.campaign;
+      const user = this.campaignMessage.user
+  
+      if (campaign && campaign.scheduledAt && user && user.phoneNumber && user.notifications && user.notifications.isSmsOnDeliveryEnabled != false) {
+        const snsParams = {
+          Message: `MoonMail: We have just sent your campaign ${ campaign.name  }. https://app.moonmail.io/campaigns/${ campaign.id  }`,
+          MessageStructure: 'string',
+          PhoneNumber: user.phoneNumber
+        };
+  
+        return this.snsClient.publish(snsParams).promise();
+      }
+  
+      return Promise.resolve()      
+    } catch (error) {
+      debug('= AttachRecipientsService._notifyToSendSMS ERROR', error);
+    }
   }
 
   _wait(time) {
