@@ -12,7 +12,17 @@
             }
           },
           "campaignActivity": {
-            "type": "nested"
+            "type": "nested",
+            "properties": {
+              "timestamp": {
+                "type": "date",
+                "format": "epoch_second"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "date",
+            "format": "epoch_second"
           }
         }
       }
