@@ -59,7 +59,8 @@ export default class ListSegmentModel extends BaseModel {
           queryType: Joi.string().required(),
           fieldToQuery: Joi.string().required(),
           searchTerm: Joi.any().required()
-        })
+        }),
+        metadata: Joi.object()
       }),
 
       Joi.object().keys({
@@ -69,7 +70,8 @@ export default class ListSegmentModel extends BaseModel {
           match: Joi.string().valid(['all', 'any']).default('any'),
           fieldToQuery: Joi.string().valid(['time', 'count']).default('time'),
           searchTerm: Joi.alternatives().try(Joi.object(), Joi.number()).required()
-        })
+        }),
+        metadata: Joi.object()
       })
     )).min(1);
   }
