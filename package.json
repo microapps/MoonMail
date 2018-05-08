@@ -14,14 +14,14 @@
     "remove-all": "rm -rf node_modules && rm -rf ./events/node_modules && rm -rf ./api/node_modules"
   },
   "dependencies": {
-    "babelify": "^7.2.0",
-    "base64-url": "^1.2.2",
+    "babelify": "^8.0.0",
+    "base64-url": "^2.2.0",
     "bluebird": "^3.5.1",
     "cf-canary": "0.0.1",
     "serverless-cors-plugin": "^0.4.1"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.3",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
     "babel-plugin-transform-builtin-extend": "^1.1.0",
     "babel-plugin-transform-promise-to-bluebird": "^1.1.1",
@@ -30,8 +30,8 @@
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-stage-3": "^6.17.0",
     "babel-register": "^6.26.0",
-    "babelify": "^7.3.0",
-    "csv-string": "^2.3.3",
+    "babelify": "^8.0.0",
+    "csv-string": "^3.1.2",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.9.0",
@@ -39,6 +39,6 @@
     "eslint-plugin-react": "^7.7.0",
     "serverless-meta-sync": "^0.1.0",
     "serverless-runtime-babel": "github:serverless/serverless-runtime-babel",
-    "uuid": "^2.0.1"
+    "uuid": "^3.2.1"
   }
 }

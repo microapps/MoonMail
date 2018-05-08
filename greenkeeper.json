@@ -1,0 +1,17 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "api/package.json",
+        "campaigns-microservice/package.json",
+        "emails-microservice/package.json",
+        "events-router/package.json",
+        "events/package.json",
+        "lists-microservice/package.json",
+        "lists/package.json",
+        "package.json",
+        "webhooks-microservice/package.json"
+      ]
+    }
+  }
+}

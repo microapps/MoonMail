@@ -10,21 +10,21 @@
   "author": "David García <david.garcia@microapps.com>",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk-mock": "^1.7.0",
+    "aws-sdk-mock": "^2.0.0",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "choma": "^1.1.0",
-    "mocha": "^5.0.1",
-    "serverless": "1.26.1",
+    "mocha": "^5.1.1",
+    "serverless": "1.27.2",
     "serverless-offline": "^3.18.0",
     "serverless-plugin-optimize": "^3.0.4-rc.1",
-    "sinon": "^4.4.2",
-    "sinon-chai": "^2.14.0"
+    "sinon": "^5.0.7",
+    "sinon-chai": "^3.0.0"
   },
   "dependencies": {
     "base64-url": "^2.2.0",
     "bluebird": "^3.5.1",
-    "joi": "^13.1.2",
+    "joi": "^13.2.0",
     "moment": "^2.21.0",
     "moonmail-models": "github:microapps/moonmail-models",
     "omit-empty": "^0.4.1",
