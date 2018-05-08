@@ -99,7 +99,11 @@ class AttachRecipientsService {
     debug('= AttachRecipientsService._notifyToSendSMS', JSON.stringify(this.campaignMessage));
     try {  
       const campaign = this.campaignMessage.campaign;
-      const user = this.campaignMessage.user
+      const user = this.campaignMessage.user;
+
+      if(!user.notifications){
+        user.notifications = { };
+      }
   
       if (campaign && campaign.scheduledAt && user && user.phoneNumber && user.notifications && user.notifications.isSmsOnDeliveryEnabled != false) {
         const snsParams = {
@@ -111,7 +115,7 @@ class AttachRecipientsService {
         return this.snsClient.publish(snsParams).promise();
       }
   
-      return Promise.resolve()      
+      return Promise.resolve();
     } catch (error) {
       debug('= AttachRecipientsService._notifyToSendSMS ERROR', error);
     }
