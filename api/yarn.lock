@@ -2255,7 +2255,7 @@ moment@2.x.x, moment@^2.13.0, moment@^2.15.1:
   version "2.22.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
 
-"moonmail-models@github:microapps/moonmail-models#a5e8b31":
+"moonmail-models@github:microapps/moonmail-models":
   version "1.1.1"
   resolved "https://codeload.github.com/microapps/moonmail-models/tar.gz/a5e8b31"
   dependencies:
