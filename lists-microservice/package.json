@@ -47,7 +47,7 @@
     "mocha": "^4.1.0",
     "nock": "^9.0.22",
     "npm-run-all": "^4.1.2",
-    "serverless": "^1.25.0",
+    "serverless": "^1.27.2",
     "serverless-aws-documentation": "^1.0.0",
     "serverless-domain-manager": "^2.0.2",
     "serverless-offline": "^3.16.0",

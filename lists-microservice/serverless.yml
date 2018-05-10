@@ -4,7 +4,7 @@ plugins:
   - serverless-plugin-optimize
   - serverless-offline
   - serverless-aws-documentation
-  #- serverless-domain-manager
+  - serverless-domain-manager
 
 provider:
   name: aws

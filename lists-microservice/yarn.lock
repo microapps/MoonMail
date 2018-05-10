@@ -361,9 +361,24 @@ aws-sdk-mock@^1.7.0:
     sinon "^1.17.3"
     traverse "^0.6.6"
 
-aws-sdk@^2.177.0, aws-sdk@^2.185.0, aws-sdk@^2.3.0, aws-sdk@^2.3.10, aws-sdk@^2.75.0:
+aws-sdk@^2.177.0, aws-sdk@^2.185.0, aws-sdk@^2.3.0, aws-sdk@^2.3.10:
   version "2.221.1"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.221.1.tgz#437b6a4a0c9ce74fdd10c16d97b5247ff9c2cd35"
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.8"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.1.0"
+    xml2js "0.4.17"
+    xmlbuilder "4.2.1"
+
+aws-sdk@^2.228.0:
+  version "2.236.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.236.1.tgz#93c45f9ff1b622580c61fe45f2b732b68770e0ab"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -5675,15 +5690,15 @@ serverless-plugin-optimize@^3.0.4-rc.1:
     fs-extra "^3.0.1"
     resolve-from "^3.0.0"
 
-serverless@^1.25.0:
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/serverless/-/serverless-1.26.1.tgz#20037b28ce36ab381d36929081f36b249d126542"
+serverless@^1.27.2:
+  version "1.27.2"
+  resolved "https://registry.yarnpkg.com/serverless/-/serverless-1.27.2.tgz#940fc0a464cf25d7a914c607d8ab9410ba58479a"
   dependencies:
     "@serverless/fdk" "^0.5.1"
     apollo-client "^1.9.2"
     archiver "^1.1.0"
     async "^1.5.2"
-    aws-sdk "^2.75.0"
+    aws-sdk "^2.228.0"
     bluebird "^3.5.0"
     chalk "^2.0.0"
     ci-info "^1.1.1"
