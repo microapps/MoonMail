@@ -2,13 +2,13 @@ import R from 'ramda';
 import Promise from 'bluebird';
 import SubscriptionRepo from '../repositories/Subscription';
 import KinesisNotifier from '../notifiers/KinesisNotifier';
-import FirehorseNotifier from '../notifiers/FirehorseNotifier';
+import FirehoseNotifier from '../notifiers/FirehoseNotifier';
 import Event from '../domain/Event';
 import EventsDeadLetterQueue from '../lib/EventsDeadLetterQueue';
 
 const subscriptionTypeAndPublisherMapping = {
   kinesis: KinesisNotifier,
-  firehorse: FirehorseNotifier
+  firehose: FirehoseNotifier
 };
 
 const byType = R.groupBy(R.prop('type'));

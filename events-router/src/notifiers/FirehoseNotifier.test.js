@@ -1,21 +1,21 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import FirehorseNotifier from './FirehorseNotifier';
+import FirehoseNotifier from './FirehoseNotifier';
 
 const expect = chai.expect;
 chai.use(sinonChai);
 
-describe('FirehorseNotifier', () => {
+describe('FirehoseNotifier', () => {
   describe('.publishBatch', () => {
-    let firehorseStub;
+    let firehoseStub;
     const eventType = 'event.type';
-    const subscription = { type: eventType, subscriberType: 'firehorse', subscribedResource: 'StreamName' };
+    const subscription = { type: eventType, subscriberType: 'firehose', subscribedResource: 'StreamName' };
     const events = [
       { type: eventType, payload: { the: 'data' } },
       { type: eventType, payload: { more: 'data' } }
     ];
-    const firehorseResult = {
+    const firehoseResult = {
       FailedPutCount: 1,
       RequestResponses: [
         { ErrorCode: 'code', ErrorMessage: 'string', SequenceNumber: '123', ShardId: '567' },
@@ -24,27 +24,27 @@ describe('FirehorseNotifier', () => {
     };
 
     beforeEach(() => {
-      firehorseStub = { putRecordBatch: sinon.spy(() => ({ promise: () => Promise.resolve(firehorseResult) })) };
-      sinon.stub(FirehorseNotifier, 'getClient').returns(firehorseStub);
+      firehoseStub = { putRecordBatch: sinon.spy(() => ({ promise: () => Promise.resolve(firehoseResult) })) };
+      sinon.stub(FirehoseNotifier, 'getClient').returns(firehoseStub);
     });
     afterEach(() => {
-      FirehorseNotifier.getClient.restore();
+      FirehoseNotifier.getClient.restore();
     });
 
     it('should write the event to the Kinesis Stream', async () => {
-      await FirehorseNotifier.publishBatch(events, subscription);
+      await FirehoseNotifier.publishBatch(events, subscription);
       const expected = {
         Records: events.map(evt => ({ Data: JSON.stringify(evt) })),
         DeliveryStreamName: subscription.subscribedResource
       };
-      expect(firehorseStub.putRecordBatch).to.have.been.calledWith(expected);
+      expect(firehoseStub.putRecordBatch).to.have.been.calledWith(expected);
     });
 
     it('should return the events and errors if any', async () => {
-      const actual = await FirehorseNotifier.publishBatch(events, subscription);
+      const actual = await FirehoseNotifier.publishBatch(events, subscription);
       const expected = {
         records: [
-          { event: events[0], subscription, error: firehorseResult.RequestResponses[0].ErrorMessage, errorCode: firehorseResult.RequestResponses[0].ErrorCode },
+          { event: events[0], subscription, error: firehoseResult.RequestResponses[0].ErrorMessage, errorCode: firehoseResult.RequestResponses[0].ErrorCode },
           { event: events[1], subscription }
         ]
       };

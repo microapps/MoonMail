@@ -5,7 +5,7 @@ import EventsRouter from './EventsRouter';
 import SubscriptionRepo from '../repositories/Subscription';
 import KinesisNotifier from '../notifiers/KinesisNotifier';
 import EventsDeadLetterQueue from '../lib/EventsDeadLetterQueue';
-import FirehorseNotifier from '../notifiers/FirehorseNotifier';
+import FirehoseNotifier from '../notifiers/FirehoseNotifier';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -25,7 +25,7 @@ describe('EventsRouter', () => {
     const noSubscriptionEvents = [{ type: 'noSubscriptionEvents', payload: { some: 'data' } }];
     const aTypeSubscription = { type: 'aType', subscriberType: 'kinesis', subscribedResource: 'StreamName' };
     const anotherTypeSubscription = { type: 'anotherType', subscriberType: 'kinesis', subscribedResource: 'AnotherStreamName' };
-    const anotherMoreTypeSubscription = { type: 'anotherMoreType', subscriberType: 'firehorse', subscribedResource: 'ADeliveryStream' };
+    const anotherMoreTypeSubscription = { type: 'anotherMoreType', subscriberType: 'firehose', subscribedResource: 'ADeliveryStream' };
     const subscriptions = [aTypeSubscription, anotherTypeSubscription, anotherMoreTypeSubscription];
     const kinesisStream = { Records: [...aTypeEvents, ...anotherTypeEvents, ...anotherMoreTypeEvents, ...noSubscriptionEvents].map(evt => buildKinesisEvent(evt)) };
     const aTypeResponse = {
@@ -43,29 +43,31 @@ describe('EventsRouter', () => {
       records: [
         { event: anotherMoreTypeEvents[1], subscription: anotherTypeSubscription }
       ]
-    }
+    };
 
     beforeEach(() => {
       sinon.stub(SubscriptionRepo, 'getAll').resolves(subscriptions);
       sinon.stub(KinesisNotifier, 'publishBatch')
         .withArgs(sinon.match.any).rejects(new Error('Kinesis error'))
-        .withArgs(aTypeEvents, aTypeSubscription).resolves(aTypeResponse)
-        .withArgs(anotherTypeEvents, anotherTypeSubscription).resolves(anotherTypeResponse);
-      sinon.stub(FirehorseNotifier, 'publishBatch')
+        .withArgs(aTypeEvents, aTypeSubscription)
+        .resolves(aTypeResponse)
+        .withArgs(anotherTypeEvents, anotherTypeSubscription)
+        .resolves(anotherTypeResponse);
+      sinon.stub(FirehoseNotifier, 'publishBatch')
         .withArgs(anotherMoreTypeEvents, anotherMoreTypeSubscription).resolves(anotherMoreTypeResponse);
       sinon.stub(EventsDeadLetterQueue, 'put').resolves(true);
     });
     afterEach(() => {
       SubscriptionRepo.getAll.restore();
       KinesisNotifier.publishBatch.restore();
-      FirehorseNotifier.publishBatch.restore();
+      FirehoseNotifier.publishBatch.restore();
       EventsDeadLetterQueue.put.restore();
     });
 
     it('should route events according to subscriptions', async () => {
       await EventsRouter.execute(kinesisStream);
       expect(KinesisNotifier.publishBatch).to.have.been.calledTwice;
-      expect(FirehorseNotifier.publishBatch).to.have.been.calledOnce;
+      expect(FirehoseNotifier.publishBatch).to.have.been.calledOnce;
       const expectations = [
         [aTypeEvents, aTypeSubscription],
         [anotherTypeEvents, anotherTypeSubscription]
@@ -73,7 +75,7 @@ describe('EventsRouter', () => {
       expectations.forEach((expected) => {
         expect(KinesisNotifier.publishBatch).to.have.been.calledWithExactly(...expected);
       });
-      expect(FirehorseNotifier.publishBatch).to.have.been.calledWithExactly(...[anotherMoreTypeEvents, anotherMoreTypeSubscription]);
+      expect(FirehoseNotifier.publishBatch).to.have.been.calledWithExactly(...[anotherMoreTypeEvents, anotherMoreTypeSubscription]);
     });
 
     it('should send errored records to DLQ', async () => {
