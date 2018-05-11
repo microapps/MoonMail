@@ -326,7 +326,7 @@
     },
     "LinksTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -349,7 +349,7 @@
     },
     "ReportsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -392,7 +392,7 @@
     },
     "CampaignsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -466,7 +466,7 @@
     },
     "AutomationsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -517,7 +517,7 @@
     },
     "AutomationActionsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -576,7 +576,7 @@
     },
     "ScheduledEmailsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -607,7 +607,7 @@
     },
     "UsersTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -683,7 +683,7 @@
     },
     "TemplatesTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -714,7 +714,7 @@
     },
     "ListSegmentsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -777,7 +777,7 @@
     },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -811,7 +811,7 @@
     },
     "OpensTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -845,7 +845,7 @@
     },
     "ClicksTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -879,7 +879,7 @@
     },
     "OpensReportTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -910,7 +910,7 @@
     },
     "ClicksReportTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -941,7 +941,7 @@
     },
     "ListsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -972,7 +972,7 @@
     },
     "ExpertsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -1023,7 +1023,7 @@
     },
     "PaymentLogsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
