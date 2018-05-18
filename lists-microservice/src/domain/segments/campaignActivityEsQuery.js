@@ -3,8 +3,19 @@ import ElasticSearch from '../../lib/elasticsearch';
 
 
 const queryMapping = {
-  time: params => ({
+  time: (listId, params) => ({
     size: 0,
+    query: {
+      bool: {
+        filter: [
+          {
+            term: {
+              'listId.keyword': listId
+            }
+          }
+        ]
+      }
+    },
     aggregations: {
       campaigns: {
         nested: {
@@ -31,8 +42,19 @@ const queryMapping = {
       }
     }
   }),
-  count: params => ({
+  count: (listId, params) => ({
     size: 0,
+    query: {
+      bool: {
+        filter: [
+          {
+            term: {
+              'listId.keyword': listId
+            }
+          }
+        ]
+      }
+    },
     aggregations: {
       campaigns: {
         nested: {
@@ -61,11 +83,11 @@ const queryMapping = {
   })
 };
 
-function campaignsByTimeOrCount(queryType, params) {
+function campaignsByTimeOrCount(listId, queryType, params) {
   const indexName = process.env.ES_RECIPIENTS_INDEX_NAME;
   const indexType = process.env.ES_RECIPIENTS_INDEX_TYPE;
   const queryBuilder = queryMapping[queryType];
-  const query = queryBuilder(params);
+  const query = queryBuilder(listId, params);
   return ElasticSearch.search(indexName, indexType, query)
     .then((result) => {
       if (queryType === 'count') {

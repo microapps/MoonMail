@@ -62,7 +62,7 @@ describe('SegmentEsQuery', () => {
           { condition: { queryType: 'range', fieldToQuery: 'createdAt', searchTerm: { gte: 'now-30d/d' } }, conditionType: 'filter' },
 
           // campaign activity conditions
-          { condition: { queryType: 'opened', fieldToQuery: 'count', searchTerm: 5, match: 'all' }, conditionType: 'campaignActivity' }
+          { condition: { queryType: 'opened', fieldToQuery: 'count', searchTerm: 2, match: 'all' }, conditionType: 'campaignActivity' }
         ],
         expected: {
           query: {
@@ -113,7 +113,7 @@ describe('SegmentEsQuery', () => {
           { condition: { queryType: 'range', fieldToQuery: 'createdAt', searchTerm: { gte: 'now-30d/d' } }, conditionType: 'filter' },
 
           // campaign activity conditions
-          { condition: { queryType: 'not_opened', fieldToQuery: 'count', searchTerm: 5, match: 'all' }, conditionType: 'campaignActivity' }
+          { condition: { queryType: 'not_opened', fieldToQuery: 'count', searchTerm: 2, match: 'all' }, conditionType: 'campaignActivity' }
         ],
         expected: {
           query: {
@@ -186,9 +186,10 @@ describe('SegmentEsQuery', () => {
 
     it('builds the query using the conditions', async () => {
       const campaignActivityResolver = (queryType, params) => Promise.resolve(['12', '123']);
+      const listId = 'list-id';
       await Promise.map(cases, (c) => {
         const conditions = c.input;
-        return SegmentEsQuery.create(conditions, campaignActivityResolver)
+        return SegmentEsQuery.create(listId, conditions, campaignActivityResolver)
           .then((query) => {
             expect(query).to.deep.equals(c.expected);
           });

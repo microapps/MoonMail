@@ -24,6 +24,27 @@ const createSchema = Joi.object({
   riskScore: Joi.number(),
   metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
   systemMetadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
+  campaignActivity: Joi.array().default([]),
+  unsubscribedAt: Joi.number(),
+  subscribedAt: Joi.number(),
+  unsubscribedCampaignId: Joi.string(),
+  bouncedAt: Joi.number(),
+  complainedAt: Joi.number(),
+  createdAt: Joi.number(),
+  updatedAt: Joi.number()
+});
+
+const updateSchema = Joi.object({
+  listId: Joi.string().required(),
+  userId: Joi.string().required(),
+  id: Joi.string().required(),
+  email: Joi.string().regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).required(),
+  subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)).required(),
+  isConfirmed: Joi.boolean(),
+  status: Joi.string().valid(Object.values(RecipientModel.statuses)).required(),
+  riskScore: Joi.number(),
+  metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
+  systemMetadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
   unsubscribedAt: Joi.number(),
   subscribedAt: Joi.number(),
   unsubscribedCampaignId: Joi.string(),
@@ -40,7 +61,9 @@ function create(recipient) {
 }
 
 function update(recipient) {
-  return create(recipient);
+  const esId = RecipientModel.buildGlobalId({ recipient });
+  return RecipientModel.validate(updateSchema, omitEmpty(recipient), { allowUnknown: true })
+    .then(newRecipient => ElasticSearch.createOrUpdateDocument(indexName, indexType, esId, newRecipient));
 }
 
 function remove(id) {
@@ -57,15 +80,21 @@ function searchSubscribedByListAndConditions(listId, conditions, { from = 0, siz
 }
 
 function searchByListAndConditions(listId, conditions, { from = 0, size = 10 }) {
-  return searchByConditions([...conditions, ...defaultConditions(listId)], { from, size });
+  return searchByConditions(listId, [...conditions, ...defaultConditions(listId)], { from, size });
 }
 
-function searchByConditions(conditions, { from = 0, size = 10 }) {
+function searchByConditions(listId, conditions, { from = 0, size = 10 }) {
   return Joi.validate(conditions, ListSegmentModel.conditionsSchema)
-    .then(validConditions => SegmentEsQuery.create(validConditions))
+    .then(validConditions => SegmentEsQuery.create(listId, validConditions))
     .then(query => Object.assign({}, query, { from, size }))
     .then(queryWithPagination => ElasticSearch.search(indexName, indexType, queryWithPagination))
-    .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
+    .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }))
+    .catch((error) => {
+      console.error('searchByConditions Error ocurred', error);
+      if (error.message.match(/NoCampaignsSent/)) return { items: [], total: 0, message: error.message };
+      if (error.message.match(/NotEnoughActivityToMatchAllCountCondition/)) return { items: [], total: 0 };
+      return Promise.reject(error);
+    });
 }
 
 function buildEsQuery({ q, status, listId, from = 0, size = 10 }) {

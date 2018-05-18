@@ -4,8 +4,8 @@ import Promise from 'bluebird';
 import campaignActivityEsQuery from './campaignActivityEsQuery';
 import wait from '../../lib/utils/wait';
 
-function buildSegmentQuery(conditions, campaignActivityEsQueryFn = campaignActivityEsQuery) {
-  return prepareContext(conditions, campaignActivityEsQueryFn)
+function buildSegmentQuery(listId, conditions, campaignActivityEsQueryFn = campaignActivityEsQuery) {
+  return prepareContext(listId, conditions, campaignActivityEsQueryFn)
     .then(enrichedConditions => createSegmentFilters(enrichedConditions));
 }
 
@@ -66,12 +66,15 @@ function createSegmentFilters(conditions) {
   return omitEmpty(composedQuery);
 }
 
-function prepareContext(conditions, campaignActivityEsQueryFn) {
+function prepareContext(listId, conditions, campaignActivityEsQueryFn) {
   return Promise.map(conditions, (conditionWrapper) => {
     if (conditionWrapper.conditionType === 'campaignActivity') {
-      return campaignActivityEsQueryFn(conditionWrapper.condition.fieldToQuery, conditionWrapper.condition.searchTerm)
+      return campaignActivityEsQueryFn(listId, conditionWrapper.condition.fieldToQuery, conditionWrapper.condition.searchTerm)
         .then((campaignIds) => {
-          if (campaignIds.length === 0) return wait(1000);
+          if (campaignIds.length === 0) return Promise.reject(new Error('NoCampaignsSent'));
+          if (conditionWrapper.condition.match === 'all' && conditionWrapper.condition.fieldToQuery === 'count' && conditionWrapper.condition.searchTerm !== campaignIds.length) {
+            return Promise.reject(new Error('NotEnoughActivityToMatchAllCountCondition'));
+          }
           return { ...conditionWrapper, campaignIds };
         });
     }

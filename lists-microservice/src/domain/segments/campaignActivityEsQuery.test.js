@@ -42,7 +42,8 @@ describe('campaignActivityEsQuery', () => {
     });
 
     it('parses the results correctly', async () => {
-      const result = await campaignActivityEsQuery('time', { gte: 123123123213 });
+      const listId = 'list-id';
+      const result = await campaignActivityEsQuery(listId, 'time', { gte: 123123123213 });
       expect(result).to.exist;
     });
   });
@@ -82,7 +83,8 @@ describe('campaignActivityEsQuery', () => {
     });
 
     it('parses the results correctly', async () => {
-      const result = await campaignActivityEsQuery('count', 10);
+      const listId = 'list-id';
+      const result = await campaignActivityEsQuery(listId, 'count', 10);
       expect(result).to.exist;
     });
   });

@@ -1,4 +1,5 @@
 import ElasticSearch from '../../lib/elasticsearch';
+import omitEmpty from 'omit-empty';
 
 function buildCampaignActivityQuerySection(campaignIds, condition) {
   const namedTemplate = `${condition.match}:${condition.queryType}`;
@@ -55,7 +56,28 @@ const anyCampaignsMatchingFilterTemplate = (campaignIds, eventType) => {
   ];
 };
 
-const byTimeOrAnyFilterTemplate = (searchType, searchTerm) => {
+const anyCampaignsMatchingNegativeFilterTemplate = (campaignIds, eventType) => {
+  const [cleanedEventType] = eventType.split('_').slice(-1);
+  const campaignFilters = campaignIds.map(campaignId => ({
+    term: {
+      'campaignActivity.campaignId.keyword': campaignId
+    }
+  }));
+  return [
+    nested({
+      filter: [
+        {
+          term: {
+            'campaignActivity.event.keyword': cleanedEventType
+          }
+        },
+        ...campaignFilters
+      ]
+    })
+  ];
+};
+
+const byTimeFilterTemplate = (searchType, searchTerm) => {
   if (searchType === 'time') {
     return [
       nested({
@@ -91,14 +113,15 @@ const matchingAllPositiveEventsQueryBuilder = ({ eventType, campaignIds, fieldTo
   filter: [
     // ...eventTypeFilterTemplate(eventType),
     ...allCampaignsMatchingFilterTemplate(campaignIds, eventType),
-    ...byTimeOrAnyFilterTemplate(fieldToQuery, searchTerm)
+    ...byTimeFilterTemplate(fieldToQuery, searchTerm)
   ]
 });
 
 const matchingAllNegativeEventsQueryBuilder = ({ eventType, campaignIds, fieldToQuery, searchTerm }) => {
   const baseConditions = {
-    filter: [
-      ...byTimeOrAnyFilterTemplate(fieldToQuery, searchTerm)
+    filter: [],
+    should: [
+      ...byTimeFilterTemplate(fieldToQuery, searchTerm)
     ],
     must_not: [
       ...allCampaignsMatchingFilterTemplate(campaignIds, eventType)
@@ -107,32 +130,34 @@ const matchingAllNegativeEventsQueryBuilder = ({ eventType, campaignIds, fieldTo
   if (eventType.match(/opened|clicked/)) {
     baseConditions.filter.push(...allCampaignsMatchingFilterTemplate(campaignIds, 'received'));
   }
-  return baseConditions;
+  return omitEmpty(baseConditions);
 };
 
 const matchingAnyPossitiveEventsQueryBuilder = ({ eventType, campaignIds, fieldToQuery, searchTerm }) => ({
   filter: [
     // ...eventTypeFilterTemplate(eventType),
     ...anyCampaignsMatchingFilterTemplate(campaignIds, eventType),
-    ...byTimeOrAnyFilterTemplate(fieldToQuery, searchTerm)
+    ...byTimeFilterTemplate(fieldToQuery, searchTerm)
   ]
 });
 
 const matchingAnyNegativeEventsQueryBuilder = ({ eventType, campaignIds, fieldToQuery, searchTerm }) => {
   const baseConditions = {
-    filter: [
-      ...byTimeOrAnyFilterTemplate(fieldToQuery, searchTerm)
+    filter: [],
+    should: [
+      ...byTimeFilterTemplate(fieldToQuery, searchTerm)
     ],
     must_not: [
       // ...eventTypeFilterTemplate(eventType),
       ...anyCampaignsMatchingFilterTemplate(campaignIds, eventType)
+      // ...anyCampaignsMatchingNegativeFilterTemplate(campaignIds, eventType)
     ]
   };
   if (eventType.match(/opened|clicked/)) {
     baseConditions.filter.push(...anyCampaignsMatchingFilterTemplate(campaignIds, 'received'));
   }
 
-  return baseConditions;
+  return omitEmpty(baseConditions);
 };
 
 const campaignActivitySegmentsQueryMapping = {

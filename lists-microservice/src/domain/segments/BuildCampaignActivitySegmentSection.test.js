@@ -106,7 +106,7 @@ describe('BuildCampaignActivitySegmentSection', () => {
       {
         input: { queryType: 'not_received', fieldToQuery: 'time', searchTerm: { gte: 'now-30d/d' }, match: 'any' },
         expected: {
-          filter: [
+          should: [
             {
               nested: {
                 path: 'campaignActivity',
@@ -223,42 +223,42 @@ describe('BuildCampaignActivitySegmentSection', () => {
             }
           ]
         }
-      },
-      {
-        input: { queryType: 'not_clicked', fieldToQuery: 'count', searchTerm: 5, match: 'any' },
-        expected: {
-          filter: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.event.keyword': 'received' } },
-                      { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
-                    ]
-                  }
-                }
-              }
-            }
-          ],
-          must_not: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.event.keyword': 'clicked' } },
-                      { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        }
       }
+      // {
+      //   input: { queryType: 'not_clicked', fieldToQuery: 'count', searchTerm: 5, match: 'any' },
+      //   expected: {
+      //     filter: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.event.keyword': 'received' } },
+      //                 { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ],
+      //     must_not: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.event.keyword': 'clicked' } },
+      //                 { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ]
+      //   }
+      // }
     ];
 
     it('builds the query sections for all the cases', () => {
