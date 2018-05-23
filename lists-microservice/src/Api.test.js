@@ -251,7 +251,7 @@ describe('Api', () => {
 
   describe('.processCampaignActivity', () => {
     before(() => {
-      sinon.stub(RecipientActivities, 'appendRecipientActivity');
+      sinon.stub(RecipientActivities, 'appendRecipientActivity').resolves({});
     });
     after(() => RecipientActivities.appendRecipientActivity.restore());
 

@@ -8,6 +8,7 @@ import RecipientESModel from './domain/RecipientESModel';
 import MapCsvStringToRecipients from './recipients/MapCsvStringToRecipients';
 import ListSegments from './domain/ListSegments';
 import RecipientActivities from './domain/RecipientActivities';
+import App from './App';
 
 function publishRecipientImportedEvents(recipientsBatch, importId, batchFirstIndex, total) {
   const eventsBatch = recipientsBatch
@@ -82,7 +83,11 @@ function processCampaignActivity(events) {
     };
   });
 
-  return Promise.map(activities, activity => RecipientActivities.appendRecipientActivity(activity), { concurrency: 1 });
+  return Promise.map(activities, activity => RecipientActivities.appendRecipientActivity(activity)
+    .catch((error) => {
+      App.logger().error('An error occurred while processing the activity, but it did not prevent to continue processing other events', JSON.stringify(activity));
+      App.logger().error('Error details', error);
+    }), { concurrency: 1 });
 }
 
 async function fetchUndeliverableRecipients({ listId }) {
