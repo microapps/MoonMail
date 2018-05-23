@@ -6,7 +6,7 @@ import wait from '../../lib/utils/wait';
 
 function buildSegmentQuery(listId, conditions, campaignActivityEsQueryFn = campaignActivityEsQuery) {
   return prepareContext(listId, conditions, campaignActivityEsQueryFn)
-    .then(enrichedConditions => createSegmentFilters(enrichedConditions));
+    .then(enrichedConditions => createSegmentFilters(listId, enrichedConditions));
 }
 
 // {
@@ -20,7 +20,7 @@ function buildSegmentQuery(listId, conditions, campaignActivityEsQueryFn = campa
 
 // Note that to perform term queries we need to access the .keyword field instead of the raw one
 // For more details visit https://www.elastic.co/guide/en/elasticsearch/reference/5.3/multi-fields.html
-function createSegmentFilters(conditions) {
+function createSegmentFilters(listId, conditions) {
   const mergeUnique = (left, right) => Array.from(new Set([...(left || []), ...(right || [])]));
 
   const filterConditions = conditions
@@ -52,7 +52,7 @@ function createSegmentFilters(conditions) {
       return aggregatedBody;
     }, { filter: [], should: [], must: [], must_not: [] });
 
-  const composedQuery = {
+  return omitEmpty({
     query: {
       bool: {
         must: mergeUnique(...campaignActivityConditions.must, filterConditions.must),
@@ -61,9 +61,7 @@ function createSegmentFilters(conditions) {
         must_not: mergeUnique(...campaignActivityConditions.must_not, filterConditions.must_not)
       }
     }
-  };
-
-  return omitEmpty(composedQuery);
+  });
 }
 
 function prepareContext(listId, conditions, campaignActivityEsQueryFn) {

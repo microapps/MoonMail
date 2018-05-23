@@ -1,5 +1,6 @@
 import App from './App';
 import Api from './Api';
+import omitEmpty from 'omit-empty';
 import UserContext from './lib/UserContext';
 import Recipients from './domain/Recipients';
 import HttpUtils from './lib/HttpUtils';
@@ -11,7 +12,7 @@ async function createRecipient(event, context, callback) {
     App.logger().info('createRecipient', JSON.stringify(event));
     const { recipient } = JSON.parse(event.body);
     const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    await Api.publishRecipientCreatedEvent({ listId: event.pathParameters.listId, userId: user.id, createRecipientPayload: recipient, subscriptionOrigin: RecipientModel.subscriptionOrigins.api });
+    await Api.publishRecipientCreatedEvent(omitEmpty({ listId: event.pathParameters.listId, userId: user.id, createRecipientPayload: recipient, subscriptionOrigin: RecipientModel.subscriptionOrigins.api }));
     const recipientId = Recipients.buildId(recipient);
     const recourceLocation = `/${event.pathParameters.listId}/recipients/${recipientId}`;
     HttpUtils.buildApiResponse({ statusCode: 202, headers: { Location: recourceLocation }, body: { recipient: { id: recipientId } } }, callback);
@@ -27,7 +28,7 @@ async function updateRecipient(event, context, callback) {
     App.logger().info('updateRecipient', JSON.stringify(event));
     const params = JSON.parse(event.body);
     const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    await Api.publishRecipientUpdatedEvent({ listId: event.pathParameters.listId, userId: user.id, recipientId: event.pathParameters.recipientId, updateRecipientPayload: params });
+    await Api.publishRecipientUpdatedEvent(omitEmpty({ listId: event.pathParameters.listId, userId: user.id, recipientId: event.pathParameters.recipientId, updateRecipientPayload: params }));
     HttpUtils.buildApiResponse({ statusCode: 202 }, callback);
   } catch (error) {
     App.logger().error(error);

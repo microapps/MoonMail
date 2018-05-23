@@ -102,128 +102,128 @@ describe('BuildCampaignActivitySegmentSection', () => {
             }
           ]
         }
-      },
-      {
-        input: { queryType: 'not_received', fieldToQuery: 'time', searchTerm: { gte: 'now-30d/d' }, match: 'any' },
-        expected: {
-          should: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { range: { 'campaignActivity.timestamp': { gte: 'now-30d/d' } } }
-                    ]
-                  }
-                }
-              }
-            }
-          ],
-          must_not: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.event.keyword': 'received' } },
-                      { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        input: { queryType: 'not_opened', fieldToQuery: 'count', searchTerm: 5, match: 'all' },
-        expected: {
-          filter: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '12' } },
-                      { term: { 'campaignActivity.event.keyword': 'received' } }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '123' } },
-                      { term: { 'campaignActivity.event.keyword': 'received' } }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '1234' } },
-                      { term: { 'campaignActivity.event.keyword': 'received' } }
-                    ]
-                  }
-                }
-              }
-            }
-          ],
-          must_not: [
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '12' } },
-                      { term: { 'campaignActivity.event.keyword': 'opened' } }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '123' } },
-                      { term: { 'campaignActivity.event.keyword': 'opened' } }
-                    ]
-                  }
-                }
-              }
-            },
-            {
-              nested: {
-                path: 'campaignActivity',
-                query: {
-                  bool: {
-                    filter: [
-                      { term: { 'campaignActivity.campaignId.keyword': '1234' } },
-                      { term: { 'campaignActivity.event.keyword': 'opened' } }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        }
       }
+      // {
+      //   input: { queryType: 'not_received', fieldToQuery: 'time', searchTerm: { gte: 'now-30d/d' }, match: 'any' },
+      //   expected: {
+      //     should: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { range: { 'campaignActivity.timestamp': { gte: 'now-30d/d' } } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ],
+      //     must_not: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.event.keyword': 'received' } },
+      //                 { terms: { 'campaignActivity.campaignId.keyword': ['12', '123', '1234'] } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ]
+      //   }
+      // }
+      // {
+      //   input: { queryType: 'not_opened', fieldToQuery: 'count', searchTerm: 5, match: 'all' },
+      //   expected: {
+      //     filter: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '12' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'received' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       },
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '123' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'received' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       },
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '1234' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'received' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ],
+      //     must_not: [
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '12' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'opened' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       },
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '123' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'opened' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       },
+      //       {
+      //         nested: {
+      //           path: 'campaignActivity',
+      //           query: {
+      //             bool: {
+      //               filter: [
+      //                 { term: { 'campaignActivity.campaignId.keyword': '1234' } },
+      //                 { term: { 'campaignActivity.event.keyword': 'opened' } }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       }
+      //     ]
+      //   }
+      // }
       // {
       //   input: { queryType: 'not_clicked', fieldToQuery: 'count', searchTerm: 5, match: 'any' },
       //   expected: {
