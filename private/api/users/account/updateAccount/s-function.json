@@ -1,0 +1,49 @@
+{
+  "name": "updateAccount",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-updateAccount",
+  "customRole": false,
+  "handler": "api/users/account/updateAccount/handler.default",
+  "timeout": 16,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account",
+      "method": "PATCH",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "authToken": "$input.params('Authorization')",
+          "vat": "$input.json('$.vat')",
+          "address": "$input.json('$.address')",
+          "expertData": "$input.json('$.expertData')",
+          "payPalEmail": "$input.json('$.payPalEmail')",
+          "notifications": "$input.json('$.notifications')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

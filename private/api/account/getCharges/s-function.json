@@ -1,0 +1,48 @@
+{
+  "name": "getCharges",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-getCharges",
+  "customRole": false,
+  "handler": "api/account/getCharges/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/charges",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "authToken": "$input.params('Authorization')",
+          "startingAfter": "$input.params('startingAfter')",
+          "endingBefore": "$input.params('endingBefore')",
+          "limit": "$input.params('limit')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "STRIPE_API_KEY": "${stripeApiKey}",
+    "DEBUG": true
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

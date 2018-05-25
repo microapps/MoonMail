@@ -1,0 +1,40 @@
+{
+  "name": "handleStripeAutoUnsubscribe",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-handleStripeAutoUnsubscribe",
+  "customRole": false,
+  "handler": "events/users/handleStripeAutoUnsubscribe/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "paymentLogsTableStreamEvent2",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${paymentLogsTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true,
+        "batchSize": 50
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "STRIPE_API_KEY": "${stripeApiKey}",
+    "USERS_TABLE": "$${usersTable}",
+    "EMAIL_INDEX": "$${usersEmailIndex}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

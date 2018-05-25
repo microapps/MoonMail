@@ -1,0 +1,9 @@
+{
+  "comments": false,
+  "presets": [
+    [ "env", { "node": "8.10" } ]
+  ],
+  "plugins": [
+    "source-map-support"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "authToken": "B eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik5UWTJSRGt4TVVJeE9FRTFNRFZET0Rnd05VWTVORUUxT0RSQk1qaEJSakkxTkVNd1FrSTBNdyJ9.eyJlbWFpbCI6ImRhdmlkLmdhcmNpYUBtaWNyb2FwcHMuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vbW9vbm1haWwuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTEzODI0NTMxMzU0NDQwNDU4NDQwIiwiYXVkIjoieXhhSFJWbUFsWnZQUzltd1Nid3pteTlZMjRoOG1LY1YiLCJleHAiOjE0NzU1ODU2MDYsImlhdCI6MTQ3NTU4MjAwNn0.gYUtDcrOFR5wo5xN3821Ref6pDxyBhqt1cDX9YRpfd_vaHcGJHmWOwtkapaxXfmhQm2sIzizUcvv7mpdzStIcMxzSFDyh5_8Z_6Io-yN12csWktCsWzDgbbmzR1mDAc1HuReu1aUPow_bJYq_UOqOYZeMIrxgfq9ZXGyL62WNK6ZI3a-SFhAqH8TmCnl_sS_4WVz-lNYNhaapwMAqOnDOI7VGp_wH6_YzcOYy5OgVenysmjAgYop9d5v9-4RrjYCECv82ghPGaDd7BAevokqwbj-8an5GVjSUZ4cWwdAJedOt9sT-4jqf2WAsLKOeoQqgrUcihSK1KvLUWnyJYb8ig",
+  "address": {
+    "company": "microapps",
+    "websiteUrl": "moonmail.io",
+    "address": "Severo Ochoa",
+    "city": "Málaga",
+    "state": "A Coruña",
+    "zipCode": "29590",
+    "country": "Spain"
+  }
+}

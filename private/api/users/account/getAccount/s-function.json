@@ -1,0 +1,47 @@
+{
+  "name": "getAccount",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-getAccount",
+  "customRole": false,
+  "handler": "api/users/account/getAccount/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "REPORTS_TABLE": "$${reportsTable}",
+    "PER_1000_EMAIL_COST_IN_CENTS": "${per1000EmailCostInCents}",
+    "PER_1000_EMAIL_COST_IN_CENTS_FOR_SES": "${per1000EmailCostInCentsForSES}",
+    "USER_REPORT_INDEX_NAME": "$${reportsUserIndex}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

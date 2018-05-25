@@ -1,0 +1,40 @@
+{
+  "name": "createAffiliates",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-tapfilliate-createAffiliates",
+  "customRole": false,
+  "handler": "events/tapfilliate/createAffiliates/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "usersTableStreamSource",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${usersTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "TAPFILLIATE_API_KEY": "${tapfilliateApiKey}",
+    "TAPFILLIATE_DEFAULT_PROGRAM_ID": "${tapfilliateDefaultProgramId}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

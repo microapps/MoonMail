@@ -1,0 +1,37 @@
+{
+  "name": "unlockStalledLists",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-unlockStalledLists",
+  "customRole": false,
+  "handler": "events/recipients/unlockStalledLists/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "listsMonitor",
+      "type": "schedule",
+      "config": {
+        "schedule": "rate(20 minutes)",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "LISTS_TABLE": "$${listsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}",
+    "LOG_LEVEL": "error"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

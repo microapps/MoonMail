@@ -1,0 +1,43 @@
+service: moonmail-screenshots-service
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:service}-${self:custom.currentStage}
+  region: ${file(./config.${self:custom.currentStage}.json):REGION}
+  timeout: 300
+  environment:
+    SCREENSHOTS_S3_BUCKET: ${file(./config.${self:custom.currentStage}.json):SCREENSHOTS_S3_BUCKET}
+    LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  optimize: 
+    includePaths: ['bin/phantomjs', 'bin/screenshot_script.jss']
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+
+package:
+  individually: true
+
+functions:
+  takeScreenshot:
+    handler: screenshots.takeScreenshot
+    name: ${self:custom.resourcesPrefix}-takeScreenshot
+
+  takeScreenshotFromHtml:
+    handler: screenshots.takeScreenshotFromHtml
+    name: ${self:custom.resourcesPrefix}-takeScreenshotFromHtml

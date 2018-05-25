@@ -1,0 +1,38 @@
+{
+  "data": {
+    "response": {
+      "body": {
+        "email_verified": true,
+        "email": "david.garcia@microapps.com",
+        "picture": "https://someurl.com",
+        "user_id": "some-id",
+        "nickname": "meself",
+        "user_metadata": {
+          "store_url": "https://telepienso.com",
+          "store_goods": "fruits",
+          "acquirer": "BBVA",
+          "isNew": false,
+          "verification_requested": "pending",
+          "acquirer_office": "3391"
+        },
+        "app_metadata": {
+          "verified": true,
+          "smid": "sandboxmerchantid",
+          "smlogin": "sandboxlogin",
+          "smpwd": "sandboxpassword",
+          "phone_number": "+34123456789",
+          "document_name": "DNI.jpeg",
+          "profile_type": "individual",
+          "id_number": "12345678",
+          "country": "Spain",
+          "name": "David",
+          "mid": "merchantid",
+          "mlogin": "merchantlogin",
+          "mpwd": "merchantpassword",
+          "comment": "some comment",
+          "role": 0
+        }
+      }
+    }
+  }
+}

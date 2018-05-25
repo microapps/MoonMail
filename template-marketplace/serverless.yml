@@ -1,0 +1,98 @@
+service: MoonMail-v2-template-marketplace
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:service}-${self:custom.currentStage}
+  region: ${file(./config.${self:custom.currentStage}.json):REGION}
+  timeout: 300
+  environment:
+    LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
+    TEMPLATES_TABLE: ${self:custom.templatesTable}
+    ES_HOST: ${file(./config.${self:custom.currentStage}.json):ES_HOST}
+    ES_REGION: ${file(./config.${self:custom.currentStage}.json):ES_REGION}
+    ES_TEMPLATES_MARKETPLACE_INDEX_NAME: mm_${self:custom.currentStage}_template_marketplace_index
+    ES_TEMPLATES_MARKETPLACE_INDEX_TYPE: templates
+    SCREENSHOT_SERVICE_FUNCTION_NAME: moonmail-screenshots-service-${self:custom.currentStage}-takeScreenshotFromHtml
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+        - "lambda:*"
+        - "logs:*"
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DeleteNetworkInterface"
+      Resource: "*"
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  templatesTable: ${self:service}-${self:custom.currentStage}-templates
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+  
+
+package:
+  individually: true
+
+functions:
+  createTemplate:
+    handler: templates.createTemplate
+    name: ${self:custom.resourcesPrefix}-createTemplate
+
+  updateTemplate:
+    handler: templates.updateTemplate
+    name: ${self:custom.resourcesPrefix}-updateTemplate
+
+  getTemplate:
+    handler: templates.getTemplate
+    name: ${self:custom.resourcesPrefix}-getTemplate
+
+  listTemplates:
+    handler: templates.listTemplates
+    name: ${self:custom.resourcesPrefix}-listTemplates
+
+  syncTemplatesWithES:
+    handler: templates.syncTemplatesWithES
+    name: ${self:custom.resourcesPrefix}-syncTemplatesWithES
+    events:
+      - stream:
+          batchSize: 100
+          startingPosition: LATEST
+          enabled: true
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - templatesTable
+              - StreamArn
+
+  getAllTags:
+    handler: templates.getAllTags
+    name: ${self:custom.resourcesPrefix}-getAllTags
+
+resources:
+  Resources:
+    templatesTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName:  ${self:custom.templatesTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5

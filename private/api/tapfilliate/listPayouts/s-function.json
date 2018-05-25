@@ -1,0 +1,49 @@
+{
+  "name": "listPayouts",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-tapfilliate-listPayouts",
+  "customRole": false,
+  "handler": "api/tapfilliate/listPayouts/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/tapfilliate/payouts",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "authToken": "$input.params('Authorization')",
+          "options": {
+            "page": "$input.params('page')"
+          }
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "TAPFILLIATE_API_KEY": "${tapfilliateApiKey}",
+    "TAPFILLIATE_DEFAULT_PROGRAM_ID": "${tapfilliateDefaultProgramId}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEBUG": true
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

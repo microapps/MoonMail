@@ -1,0 +1,62 @@
+{
+    "Records": [
+        {
+            "eventID": "4b563458e1ef45f8aa61030bf8ca2d30",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1504180500,
+                "Keys": {
+                    "id": {
+                        "S": "123"
+                    }
+                },
+                "NewImage": {
+                    "createdAt": {
+                        "N": "1504180500"
+                    },
+                    "thumbnail": {
+                        "S": "screenshots.moonmail.dev.us-east-1.s3.amazonaws.com/sc-cj70e8e0j000001nz7i9iccgl.png"
+                    },
+                    "price": {
+                        "N": "1"
+                    },
+                    "name": {
+                        "S": "First template"
+                    },
+                    "description": {
+                        "S": "Some description"
+                    },
+                    "id": {
+                        "S": "123"
+                    },
+                    "body": {
+                        "S": "<h1>Hello world</h1>"
+                    },
+                    "category": {
+                        "S": "sales"
+                    },
+                    "tags": {
+                        "L": [
+                            {
+                                "S": "e-comerce"
+                            },
+                            {
+                                "S": "sales"
+                            },
+                            {
+                                "S": "email"
+                            }
+                        ]
+                    }
+                },
+                "SequenceNumber": "100000000014907099283",
+                "SizeBytes": 235,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-template-marketplace-dev-templates/stream/2017-08-31T10:16:33.972"
+        }
+    ]
+}

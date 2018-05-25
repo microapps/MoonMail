@@ -1,0 +1,54 @@
+service: my-service-name
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-aws-alerts
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  config: ${file(./config.${self:custom.currentStage}.json)}
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules: true   # Node modules configuration for packaging
+    packager: 'yarn'   # Packager that will be used to package your external modules
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+  alerts:
+    stages:
+      - prod
+    topics:
+      alarm: 
+        topic: ${self:service}-${opt:stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: name@domain.com # Change this to your email address
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  profile: ${opt:profile, self:custom.config.PROFILE}
+  region: ${opt:region, self:custom.config.REGION}
+  timeout: 300
+  environment:
+    REGION: ${self:custom.config.REGION}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+package:
+  individually: true
+
+functions:
+  hello:
+    handler: src/handler.default
+    events:
+      - http:
+          path: version
+          method: get
+

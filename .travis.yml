@@ -16,11 +16,14 @@ env:
   matrix:
     - TEST_DIR=events
     - TEST_DIR=api
+    - TEST_DIR=private
+    - TEST_DIR=extensions
+    - TEST_DIR=template-marketplace
     - TEST_DIR=lists-microservice
-    - TEST_DIR=events-router
     - TEST_DIR=emails-microservice
     - TEST_DIR=campaigns-microservice
     - TEST_DIR=webhooks-microservice
+    - TEST_DIR=support/events-router
 
 script:
 - cd $TEST_DIR && yarn install && yarn test
@@ -43,7 +46,10 @@ cache:
   - node_modules
   - events/node_modules
   - api/node_modules
+  - private/node_modules
+  - extensions/node_modules
+  - template-marketplace/node_modules
   - lists-microservice/node_modules
   - emails-microservice/node_modules
   - campaigns-microservice/node_modules
-  - events-router/node_modules
+  - support/events-router/node_modules

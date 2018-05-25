@@ -1,0 +1,50 @@
+{
+  "name": "accessAuthorizedAccount",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-account-accessAuthorizedAccount",
+  "customRole": false,
+  "handler": "api/account/accessAuthorizedAccount/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/{userId}/impersonate",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "userId": "$input.params('userId')",
+          "origin": "$input.params('origin')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AUTH0_MM_CLIENT_ID": "${auth0MmClientId}",
+    "AUTH0_GLOBAL_CLIENT_ID": "${auth0ClientId}",
+    "AUTH0_GLOBAL_CLIENT_SECRET": "${auth0ClientSecret}",
+    "AUTH0_DOMAIN": "${auth0Domain}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

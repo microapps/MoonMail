@@ -1,0 +1,44 @@
+{
+  "name": "sendScheduledCampaigns",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-campaigns-sendScheduledCampaings",
+  "customRole": false,
+  "handler": "events/campaigns/sendScheduledCampaigns/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "mySchedule",
+      "type": "schedule",
+      "config": {
+        "schedule": "rate(1 minute)",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "LISTS_TABLE": "$${listsTable}",
+    "SCHEDULED_AT_INDEX_NAME": "$${campaignsScheduledAtIndex}",
+    "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
+    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
+    "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
+    "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
+    "GET_TOTAL_RECIPIENTS_FUNCTION": "$${getTotalRecipientsFunctionName}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

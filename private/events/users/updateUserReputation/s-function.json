@@ -1,0 +1,38 @@
+{
+  "name": "updateUserReputation",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-updateUserReputation",
+  "customRole": false,
+  "handler": "events/users/updateUserReputation/handler.default",
+  "timeout": 16,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "updateUserReputationSns",
+      "type": "sns",
+      "config": {
+        "topicName": "$${updateUserReputationTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "REPORTS_TABLE": "$${reportsTable}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

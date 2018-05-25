@@ -1,0 +1,65 @@
+{
+  "name": "handleSubscription",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-handleSubscription",
+  "customRole": false,
+  "handler": "api/account/handleSubscription/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/subscription",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "email": "$input.json('$.email')",
+          "billingPlan": "$input.json('$.plan')",
+          "token": "$input.json('$.token')",
+          "subscriptionType": "$input.json('$.subscriptionType')",
+          "clickId": "$input.json('$.clickId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "STRIPE_API_KEY": "${stripeApiKey}",
+    "STRIPE_FREE_PLAN": "${stripeFreePlan}",
+    "STRIPE_FREE_SES_PLAN": "${stripeSesFreePlan}",
+    "STRIPE_STARTER_PLAN": "${stripeStarterPlan}",
+    "STRIPE_STARTER_SES_PLAN": "${stripeStarterSesPlan}",
+    "STRIPE_PRO_PLAN": "${stripeProPlan}",
+    "STRIPE_PRO_SES_PLAN": "${stripeProSesPlan}",
+    "STRIPE_ENTERPRISE_PLAN": "${stripeEnterprisePlan}",
+    "STRIPE_ENTERPRISE_SES_PLAN": "${stripeEnterpriseSesPlan}",
+    "EMAIL_ADMINS_TOPIC_ARN": "${emailAdminsTopicARN}",
+    "STRIPE_STARTER_YR_PLAN": "${stripeStarterYrPlan}",
+    "STRIPE_STARTER_SES_YR_PLAN": "${stripeStarterSesYrPlan}",
+    "STRIPE_PRO_YR_PLAN": "${stripeProYrPlan}",
+    "STRIPE_PRO_SES_YR_PLAN": "${stripeProSesYrPlan}",
+    "STRIPE_ENTERPRISE_YR_PLAN": "${stripeEnterpriseYrPlan}",
+    "STRIPE_ENTERPRISE_SES_YR_PLAN": "${stripeEnterpriseSesYrPlan}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

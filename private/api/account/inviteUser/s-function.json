@@ -1,0 +1,49 @@
+{
+  "name": "inviteUser",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-account-inviteUser",
+  "customRole": false,
+  "handler": "api/account/inviteUser/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/authorizations",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "authToken": "$input.params('Authorization')",
+          "email": "$input.json('email')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AUTH0_MM_CLIENT_ID": "${auth0MmClientId}",
+    "AUTH0_GLOBAL_CLIENT_ID": "${auth0v2ClientId}",
+    "AUTH0_GLOBAL_CLIENT_SECRET": "${auth0v2ClientSecret}",
+    "AUTH0_DOMAIN": "${auth0Domain}",
+    "USERS_TABLE": "$${usersTable}",
+    "LOG_LEVEL": "debug"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

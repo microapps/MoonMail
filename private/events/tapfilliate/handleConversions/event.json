@@ -1,0 +1,190 @@
+{
+  "Records": [
+    {
+      "eventID": "0037505abf7ebb64ba38f01ca813de57",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1491215040,
+        "Keys": {
+          "id": {
+            "S": "evt_1A4SMYHWQi1QKLvWB2FVpjjI"
+          }
+        },
+        "NewImage": {
+          "createdAt": {
+            "N": "1491215090"
+          },
+          "eventType": {
+            "S": "charge.succeeded"
+          },
+          "id": {
+            "S": "evt_1A4SMYHWQi1QKLvWB2FVpjjI"
+          },
+          "event": {
+            "M": {
+              "request": {
+                "S": "req_APGutAfFjsAquI"
+              },
+              "data": {
+                "M": {
+                  "object": {
+                    "M": {
+                      "balance_transaction": {
+                        "S": "txn_1A4SMYHWQi1QKLvWhCUv6rZU"
+                      },
+                      "amount": {
+                        "N": "9700"
+                      },
+                      "livemode": {
+                        "BOOL": false
+                      },
+                      "created": {
+                        "N": "1491215082"
+                      },
+                      "description": {
+                        "S": "Test payment"
+                      },
+                      "source": {
+                        "M": {
+                          "country": {
+                            "S": "US"
+                          },
+                          "last4": {
+                            "S": "1881"
+                          },
+                          "funding": {
+                            "S": "credit"
+                          },
+                          "fingerprint": {
+                            "S": "bPuovgXM2l5p75GF"
+                          },
+                          "name": {
+                            "S": "Xavi Colomer"
+                          },
+                          "exp_month": {
+                            "N": "10"
+                          },
+                          "exp_year": {
+                            "N": "2019"
+                          },
+                          "id": {
+                            "S": "card_19LUybHWQi1QKLvWhHzLBulO"
+                          },
+                          "brand": {
+                            "S": "Visa"
+                          },
+                          "customer": {
+                            "S": "cus_91TMLY2p4H8klG"
+                          },
+                          "object": {
+                            "S": "card"
+                          }
+                        }
+                      },
+                      "amount_refunded": {
+                        "N": "0"
+                      },
+                      "refunds": {
+                        "M": {
+                          "total_count": {
+                            "N": "0"
+                          },
+                          "has_more": {
+                            "BOOL": false
+                          },
+                          "url": {
+                            "S": "/v1/charges/ch_1A4SMYHWQi1QKLvWKIGR4r8n/refunds"
+                          },
+                          "object": {
+                            "S": "list"
+                          }
+                        }
+                      },
+                      "statement_descriptor": {
+                        "S": "test"
+                      },
+                      "captured": {
+                        "BOOL": true
+                      },
+                      "paid": {
+                        "BOOL": true
+                      },
+                      "currency": {
+                        "S": "eur"
+                      },
+                      "refunded": {
+                        "BOOL": false
+                      },
+                      "id": {
+                        "S": "ch_1A4SMYHWQi1QKLvWKIGR4r8n"
+                      },
+                      "outcome": {
+                        "M": {
+                          "risk_level": {
+                            "S": "normal"
+                          },
+                          "seller_message": {
+                            "S": "Payment complete."
+                          },
+                          "network_status": {
+                            "S": "approved_by_network"
+                          },
+                          "type": {
+                            "S": "authorized"
+                          }
+                        }
+                      },
+                      "customer": {
+                        "S": "cus_91TMLY2p4H8klG"
+                      },
+                      "object": {
+                        "S": "charge"
+                      },
+                      "status": {
+                        "S": "succeeded"
+                      }
+                    }
+                  }
+                }
+              },
+              "livemode": {
+                "BOOL": false
+              },
+              "created": {
+                "N": "1491215082"
+              },
+              "id": {
+                "S": "evt_1A4SMYHWQi1QKLvWB2FVpjjI"
+              },
+              "api_version": {
+                "S": "2016-07-06"
+              },
+              "type": {
+                "S": "charge.succeeded"
+              },
+              "pending_webhooks": {
+                "N": "2"
+              },
+              "object": {
+                "S": "event"
+              }
+            }
+          },
+          "affiliateRef": {
+            "S": "0942d0b0-1855-11e7-9f66-a94a465eb029"
+          },
+          "timestamp": {
+            "N": "1491215082"
+          }
+        },
+        "SequenceNumber": "17446900000000024994978623",
+        "SizeBytes": 1013,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:862946620411:table/MoonMail-v2-dev-payment-logs/stream/2017-03-30T14:40:27.665"
+    }
+  ]
+}

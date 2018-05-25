@@ -1,0 +1,30 @@
+{
+  "name": "getUserData",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-getUserData",
+  "customRole": false,
+  "handler": "api/users/account/getUserData/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "REPORTS_TABLE": "$${reportsTable}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "USERS_TABLE": "$${usersTable}",
+    "USER_REPORT_INDEX_NAME": "$${reportsUserIndex}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

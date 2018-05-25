@@ -1,0 +1,66 @@
+{
+  "name": "registerAmazonUser",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-amazon-registerAmazonUser",
+  "customRole": false,
+  "handler": "amazon/registerAmazonUser/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [
+    {
+      "path": "/account/register-amazon-user",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "registrationToken": "$input.json('registrationToken')"
+        },
+        "application/x-www-form-urlencoded": {
+          "formData": "$input.body"
+        }
+      },
+      "responses": {
+        "400": {
+          "statusCode": "400"
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.location" : "integration.response.body.url"
+          },
+          "responseModels": {
+            "application/json;charset=UTF-8": "Empty"
+          },
+          "responseTemplates": {
+            "application/json;charset=UTF-8": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AWS_MARKETPLACE_REGION": "${awsMarketplaceRegion}",
+    "AWS_MARKETPLACE_API_KEY": "${awsMarketplaceApiKey}",
+    "AWS_MARKETPLACE_API_SECRET": "${awsMarketplaceApiSecret}",
+    "AWS_MARKETPLACE_PRODUCT_CODE": "${awsMarketplaceProductCode}",
+    "SIGNUP_URL": "${signupUrl}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

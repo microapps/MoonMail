@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSender:dc249ff6-53e8-4bc9-8f69-a488f935aae3",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "9aacf139-5898-5c0a-9da7-a0e917c3ed1f",
+                "TopicArn": "arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSender",
+                "Subject": null,
+                "Message": "{\"userId\":\"google-oauth2|113373534076241986701\",\"userPlan\":\"paid\",\"currentUserState\":{\"sentCampaignsInLastDay\":0,\"recipientsCount\":1},\"campaign\":{\"id\":\"cj3ydiysn000001q984ac7uk1\",\"subject\":\"4\",\"body\":\"H4sIAAAAAAAAA3MrTc5WqMwv5aquLs0rLk0qTi7KTEqNLy3Kqa0FAETk+1AcAAAA\",\"senderId\":\"cj39yaiq5000001qkhw1aydmo\",\"precompiled\":false,\"listIds\":[\"cj39y4c85000401qg8y9siazh\"]},\"recipientsCount\":1}",
+                "Timestamp": "2017-06-30T13:07:39.027Z",
+                "SignatureVersion": "1",
+                "Signature": "Kz3Kk9udOnsloeHVr2Gee0keSmX20jy7DUShwEYz4vUhd3xe4H8dqDmgkGkstZadtszoBwlQojeE9F04UCfZuDMEm6H7xj8hLyagbs3+SJg3J0P2r9L6Jg2WmKU31PGUG3Z2Peb/WTeOucHBK/5F1Yw+/SYdWdcf5lI2Wd4X7AWKKuqbtlWvB77e1FxPsBIjfNA8F5gSUtCjek+S8y/ly46RLJndqbypf9XW+bVX9YzBb77qpjHcxthx0ovFUXcPqCrtFa7gEdAkpekOxbBsqVUayZtLhwEzYr/kxJVqQZMK3+1vntphDcDlrfbz6ZHLSJTvukTmCb83sT0nEmcrAg==",
+                "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-b95095beb82e8f6a046b3aafc7f4149a.pem",
+                "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSender:dc249ff6-53e8-4bc9-8f69-a488f935aae3",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

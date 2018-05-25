@@ -1,0 +1,37 @@
+{
+  "name": "createOrUpdateExperts",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-experts-createOrUpdateExperts",
+  "customRole": false,
+  "handler": "events/experts/createOrUpdateExperts/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "usersTable",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${usersTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "EXPERTS_TABLE": "$${expertsTable}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "cloneDemoData",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-cloneDemoData",
+  "customRole": false,
+  "handler": "api/users/demo/cloneDemoData/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "DEMO_USER_ID": "${demoUserId}",
+    "MODEL_USER_ID": "${modelUserId}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "TEMPLATES_TABLE": "$${templatesTable}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

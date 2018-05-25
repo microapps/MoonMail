@@ -1,0 +1,143 @@
+{
+  "name": "templateMarketplaceHttpApi",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-template-marketplace-templateMarketplaceHttpApi",
+  "customRole": false,
+  "handler": "api/template-marketplace/httpApi/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": ["screenshots-service"],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/marketplace/templates",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "create",
+          "template": "$input.json('$')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/marketplace/templates/{templateId}",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "show",
+          "templateId": "$input.params('templateId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/marketplace/templates",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "list",
+          "authToken": "$input.params('Authorization')",
+          "filters": "$input.json('$.filters')",
+          "options": {
+            "from": "$input.params('from')",
+            "size": "$input.params('size')"
+          }
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/marketplace/templates/{templateId}",
+      "method": "PATCH",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "update",
+          "templateId": "$input.params('templateId')",
+          "template": "$input.json('$')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/marketplace/tags",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "listTags",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/marketplace/templates/{templateId}/buy",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "buy",
+          "authToken": "$input.params('Authorization')",
+          "token": "$input.json('$.token')",
+          "clickId": "$input.json('$.clickId')",
+          "templateId": "$input.params('templateId')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "CREATE_TEMPLATE_FUNCTION": "MoonMail-v2-template-marketplace-${stage}-createTemplate",
+    "GET_TEMPLATE_FUNCTION": "MoonMail-v2-template-marketplace-${stage}-getTemplate",
+    "UPDATE_TEMPLATE_FUNCTION": "MoonMail-v2-template-marketplace-${stage}-updateTemplate",
+    "LIST_TEMPLATES_FUNCTION": "MoonMail-v2-template-marketplace-${stage}-listTemplates",
+    "LIST_TAGS_FUNCTION": "MoonMail-v2-template-marketplace-${stage}-getAllTags",
+    "USERS_TABLE": "$${usersTable}",
+    "STRIPE_API_KEY": "${stripeApiKey}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

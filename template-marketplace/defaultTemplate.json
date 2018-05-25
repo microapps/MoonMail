@@ -1,0 +1,11 @@
+{
+  "template": {
+      "id": "123",
+      "name": "First template",
+      "description": "Some description",
+      "body": "<h1>Hello world</h1>",
+      "price": 1.0,
+      "category": "sales",
+      "tags": ["e-comerce", "sales", "email"]
+  }
+}

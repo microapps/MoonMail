@@ -1,0 +1,21 @@
+# Logs
+npm-debug.log
+
+# Dependency directory
+node_modules/
+
+# IDE Stuff
+**/.idea
+
+# OS STUFF
+.DS_Store
+.tmp
+
+# SERVERLESS STUFF
+_meta
+admin.env
+.env
+_tmp
+.serverless
+
+cert.pem

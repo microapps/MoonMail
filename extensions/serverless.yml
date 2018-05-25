@@ -1,0 +1,45 @@
+service: moonmail-extensions
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${file(./config.${self:custom.currentStage}.json):PROFILE}
+  region: ${file(./config.${self:custom.currentStage}.json):REGION}
+  timeout: 300
+  environment:
+    USERS_TABLE: ${file(./config.${self:custom.currentStage}.json):USERS_TABLE}
+    STRIPE_API_KEY: ${file(./config.${self:custom.currentStage}.json):STRIPE_API_KEY}
+    STRIPE_FILE_ATTACHMENT_PLAN: ${file(./config.${self:custom.currentStage}.json):STRIPE_FILE_ATTACHMENT_PLAN}
+    STRIPE_IP_ADDRESS_PLAN: ${file(./config.${self:custom.currentStage}.json):STRIPE_IP_ADDRESS_PLAN}
+    STRIPE_DOWNLOAD_CLEAN_LIST_PLAN: ${file(./config.${self:custom.currentStage}.json):STRIPE_DOWNLOAD_CLEAN_LIST_PLAN}
+    STRIPE_RSS_TO_EMAIL_PLAN: ${file(./config.${self:custom.currentStage}.json):STRIPE_RSS_TO_EMAIL_PLAN}
+    LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${opt:stage}
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+
+package:
+  individually: true
+
+functions:
+  installExtension:
+    handler: handler.installExtension
+    name: ${self:custom.resourcesPrefix}-installExtension
+  uninstallExtension:
+    handler: handler.uninstallExtension
+    name: ${self:custom.resourcesPrefix}-uninstallExtension

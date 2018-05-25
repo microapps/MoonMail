@@ -1,0 +1,42 @@
+{
+  "name": "cleanRecipients",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-cleanRecipients",
+  "customRole": false,
+  "handler": "events/recipients/cleanRecipients/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "recipientsTableStreamEvent-v2",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${recipientsTableStreamARN}",
+        "startingPosition": "TRIM_HORIZON",
+        "enabled": true,
+        "batchSize": 250
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}",
+    "LOG_LEVEL": "error",
+    "EMAIL_CLEANING_SERVICE_USERNAME": "${emailCleaningServiceUsername}",
+    "EMAIL_CLEANING_SERVICE_PASSWORD": "${emailCleaningServicePassword}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

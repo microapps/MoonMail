@@ -1,0 +1,53 @@
+{
+  "extensions": [
+    {
+      "id": "ip-address",
+      "name": "Dedicated IP address",
+      "price": 99.99,
+      "free-trial": false,
+      "recurring": true
+    },
+    {
+      "id": "zapier",
+      "name": "Zapier Connector",
+      "price": 0.00,
+      "free-trial": true,
+      "recurring": true
+    },
+    {
+      "id": "advanced-tooltips",
+      "name": "Advanced Dashboard Tooltips",
+      "price": 0.00,
+      "free-trial": true,
+      "recurring": true
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "price": 0.00,
+      "free-trial": true,
+      "recurring": true
+    },
+    {
+      "id": "file-attachment",
+      "name": "Attach files to Campaigns",
+      "price": 4.99,
+      "free-trial": false,
+      "recurring": true
+    },
+    {
+      "id": "download-clean-lists",
+      "name": "Clean your Email List",
+      "price": 29.99,
+      "free-trial": false,
+      "recurring": true
+    },
+    {
+      "id": "rss-to-email",
+      "name": "RSS to Email",
+      "price": 9.99,
+      "free-trial": true,
+      "recurring": true
+    }
+  ]
+}

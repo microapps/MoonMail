@@ -1,0 +1,17 @@
+{
+  "presets": ["es2015", "stage-3"],
+  "plugins": [
+    ["babel-plugin-transform-builtin-extend", {
+      globals: ["Error"]
+    }],
+    ["transform-async-to-module-method", {
+      "module": "bluebird",
+      "method": "coroutine"
+    }],
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }],
+    "transform-promise-to-bluebird"
+  ]
+}

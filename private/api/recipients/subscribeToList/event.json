@@ -1,0 +1,10 @@
+{
+  "listId": "cj6m16jxq000001p0gjefa1vx",
+  "recipient": {
+      "u": "Z29vZ2xlLW9hdXRoMnwxMTMzNzM1MzQwNzYyNDE5ODY3MDE",
+      "email": "carlos.castellanos+1240@microapps.com"
+  },
+  "encodedUserId": "Z29vZ2xlLW9hdXRoMnwxMTMzNzM1MzQwNzYyNDE5ODY3MDE",
+  "json": true,
+  "headers": "{\"Accept\": \"application/json, text/javascript, */*; q=0.01\" ,\"Accept-Encoding\": \"gzip, deflate, br\" ,\"Accept-Language\": \"en-US,en;q=0.8,es;q=0.6\" ,\"CloudFront-Forwarded-Proto\": \"https\" ,\"CloudFront-Is-Desktop-Viewer\": \"true\" ,\"CloudFront-Is-Mobile-Viewer\": \"false\" ,\"CloudFront-Is-SmartTV-Viewer\": \"false\" ,\"CloudFront-Is-Tablet-Viewer\": \"false\" ,\"CloudFront-Viewer-Country\": \"ES\" ,\"Content-Type\": \"application/json\" ,\"Host\": \"mkre901l1e.execute-api.us-east-1.amazonaws.com\" ,\"Origin\": \"http://staging.moonmail.s3-website-eu-west-1.amazonaws.com\" ,\"Referer\": \"http://staging.moonmail.s3-website-eu-west-1.amazonaws.com/lists/cj6m16jxq000001p0gjefa1vx/forms/embedded\" ,\"User-Agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36\" ,\"Via\": \"1.1 1d8b4bb4f9fe1385f0ea4e0fbefc9fb5.cloudfront.net (CloudFront)\" ,\"X-Amz-Cf-Id\": \"Skr4Q8pUTu_J5hx9SGfocb-vVFStMLOUlqRX4IULlZfubjcwqgNG_g==\" ,\"X-Amzn-Trace-Id\": \"Root=1-59b0188f-0bb4e1b64caa4d995348ed0f\" ,\"X-Forwarded-For\": \"194.140.150.210, 54.240.150.50\" ,\"X-Forwarded-Port\": \"443\" ,\"X-Forwarded-Proto\": \"https\" }"
+}

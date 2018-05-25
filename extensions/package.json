@@ -1,0 +1,29 @@
+{
+  "scripts": {
+    "test": "yarn run test:unit",
+    "test:unit": "NODE_ENV=test mocha --require choma --require babel-register --colors \"./{,!(node_modules)/**/}/*.test.js\"",
+    "watch": "NODE_ENV=test mocha --require choma --require babel-register --colors --watch \"./{,!(node_modules)/**/}/*.test.js\""
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-promise-to-bluebird": "^1.1.1",
+    "babel-plugin-transform-regenerator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "chai": "3.5",
+    "chai-as-promised": "^7.1.1",
+    "choma": "^1.2.1",
+    "mocha": "^3.4.2",
+    "serverless": "^1.17.0",
+    "serverless-offline": "^3.15.1",
+    "serverless-plugin-optimize": "^3.0.1-rc.1",
+    "sinon": "1",
+    "sinon-as-promised": "^4.0.3",
+    "sinon-chai": "^2.11.0"
+  },
+  "dependencies": {
+    "moonmail-models": "microapps/moonmail-models",
+    "stripe": "^4.23.1",
+    "winston": "2"
+  }
+}

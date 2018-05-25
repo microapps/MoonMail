@@ -1,0 +1,68 @@
+{
+  "name": "confirmSubscription",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-confirmSubscription",
+  "customRole": false,
+  "handler": "api/recipients/confirmSubscription/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/lists/{listId}/recipients/{recipientId}/verify",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "listId": "$input.params('listId')",
+          "recipientId": "$input.params('recipientId')",
+          "verificationCode": "$input.params('v')",
+          "encodedUserId": "$input.params('u')"
+        }
+      },
+      "responses": {
+        "400": {
+          "statusCode": "400"
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.location": "integration.response.body.url"
+          },
+          "responseModels": {
+            "application/json;charset=UTF-8": "Empty"
+          },
+          "responseTemplates": {
+            "application/json;charset=UTF-8": ""
+          }
+        }
+      }
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}",
+    "SUCCESS_PAGE": "${confirmSubscriptionSuccessPage}",
+    "ERROR_PAGE": "${confirmSubscriptionErrorPage}",
+    "EVENTS_BUS_TOPIC_ARN": "${eventsBusTopicARN}",
+    "LOG_LEVEL": "info",
+    "EVENTS_ROUTER_STREAM_NAME": "MoonMail-v2-events-router-prod-EventsIngestionStream"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

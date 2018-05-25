@@ -1,0 +1,39 @@
+{
+  "name": "attachPayoutMethod",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-tapfilliate-attachPayoutMethod",
+  "customRole": false,
+  "handler": "events/tapfilliate/attachPayoutMethod/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "usersTableStreamSourceToAttachPaymentMethod",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${usersTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "TAPFILLIATE_API_KEY": "${tapfilliateApiKey}",
+    "TAPFILLIATE_DEFAULT_PROGRAM_ID": "${tapfilliateDefaultProgramId}",
+    "USERS_TABLE": "$${usersTable}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

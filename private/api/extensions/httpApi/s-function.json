@@ -1,0 +1,64 @@
+{
+  "name": "extensionsHttpApi",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-extensions-httpApi",
+  "customRole": false,
+  "handler": "api/extensions/httpApi/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/extensions/{extensionId}/install",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "install",
+          "extensionId": "$input.params('extensionId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    },
+    {
+      "path": "/extensions/{extensionId}/uninstall",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "action": "uninstall",
+          "extensionId": "$input.params('extensionId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "INSTALL_EXTENSION_FN": "moonmail-extensions-${stage}-installExtension",
+    "UNINSTALL_EXTENSION_FN": "moonmail-extensions-${stage}-uninstallExtension",
+    "LOG_LEVEL": "debug"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

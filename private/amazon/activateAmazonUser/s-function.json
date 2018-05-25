@@ -1,0 +1,50 @@
+{
+  "name": "activateAmazonUser",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-amazon-activateAmazonUser",
+  "customRole": false,
+  "handler": "amazon/activateAmazonUser/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [
+    {
+      "path": "/account/activate-amazon-user",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "amazonCustomerId": "$input.json('$.amazonCustomerId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AWS_MARKETPLACE_REGION": "${awsMarketplaceRegion}",
+    "AWS_MARKETPLACE_API_KEY": "${awsMarketplaceApiKey}",
+    "AWS_MARKETPLACE_API_SECRET": "${awsMarketplaceApiSecret}",
+    "AWS_MARKETPLACE_PRODUCT_CODE": "${awsMarketplaceProductCode}",
+    "USERS_TABLE": "$${usersTable}",
+    "AMAZON_CUSTOMER_INDEX": "$${usersAmazonCustomerIndex}",
+    "SIGNUP_URL": "${signupUrl}",
+    "LOG_LEVEL": "debug"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

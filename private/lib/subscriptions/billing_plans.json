@@ -1,0 +1,166 @@
+{
+  "$common": {
+    "subscriptions": [
+      {
+        "type": "monthly",
+        "quantity": 1,
+        "discountFactor": 0
+      },
+      {
+        "type": "annual",
+        "quantity": 12,
+        "discountFactor": 0.2,
+        "primary": true
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "free_deprecated",
+      "title": "Free Deprecated",
+      "price": 0,
+      "limits": {
+        "rate": 50,
+        "emailsPerMonth": 7500,
+        "recipientsPerCampaign": 250,
+        "users": 1,
+        "automations": 0
+      }
+    },
+    {
+      "id": "free_ses_deprecated",
+      "title": "Free SES Deprecated",
+      "price": 0,
+      "limits": {
+        "rate": 50,
+        "emailsPerMonth": 60000,
+        "recipientsPerCampaign": 2000,
+        "users": 1,
+        "automations": 0
+      }
+    },
+    {
+      "id": "starter_deprecated",
+      "title": "Starter Deprecated",
+      "price": 9.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": null,
+        "users": null,
+        "automations": 0
+      }
+    },
+    {
+      "id": "starter_ses_deprecated",
+      "title": "Starter SES Deprecated",
+      "price": 9.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": null,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "free",
+      "title": "Free",
+      "price": 0,
+      "limits": {
+        "rate": 50,
+        "recipientsPerCampaign": 10,
+        "campaignsPerDay": 1,
+        "recipientsInTotal": 2000,
+        "users": 1,
+        "automations": 0
+      }
+    },
+    {
+      "id": "free_ses",
+      "title": "Free",
+      "price": 0,
+      "limits": {
+        "rate": 50,
+        "recipientsPerCampaign": 2000,
+        "campaignsPerDay": 1,
+        "recipientsInTotal": 2000,
+        "users": 1,
+        "automations": 0
+      }
+    },
+    {
+      "id": "paid",
+      "title": "Starter",
+      "price": 19.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 25000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "pro",
+      "title": "Pro",
+      "price": 49.99,
+      "isFeatured": true,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 70000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "enterprise",
+      "title": "Enterprise",
+      "price": 299.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 1000000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "aws_saas_marketplace_basic",
+      "title": "Basic",
+      "price": 299.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 500000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "aws_saas_marketplace_pro",
+      "title": "PRO",
+      "price": 699.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 5000000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "staff",
+      "title": "Staff",
+      "price": 1,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": null,
+        "users": null,
+        "automations": null
+      }
+    }
+  ]
+}

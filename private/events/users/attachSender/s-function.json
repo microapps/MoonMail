@@ -1,0 +1,64 @@
+{
+  "name": "attachSender",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-attachSender",
+  "customRole": false,
+  "handler": "events/users/attachSender/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "runtime": {
+      "babel": {
+        "presets": [
+          "es2015"
+        ]
+      },
+      "handlerExt": "js",
+      "requires": [],
+      "plugins": [],
+      "transforms": [],
+      "exclude": [],
+      "ignore": [
+        "aws-sdk"
+      ],
+      "extensions": [],
+      "minify": true
+    }
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "attachSenderSns",
+      "type": "sns",
+      "config": {
+        "topicName": "$${attachSenderTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "PRECOMPILE_CAMPAIGN_TOPIC_ARN": "${precompileCampaignTopicARN}",
+    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
+    "DEFAULT_API_KEY": "${defaultApiKey}",
+    "DEFAULT_API_SECRET": "${defaultApiSecret}",
+    "DEFAULT_REGION": "${defaultRegion}",
+    "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
+    "DEFAULT_FROM_NAME": "${defaultFromName}",
+    "USERS_TABLE": "$${usersTable}",
+    "REPORTS_TABLE": "$${reportsTable}",
+    "STRIPE_API_KEY": "${stripeApiKey}",
+    "PER_1000_EMAIL_COST_IN_CENTS": "${per1000EmailCostInCents}",
+    "PER_1000_EMAIL_COST_IN_CENTS_FOR_SES": "${per1000EmailCostInCentsForSES}",
+    "LOG_LEVEL": "error",
+    "USER_REPORT_INDEX_NAME": "$${reportsUserIndex}",
+    "FREE_SENDERS_CONFIG": "${freeSendersConfig}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "createSampleData",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-createSampleData",
+  "customRole": false,
+  "handler": "events/users/createSampleData/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "createUserSampleDataStream",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${usersTableStreamARN}",
+        "startingPosition": "LATEST",
+        "batchSize": 5,
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "AUTH0_DOMAIN": "${auth0Domain}",
+    "AUTH0_GLOBAL_CLIENT_ID": "${auth0v2ClientId}",
+    "AUTH0_GLOBAL_CLIENT_SECRET": "${auth0v2ClientSecret}",
+    "LISTS_TABLE": "$${listsTable}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "AUTOMATIONS_TABLE": "$${automationsTable}",
+    "AUTOMATION_ACTIONS_TABLE": "$${automationActionsTable}",
+    "AUTH0_DOMAIN": "${auth0Domain}",
+    "LOG_LEVEL": "error"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "name": "subscribeToList",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-subscribeToList",
+  "customRole": false,
+  "handler": "api/recipients/subscribeToList/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/lists/{listId}/subscribe",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "listId": "$input.params('listId')",
+          "recipient": "$input.json('$')",
+          "encodedUserId": "$input.json('$.u')",
+          "json": true,
+          "headers": "{#foreach($header in $input.params().header.keySet())\"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\" #if($foreach.hasNext),#end#end}"
+        },
+        "application/x-www-form-urlencoded": {
+          "recipient": "$input.json('$')",
+          "listId": "$input.params('listId')",
+          "json": false,
+          "headers": "{#foreach($header in $input.params().header.keySet())\"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\" #if($foreach.hasNext),#end#end}"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}",
+    "USERS_TABLE": "$${usersTable}",
+    "DEFAULT_API_KEY": "${defaultApiKey}",
+    "DEFAULT_API_SECRET": "${defaultApiSecret}",
+    "DEFAULT_REGION": "${defaultRegion}",
+    "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
+    "DEFAULT_FROM_NAME": "${defaultFromName}",
+    "API_HOST": "${apiHost}",
+    "SUCCESS_PAGE": "${confirmSubscriptionSuccessPage}",
+    "ERROR_PAGE": "${confirmSubscriptionErrorPage}",
+    "FREE_SENDERS_CONFIG": "${freeSendersConfig}",
+    "EVENTS_BUS_TOPIC_ARN": "${eventsBusTopicARN}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

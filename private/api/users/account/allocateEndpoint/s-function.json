@@ -1,0 +1,50 @@
+{
+  "name": "allocateEndpoint",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-users-allocateEndpoint",
+  "customRole": false,
+  "handler": "api/users/account/allocateEndpoint/handler.default",
+  "timeout": 16,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/account/allocate-endpoint",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "sourceEmail": "$input.json('$.sourceEmail')",
+          "newEmail": "$input.json('$.newEmail')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "USERS_TABLE": "$${usersTable}",
+    "AUTH0_MM_CLIENT_ID": "${auth0MmClientId}",
+    "AUTH0_GLOBAL_CLIENT_ID": "${auth0v2ClientId}",
+    "AUTH0_GLOBAL_CLIENT_SECRET": "${auth0v2ClientSecret}",
+    "AUTH0_DOMAIN": "${auth0Domain}",
+    "EMAIL_ADMINS_TOPIC_ARN": "${emailAdminsTopicARN}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
