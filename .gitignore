@@ -70,12 +70,8 @@ _meta/
 !./_meta/variables/s-variables-common.json
 playground/
 
-api/lib/auth.js
-api/lib/auth-token-decryptor.js.bak
 
 /.vscode/settings.json
-api/lib/get_*
-api/lib/models/
 
 **/config.*.json
 lists-microservice/public
