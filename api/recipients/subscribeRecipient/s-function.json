@@ -36,7 +36,7 @@
     "SERVERLESS_REGION": "${region}",
     "DEBUG": "true",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
-    "EVENTS_ROUTER_STREAM_NAME": "MoonMail-v2-events-router-dev-EventsIngestionStream"
+    "EVENTS_ROUTER_STREAM_NAME": "${eventsRouterStreamName}"
   },
   "vpc": {
     "securityGroupIds": [],

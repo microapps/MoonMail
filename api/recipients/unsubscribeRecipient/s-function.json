@@ -55,7 +55,7 @@
     "UNSUBSCRIBED_RECIPIENT_TOPIC_ARN": "${unsubscribedRecipientTopicARN}",
     "UNSUBSCRIBED_CALLBACK_URL": "${unsubscribedCallbackUrl}",
     "LISTS_TABLE": "$${listsTable}",
-    "EVENTS_ROUTER_STREAM_NAME": "${webhooksEventsStreamName}"
+    "EVENTS_ROUTER_STREAM_NAME": "${eventsRouterStreamName}"
   },
   "vpc": {
     "securityGroupIds": [],
