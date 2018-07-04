@@ -90,8 +90,8 @@
       }
     },
     {
-      "id": "paid",
-      "title": "Starter",
+      "id": "paid_deprecated_2",
+      "title": "Starter_deprecated_2",
       "price": 19.99,
       "limits": {
         "recipientsPerCampaign": null,
@@ -102,8 +102,20 @@
       }
     },
     {
-      "id": "pro",
-      "title": "Pro",
+      "id": "paid",
+      "title": "Starter",
+      "price": 29.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 25000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "pro_deprecated",
+      "title": "Pro_deprecated_2",
       "price": 49.99,
       "isFeatured": true,
       "limits": {
@@ -115,9 +127,34 @@
       }
     },
     {
+      "id": "pro",
+      "title": "Pro",
+      "price": 59.99,
+      "isFeatured": true,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 70000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
+      "id": "enterprise_deprecated_2",
+      "title": "Enterprise_deprecated_2",
+      "price": 299.99,
+      "limits": {
+        "recipientsPerCampaign": null,
+        "campaignsPerDay": null,
+        "recipientsInTotal": 1000000,
+        "users": null,
+        "automations": null
+      }
+    },
+    {
       "id": "enterprise",
       "title": "Enterprise",
-      "price": 299.99,
+      "price": 399.99,
       "limits": {
         "recipientsPerCampaign": null,
         "campaignsPerDay": null,
