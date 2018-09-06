@@ -28,8 +28,8 @@ const checkTotalAttempts = (failedRequest) => (parseInt(failedRequest.totalAttem
 const checkTimer = (failedRequest) => {
     const timeToCall = parseInt(failedRequest.updatedAt) + parseInt(failedRequest.timer)
     const now = new Date().getTime()
-    if (now >= timeToCall) return true
-    return false
+
+    return now >= timeToCall
 }
 
 const removeRequest = async (failedRequest) => {
