@@ -1,3 +1,5 @@
+'use strict';
+
 import { verify, sign } from 'jsonwebtoken'
 import { httpErrors } from './api-utils'
 import { S3 } from 'aws-sdk'

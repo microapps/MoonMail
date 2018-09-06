@@ -1,3 +1,5 @@
+'use strict';
+
 import AWS from 'aws-sdk'
 import { readAll, remove } from './failed-webhooks/webhook-handler'
 import { readOne } from './webhooks/webhook-handler'
