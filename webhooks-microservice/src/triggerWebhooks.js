@@ -1,3 +1,5 @@
+'use strict'
+
 import request from 'requestretry'
 import { create, remove, update } from './failed-webhooks/webhook-handler'
 
@@ -37,24 +39,35 @@ const getRequestBody = (webhook) => ({
 const failedRequestParams = (webhook, totalAttempts = 0, timer = process.env.REQUESTTIMER) => ({
         timer: timer * process.env.REQUESTTIMERMULTIPLIER,
         webhook: JSON.stringify(webhook),
-        totalAttempts: parseInt(totalAttempts)+1
+        totalAttempts: parseInt(totalAttempts) + 1
     })
 
 const handleResponseCode = async (responseCode, event) => {
-    if (parseInt(responseCode) < 200 || parseInt(responseCode) > 299 && event.source == 'handler') {
+    if (isHandlerError(responseCode, event)) {
         const dbData = failedRequestParams(event.webhook)
-        await create(dbData)
-        return true
+        return create(dbData)
     }
-    if (parseInt(responseCode) < 200 || parseInt(responseCode) > 299 && event.source == 'sniffer') {
+    else if (isSnifferError(responseCode, event)) {
         const dbData = failedRequestParams(event.webhook, event.failedRequest.totalAttempts, event.failedRequest.timer)
         dbData.createdAt = event.failedRequest.createdAt
-        await update(event.failedRequest.id, dbData)
+        return update(event.failedRequest.id, dbData)
+    }
+    else if (isSnifferSuccess(responseCode, event)) {
+        return remove(event.failedRequest.id)
+    }
+    else {
         return true
     }
-    if (parseInt(responseCode) >= 200 && parseInt(responseCode) <= 299 && event.source == 'sniffer') {
-        await remove(event.failedRequest.id)
-    } else {
-        return true
-    }
+}
+
+function isHandlerError(responseCode, { source }) {
+    return parseInt(responseCode) < 200 || parseInt(responseCode) > 299 && source == 'handler'
+}
+
+function isSnifferError(responseCode, { source }) {
+    return parseInt(responseCode) < 200 || parseInt(responseCode) > 299 && source == 'sniffer'
+}
+
+function isSnifferSuccess(responseCode, { source }) {
+    return parseInt(responseCode) >= 200 && parseInt(responseCode) <= 299 && source == 'sniffer'
 }
