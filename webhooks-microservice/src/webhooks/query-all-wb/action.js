@@ -1,4 +1,4 @@
-
+'use strict';
 
 import AWS from 'aws-sdk'
 
@@ -10,7 +10,7 @@ export default async function queryAllWb(expressionValue) {
             KeyConditionExpression: 'wb = :wb',
             ExpressionAttributeValues: { ':wb': expressionValue }
         }
-        
+
         const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
         return await dynamoDb.query(params).promise()

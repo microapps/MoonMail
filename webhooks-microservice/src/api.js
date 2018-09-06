@@ -1,3 +1,5 @@
+'use strict';
+
 import { create, queryAllUserId, readOne, remove, update } from './webhooks/webhook-handler'
 import { decryptToken } from './auth-token'
 import { validateParams, paramsTypes, responses, httpErrors, log, validateItem } from './api-utils'

@@ -1,4 +1,4 @@
-
+'use strict';
 
 import AWS from 'aws-sdk'
 

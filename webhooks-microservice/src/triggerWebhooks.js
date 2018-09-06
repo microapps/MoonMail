@@ -1,3 +1,5 @@
+'use strict'
+
 import request from 'requestretry'
 import { create, remove, update } from './failed-webhooks/webhook-handler'
 
