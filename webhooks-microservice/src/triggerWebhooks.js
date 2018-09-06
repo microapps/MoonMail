@@ -58,7 +58,6 @@ const handleResponseCode = async (responseCode, event) => {
     else {
         return true
     }
-
 }
 
 function isHandlerError(responseCode, { source }) {
