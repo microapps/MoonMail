@@ -43,7 +43,6 @@ const failedRequestParams = (webhook, totalAttempts = 0, timer = process.env.REQ
     })
 
 const handleResponseCode = async (responseCode, event) => {
-    console.log(`ResponseCode: ${responseCode} - Source: ${event.source}`)
     if (isHandlerError(responseCode, event)) {
         const dbData = failedRequestParams(event.webhook)
         return create(dbData)
