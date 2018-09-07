@@ -71,7 +71,7 @@ const responses = {
     error: (error) => ({
         'statusCode': error.code || 500,
         'headers': responseHeaders,
-        'body': JSON.stringify({ err: error })
+        'body': JSON.stringify({ message: error })
     })
 }
 
