@@ -11,6 +11,6 @@
   "DEBUG": false,
   "USERTABLE": "MoonMail-v2-dev-users",
   "LISTTABLE": "MoonMail-v2-dev-lists",
-  "PEMBUCKETNAME": "token-pem-file",
+  "PEMBUCKETNAME": "webhooks-dev-token-pem-file",
   "PEMFILENAME": "auth.pem"
 }
