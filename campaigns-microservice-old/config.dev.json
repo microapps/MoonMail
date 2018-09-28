@@ -1,0 +1,6 @@
+{
+  "REGION": "us-east-1",
+  "PROFILE": "dev",
+  "REPORTS_TABLE": "MoonMail-v2-dev-reports",
+  "KINESIS_SHARDS": 1
+}
