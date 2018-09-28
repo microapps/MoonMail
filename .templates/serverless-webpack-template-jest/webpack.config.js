@@ -5,6 +5,8 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = {
   entry: slsw.lib.entries,
   target: 'node',
+  devtool: 'source-map',
+  externals: [nodeExternals()],
   mode: slsw.lib.webpack.isLocal ? 'development': 'production',
   optimization: {
     // We no not want to minimize our code.
@@ -14,18 +16,21 @@ module.exports = {
     // Turn off size warnings for entry points
     hints: false
   },
-  devtool: 'nosources-source-map',
-  externals: [nodeExternals()],
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  },
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        loader: 'babel-loader',
+        include: __dirname,
+        exclude: /node_modules/
+      },
+      {
         test: /\.js$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader'
-          }
-        ],
+        use: ["source-map-loader"],
+        enforce: "pre"
       }
     ]
   },

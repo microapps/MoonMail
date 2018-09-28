@@ -1,6 +1,6 @@
-import omitEmpty from "omit-empty";
+const omitEmpty =  require('omit-empty');
 
-function buildResponse({ statusCode = 200, body = {}, headers = {} }) {
+export function buildResponse({ statusCode = 200, body = {}, headers = {} }: any) {
   return {
     statusCode,
     headers: omitEmpty(
@@ -17,17 +17,11 @@ function buildResponse({ statusCode = 200, body = {}, headers = {} }) {
   };
 }
 
-function buildRedirectResponse({ url }) {
+export function buildRedirectResponse({ url }: any) {
   const headers = { Location: url };
   return buildResponse({ statusCode: 302, headers });
 }
 
-function redirectTo({ url, callback }) {
+export function redirectTo({ url, callback }: any) {
   return callback(null, buildRedirectResponse({ url }));
 }
-
-export default {
-  buildResponse,
-  buildRedirectResponse,
-  redirectTo
-};

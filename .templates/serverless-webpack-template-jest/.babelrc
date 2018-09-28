@@ -1,7 +1,8 @@
 {
   "comments": false,
   "presets": [
-    [ "env", { "node": "8.10" } ]
+    "@babel/typescript",
+    [ "@babel/env", { "targets": {"node": "8.10" }} ]
   ],
   "plugins": [
     "source-map-support"

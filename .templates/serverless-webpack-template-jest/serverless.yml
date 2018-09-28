@@ -11,9 +11,8 @@ custom:
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   config: ${file(./config.${self:custom.currentStage}.json)}
   webpack:
-    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
-    includeModules: true   # Node modules configuration for packaging
-    packager: 'yarn'   # Packager that will be used to package your external modules
+    webpackConfig: ./webpack.config.js # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
   serverless-offline:
     babelOptions:
       presets: ["es2015"]
@@ -21,18 +20,18 @@ custom:
     stages:
       - prod
     topics:
-      alarm: 
-        topic: ${self:service}-${opt:stage}-alerts-alarm
+      alarm:
+        topic: ${self:service}-${self:custom.currentStage}-alerts-alarm
         notifications:
           - protocol: email
-            endpoint: name@domain.com # Change this to your email address
+            endpoint: rhinoandre@gmail.com # Change this to your email address
 
 provider:
   name: aws
   runtime: nodejs8.10
   profile: ${opt:profile, self:custom.config.PROFILE}
   region: ${opt:region, self:custom.config.REGION}
-  timeout: 300
+  timeout: 3
   environment:
     REGION: ${self:custom.config.REGION}
   iamRoleStatements:
