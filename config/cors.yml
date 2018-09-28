@@ -1,0 +1,77 @@
+allowOrigin: "*"
+allowHeaders:
+  - X-Amz-Security-Token
+  - Authorization
+  - Content-Type
+  - X-Amz-Date
+  - X-Api-Key
+  - authToken
+  - Accept
+RESPONSES:
+  302:
+    statusCode: "302"
+    selectionPattern: "http.*"
+    response:
+      parameters:
+        "method.response.header.Location": "integration.response.body.errorMessage"
+      templates:
+        application/json: "$input.path('$')"
+        application/x-www-form-urlencoded: "$input.path('$')"
+    responseModels:
+      application/json: "Empty"
+  400:
+    statusCode: "400"
+    selectionPattern: .*\"status\":400.*"
+    response:
+      parameters: {}
+    responseTemplates:
+      application/json: "$input.path('$.errorMessage')"
+  401:
+    statusCode: "401"
+    selectionPattern: ".*\"status\":401.*"
+    response:
+      parameters: {}
+      templates:
+      application/json: "$input.path('$.errorMessage')"
+  403:
+    statusCode: "403"
+    selectionPattern: ".*\"status\":403.*"
+    response:
+      parameters: {}
+      templates:
+        application/json: "$input.path('$.errorMessage')"
+  404:
+    statusCode: "404"
+    selectionPattern: ".*\"status\":404.*"
+    response:
+      parameters: {}
+    responseTemplates:
+      application/json: "$input.path('$.errorMessage')"
+  409:
+    statusCode: "409"
+    selectionPattern: ".*\"status\":409.*"
+    response:
+      parameters: {}
+      templates:
+        application/json: "$input.path('$.errorMessage')"
+  500:
+    statusCode: "500"
+    selectionPattern: ".*\"status\":500.*"
+    response:
+      parameters: {}
+      templates:
+        application/json: "$input.path('$.errorMessage')"
+  503:
+    statusCode: "503"
+    selectionPattern: ".*\"status\":503.*"
+    response:
+      parameters: {}
+      templates:
+        application/json: "$input.path('$.errorMessage')"
+  default:
+    statusCode: "200"
+    response:
+      models:
+        application/json: "Empty"
+      templates:
+        application/json: ""
