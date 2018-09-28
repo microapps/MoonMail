@@ -55,7 +55,8 @@
     "PER_1000_EMAIL_COST_IN_CENTS_FOR_SES": "${per1000EmailCostInCentsForSES}",
     "LOG_LEVEL": "error",
     "USER_REPORT_INDEX_NAME": "$${reportsUserIndex}",
-    "FREE_SENDERS_CONFIG": "${freeSendersConfig}"
+    "FREE_SENDERS_CONFIG": "${freeSendersConfig}",
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],

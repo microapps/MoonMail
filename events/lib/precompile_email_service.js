@@ -24,7 +24,8 @@ class PrecompileEmailService {
       campaignId: emailParams.campaign.id,
       listId: emailParams.recipient.listId,
       userId: emailParams.userId,
-      userPlan: emailParams.userPlan
+      userPlan: emailParams.userPlan,
+      list: emailParams.list
     },
       { footer: this._needsFooter(emailParams) });
   }

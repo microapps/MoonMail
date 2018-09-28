@@ -1,6 +1,6 @@
 import { Promise } from 'bluebird';
 import camelCase from 'camelcase';
-import { User } from 'moonmail-models';
+import { User, List } from 'moonmail-models';
 import { FetchFreeSenderInformationService } from './fetch_free_sender_information_service';
 import { FetchPaidSenderInformationService } from './fetch_paid_sender_information_service';
 import Subscriptions from '../subscriptions/index';
@@ -10,7 +10,7 @@ import { logger } from '../index';
 const Senders = {
 
   attachSender(snsClient, { userId, userPlan, campaign, currentUserState, user, ...rest }) {
-    const inputMessage = { userId, userPlan, campaign, currentUserState, user,  ...rest };
+    const inputMessage = { userId, userPlan, campaign, currentUserState, user, ...rest };
     const plan = userPlan || 'free';
     const { sentCampaignsInLastDay, recipientsCount, totalRecipients } = currentUserState;
     const senderId = campaign.senderId;
@@ -23,7 +23,8 @@ const Senders = {
       .then(() => limitValidator.perform())
       .then(() => reputationValidator.perform(userId))
       .then(() => emailCharger.perform())
-      .then(() => this.buildAttachSenderCanonicalMessage(senderDataProvider, inputMessage))
+      .then(() => this.getList(userId, inputMessage.campaign))
+      .then((list) => this.buildAttachSenderCanonicalMessage(senderDataProvider, inputMessage, list))
       .then(canonicalMessage => this.publishAttachSenderCanonicalMessage(snsClient, canonicalMessage))
       .catch((err) => this.handleErrors(snsClient, campaign, user, err))
       .catch((err) => {
@@ -51,9 +52,15 @@ const Senders = {
     return senderDataProvider.getData();
   },
 
-  buildAttachSenderCanonicalMessage(senderDataProvider, inputMessage) {
+  async getList(userId, campaign) {
+    if (!campaign || !campaign.listIds) { throw 'invalid or not found list' }
+    const list = await List.get(userId, campaign.listIds[0])
+    return list
+  },
+
+  buildAttachSenderCanonicalMessage(senderDataProvider, inputMessage, list) {
     return this.fetchSenderData(senderDataProvider)
-      .then(senderData => Object.assign({}, inputMessage, { sender: senderData }));
+      .then(senderData => Object.assign({}, inputMessage, { sender: senderData }, { list: list }));
   },
 
   publishAttachSenderCanonicalMessage(snsClient, canonicalMessage) {
@@ -74,12 +81,12 @@ const Senders = {
     return snsClient.publish(params).promise();
   },
 
-  async publishErrorToSMS(snsClient, campaign, user, errorMessage) { 
+  async publishErrorToSMS(snsClient, campaign, user, errorMessage) {
     logger().error('= Senders.publishErrorToSMS', JSON.stringify(errorMessage));
     try {
-      if (campaign && campaign.scheduledAt && user && user.phoneNumber && user.notifications && user.notifications.isSmsOnDeliveryEnabled != false ) {
+      if (campaign && campaign.scheduledAt && user && user.phoneNumber && user.notifications && user.notifications.isSmsOnDeliveryEnabled != false) {
         const snsParams = {
-          Message: `MoonMail: Your campaign ${ campaign.name  } was not sent due to credit card problems.`,
+          Message: `MoonMail: Your campaign ${campaign.name} was not sent due to credit card problems.`,
           MessageStructure: 'string',
           PhoneNumber: user.phoneNumber
         };
@@ -100,7 +107,7 @@ const Senders = {
       if (errorMessage && errorMessage.name && errorMessage.name == 'PaymentGatewayError') {
         await this.publishErrorToSMS(snsClient, campaign, user, errorMessage);
       }
-  
+
       return Promise.reject(errorMessage);
     } catch (e) {
       logger().error('= Senders.handleErrors, CATCH-ERROR ', e);

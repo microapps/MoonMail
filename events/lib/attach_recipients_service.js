@@ -39,6 +39,7 @@ class AttachRecipientsService {
       userId: this.campaignMessage.userId,
       userPlan: this.campaignMessage.userPlan || 'free',
       appendFooter: this.campaignMessage.appendFooter,
+      list: this.campaignMessage.list,
       listId
     };
   }
@@ -58,7 +59,8 @@ class AttachRecipientsService {
       sender: this.campaignMessage.sender,
       campaign: this.campaignMessage.campaign,
       userId: this.campaignMessage.userId,
-      userPlan: this.campaignMessage.userPlan || 'free'
+      userPlan: this.campaignMessage.userPlan || 'free',
+      list: this.campaignMessage.list
     };
   }
 

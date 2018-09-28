@@ -3,13 +3,12 @@ import base64url from 'base64-url';
 import * as Liquid from 'liquid-node';
 import * as url from 'url';
 import { debug } from './index';
-import { List } from 'moonmail-models'
 import formatAddress from 'address-format';
 
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, fromName, to, body, subject, metadata, recipientId, listId, campaignId, userId, userPlan } = {}, options = { footer: true }) {
+  constructor({ fromEmail, fromName, to, body, subject, metadata, recipientId, listId, campaignId, userId, userPlan, list } = {}, options = { footer: true }) {
     this.from = fromEmail;
     this.fromName = fromName;
     this.to = to;
@@ -24,7 +23,7 @@ class Email {
     this.unsubscribeApiHost = process.env.UNSUBSCRIBE_API_HOST;
     this.options = options;
     this.opensPath = 'links/open';
-    this.list = {},
+    this.list = list,
     this.userPlan = userPlan
   }
 
@@ -32,10 +31,8 @@ class Email {
     debug('= Email.renderBody', 'Rendering body with template', this.body, 'and metadata', this.metadata);
     const unsubscribeUrl = this._buildUnsubscribeUrl();
     const resubscribeUrl = await this._buildReSubscribeUrl();
-    const list = await List.get(this.userId, this.listId)
-    this.list = list
 
-    const contact = list.contact || {}
+    const contact = this.list.contact || {}
 
     const extraFields = {
       subject: this.subject,
@@ -45,7 +42,7 @@ class Email {
       resubscribe_url: resubscribeUrl || '',
       list_address: this._address(contact) || '',
       list_description: contact.description || '',
-      list_name: list.name || '',
+      list_name: this.list.name || '',
       list_company: contact.company || '',
       list_url: contact.websiteUrl || '',
       footer: this._paidFooter(contact, unsubscribeUrl, this.to)
@@ -130,7 +127,7 @@ class Email {
 
   async _createReSubscribeList() {
     const newListId = base64url.encode(this.listId + 'resubscribe')
-    const existingList = await List.get(this.userId, this.listId)
+    const existingList = this.list
     const newList = Object.assign({}, existingList)
     newList.id = newListId
     const existingNewList = await List.get(this.userId, newListId)
