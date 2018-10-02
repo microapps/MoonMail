@@ -19,6 +19,7 @@ export function respond(event, cb) {
         const payload = {
           userId: campaignParams.userId,
           campaignId: campaignParams.campaign.id,
+          list: campaignParams.list,
           status: 'sending'
         };
         const params = {

@@ -111,6 +111,7 @@ class AttachListRecipientsService {
               campaign: this.attachRecipientsListMessage.campaign,
               userId: this.attachRecipientsListMessage.userId,
               userPlan: this.attachRecipientsListMessage.userPlan,
+              list: this.attachRecipientsListMessage.list,
               listId: this.listId
             }
           }
@@ -142,7 +143,7 @@ class AttachListRecipientsService {
 
   _buildRecipientMessage(recipient) {
     debug('= AttachListRecipientsService._buildRecipientMessage', JSON.stringify(recipient));
-    return Object.assign({}, this.attachRecipientsListMessage, { recipient });
+    return Object.assign({}, this.attachRecipientsListMessage, { recipient }, { list: this.attachRecipientsListMessage.list });
   }
 }
 
