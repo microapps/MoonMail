@@ -1,0 +1,43 @@
+Type: AWS::DynamoDB::Table
+DeletionPolicy: Retain
+Properties:
+  TableName: ${self:custom.campaignsTable}
+  AttributeDefinitions:
+    - AttributeName: id
+      AttributeType: S
+    - AttributeName: userId
+      AttributeType: S
+    - AttributeName: sentAt
+      AttributeType: N
+    - AttributeName: scheduledAt
+      AttributeType: N
+  KeySchema:
+    - AttributeName: userId
+      KeyType: HASH
+    - AttributeName: id
+      KeyType: RANGE
+  ProvisionedThroughput:
+    ReadCapacityUnits: 1
+    WriteCapacityUnits: 1
+  GlobalSecondaryIndexes:
+  - IndexName: scheduledAtIndex
+    KeySchema:
+    - AttributeName: scheduledAt
+      KeyType: HASH
+    Projection:
+      ProjectionType: INCLUDE
+      NonKeyAttributes:
+      - sentAt
+      - status
+    ProvisionedThroughput:
+      ReadCapacityUnits: 1
+      WriteCapacityUnits: 1
+  LocalSecondaryIndexes:
+  - IndexName: campaignSentAtIndex
+    KeySchema:
+    - AttributeName: userId
+      KeyType: HASH
+    - AttributeName: sentAt
+      KeyType: RANGE
+    Projection:
+      ProjectionType: KEYS_ONLY

@@ -1,0 +1,77 @@
+{
+  "name": "sls-service-template",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/handler.js",
+  "scripts": {
+    "watch": "yarn test:unit --watch",
+    "test": "yarn test:unit",
+    "test:unit": "NODE_ENV=test jest",
+    "lint": "eslint ./src",
+    "precommit": "lint-staged",
+    "serve": "serverless offline start",
+    "start": "webpack"
+  },
+  "devEngines": {
+    "node": "8.x || 9.x"
+  },
+  "author": "Rhino André <rhinoandre@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/aws-lambda": "^8.10.13",
+    "@types/joi": "^13.6.0",
+    "@types/node": "^10.11.2",
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "@types/sinon": "^5.0.2",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-source-map-support": "^2.0.1",
+    "chai": "^4.1.2",
+    "choma": "^1.1.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "husky": "^1.0.1",
+    "jest": "^23.6.0",
+    "lint-staged": "^7.1.0",
+    "serverless": "^1.32.0",
+    "serverless-offline": "^3.25.15",
+    "serverless-plugin-aws-alerts": "^1.2.4",
+    "serverless-webpack": "^5.1.5",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.2.1",
+    "typescript": "^3.1.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.326.0",
+    "bluebird": "^3.5.1",
+    "cuid": "^2.1.4",
+    "deep-assign": "^2.0.0",
+    "global": "^4.3.2",
+    "joi": "^13.3.0",
+    "jsonwebtoken": "^8.3.0",
+    "middy": "^0.13.1",
+    "moment": "^2.22.2",
+    "omit-empty": "^0.4.1",
+    "prettier": "^1.12.1",
+    "source-map-support": "^0.5.5"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "yarn lint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

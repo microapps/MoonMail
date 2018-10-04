@@ -1,0 +1,47 @@
+service: MoonMail-v3-campaigns
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  memorySize: 128
+  profile: ${opt:profile, self:custom.config.PROFILE}
+  region: ${opt:region, self:custom.config.REGION}
+  timeout: 3
+  environment:
+    REGION: ${self:custom.config.REGION}
+    CAMPAIGN_TABLE: ${self:custom.campaignsTable}
+    AUTH_PERMISSION: "${file(./config/cert/auth.pem)}"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  campaignsTable: ${self:custom.resourcesPrefix}-Campaign
+  config: ${file(./config.${self:custom.currentStage}.json)}
+  CORS_SETTINGS: ${file(./config/cors.yml)}
+  webpack:
+    webpackConfig: ./webpack.config.js # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
+  serverless-offline:
+    babelOptions:
+      presets: ["es2015"]
+
+package:
+  individually: true
+
+functions:
+  - ${file(./config/functions.yml)}
+
+resources:
+  Resources:
+    CampaignsTable: ${file(./config/dynamodb/campaigns.yml)}
+
