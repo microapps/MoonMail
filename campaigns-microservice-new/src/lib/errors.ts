@@ -7,10 +7,8 @@ export class ApiErrors {
 
   static response(error) {
     if (this._isAuthError(error)) {
-      console.log('auth')
       return this._authResponse();
     } else {
-      console.log('default auth')
       return this._defaultResponse(error);
     }
   }

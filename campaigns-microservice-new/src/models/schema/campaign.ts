@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-function schema () {
+export function schema () {
   return Joi.object().keys({
     id: Joi.string().required(),
     userId: Joi.string().required(),
@@ -19,7 +19,7 @@ function schema () {
   });
 }
 
-function schemaCampaignToBeSent () {
+export function schemaCampaignToBeSent () {
   return Joi.alternatives().try(
     Joi.object({
       id: Joi.string().required(),
@@ -58,9 +58,4 @@ function schemaCampaignToBeSent () {
       scheduleAt: Joi.number(),
     })
   );
-}
-
-export {
-  schema,
-  schemaCampaignToBeSent
 }

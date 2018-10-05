@@ -1,4 +1,3 @@
-const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
 
@@ -29,8 +28,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        use: ["source-map-loader"],
-        enforce: "pre"
+        use: ['source-map-loader'],
+        enforce: 'pre'
       }
     ]
   },
