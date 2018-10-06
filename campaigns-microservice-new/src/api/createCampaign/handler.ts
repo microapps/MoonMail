@@ -1,17 +1,14 @@
 import debug from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import { ApiErrors } from '../../lib/errors';
-import { CampaignEvent, CampaignService as CampaignServiceType, TokenData, CampaignStatus } from '../../types';
-import campaignService from '../../models/campaign';
+import { CampaignEvent, CampaignRepository, TokenData, CampaignStatus } from '../../types';
+import campaignRepository from '../../repositories/campaign';
 
-export function handlerService(service: CampaignServiceType) {
+export function handlerService(service: CampaignRepository) {
   return async function handler({ campaign, authToken }: CampaignEvent) {
     debug('= createCampaign.action', JSON.stringify({ campaign, authToken }));
     if (!authToken) {
       throw new Error('[403] Access denied'); // It'll be moved to Authentication lambda
-    }
-    if (!campaign) {
-      throw new Error('[400] No campaign specified');
     }
 
     try {
@@ -26,4 +23,4 @@ export function handlerService(service: CampaignServiceType) {
   }
 }
 
-export default handlerService(campaignService);
+export default handlerService(campaignRepository);

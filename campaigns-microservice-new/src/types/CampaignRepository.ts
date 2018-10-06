@@ -1,6 +1,6 @@
 import { Campaign } from './Campaign';
 
-export interface CampaignService {
+export interface CampaignRepository {
   save: (campaign: Campaign) => Promise<Campaign>,
   edit: (id:string, campaign: Campaign) => Promise<Campaign>,
   get: (id: string) => Promise<Campaign>,

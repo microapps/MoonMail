@@ -1,4 +1,4 @@
 export * from './Campaign';
-export * from './CampaignService';
+export * from './CampaignRepository';
 export * from './TokenData';
 export * from './DatabaseService';
