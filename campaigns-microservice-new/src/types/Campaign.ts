@@ -1,5 +1,5 @@
 export interface Campaign {
-  id: string;
+  id?: string;
   userId: string;
   senderId: string;
   segmentId: string;
