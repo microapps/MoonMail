@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-export function validate(object, schema) {
+export default function validate(object: object, schema: any) {
   const {error, value} = Joi.validate(object, schema);
   let friendlyError = null;
   if (error) {
