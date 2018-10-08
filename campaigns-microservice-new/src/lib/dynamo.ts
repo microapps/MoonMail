@@ -6,7 +6,7 @@ export const client = new DynamoDB.DocumentClient({
   region: process.env.region
 });
 
-export function dynamoService(client: DocumentClient): DatabaseService {
+export function dynamoFactory(client: DocumentClient): DatabaseService {
   return {
     put (params: PutItemInput) {
       return new Promise((resolve, reject) => {
@@ -28,4 +28,4 @@ export function dynamoService(client: DocumentClient): DatabaseService {
   }
 }
 
-export default dynamoService(client);
+export default dynamoFactory(client);
