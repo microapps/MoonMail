@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",
-      "sourceMap": true,
       "noImplicitAny": false, // TODO: Enable it once we have all types created
-      "module": "commonjs",
-      "target": "es6",
+      "skipLibCheck": true,
+      "noEmit": true,
+      "pretty": true,
       "lib": [
           "es7"
       ]
