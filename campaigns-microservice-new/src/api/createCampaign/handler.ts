@@ -2,7 +2,7 @@ import debug from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import { ApiErrors } from '../../lib/errors';
 import { CampaignEvent, CampaignRepository, TokenData, CampaignStatus, Campaign } from '../../types';
-import campaignRepository from '../../repositories/campaign';
+import campaignRepositoryFactory from '../../repositories/campaign';
 
 export function handlerService(service: CampaignRepository) {
   return async function handler({ campaign, authToken }: CampaignEvent): Promise<Campaign> {
@@ -20,4 +20,4 @@ export function handlerService(service: CampaignRepository) {
   }
 }
 
-export default handlerService(campaignRepository);
+export default handlerService(campaignRepositoryFactory);

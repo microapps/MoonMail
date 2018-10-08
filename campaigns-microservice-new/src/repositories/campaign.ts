@@ -1,12 +1,12 @@
 import * as cuid from 'cuid';
-
-import { Campaign, DatabaseService, CampaignRepository } from '../types';
-import * as campaignSchemas from '../models/schema/campaign'
-import { validate } from '../models/schema/validator';
-import DynamoDB from '../lib/dynamo';
 import { PutItemInput } from 'aws-sdk/clients/dynamodb';
 
-export function campaignRepository(cuid: () => string, DatabaseService: DatabaseService): CampaignRepository {
+import { Campaign, DatabaseService, CampaignRepository } from '../types';
+import * as campaignSchemas from '../models/schema/campaign';
+import validate from '../models/schema/validator';
+import DynamoDB from '../lib/dynamo';
+
+export function campaignRepositoryFactory(cuid: () => string, DatabaseService: DatabaseService): CampaignRepository {
   return {
     save(campaign: Campaign) {
       campaign.id = cuid();
@@ -18,7 +18,7 @@ export function campaignRepository(cuid: () => string, DatabaseService: Database
       const params: PutItemInput = {
         TableName: process.env.CAMPAIGN_TABLE,
         Item: value
-      }
+      };
 
       return DatabaseService.put(params);
     },
@@ -34,4 +34,4 @@ export function campaignRepository(cuid: () => string, DatabaseService: Database
   }
 }
 
-export default campaignRepository(cuid, DynamoDB);
+export default campaignRepositoryFactory(cuid, DynamoDB);
