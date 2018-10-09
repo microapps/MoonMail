@@ -1,5 +1,4 @@
 createCampaign:
-  description: "Serverless Lambda function for project: MoonMail-v3"
   name: ${self:service}-campaigns-create
   handler: src/api/createCampaign/handler.default
   timeout: 6
@@ -29,6 +28,36 @@ createCampaign:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
+  environment:
+    SERVERLESS_PROJECT: ${self:service}
+    SERVERLESS_STAGE: ${self:custom.currentStage}
+    SERVERLESS_REGION: ${self:custom.config.REGION}
+    DEBUG: true
+
+deleteCampaign:
+  name: ${self:service}-campaigns-delete
+  handler: src/api/delete.default
+  timeout: 6
+  memorySize: 128
+  events:
+    - http:
+        path: /campaigns/{id}
+        method: DELETE
+        cors: ${self:custom.CORS_SETTINGS}
+        request:
+          parameters:
+            headers:
+              Authorization: true
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsListFunctionIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
   environment:
     SERVERLESS_PROJECT: ${self:service}
