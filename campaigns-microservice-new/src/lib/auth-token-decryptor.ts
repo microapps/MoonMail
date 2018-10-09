@@ -1,11 +1,12 @@
 import * as jwt from 'jsonwebtoken';
 import { TokenData } from '../types';
+import ApiErrors from './errors';
 
 // import { GetUserAccountService } from './get-user-account-service';
 
 export default function decrypt(authToken: string): TokenData {
   if (!authToken) {
-    throw new Error('[403] Access denied'); // It'll be moved to Authentication lambda
+    throw ApiErrors.errors.accessDenied; // It'll be moved to Authentication lambda
   }
 
   const cert = process.env.AUTH_PERMISSION;

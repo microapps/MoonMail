@@ -36,7 +36,10 @@ describe('Decryptor', () => {
     try {
       decryptor('');
     } catch (error) {
-      expect(error.message).toBe('[403] Access denied');
+      expect(error).toEqual({
+        message: 'Access Denied',
+        statusCode: 403
+      });
     }
 
     // THEN
@@ -51,7 +54,10 @@ describe('Decryptor', () => {
     try {
       decryptor(undefined);
     } catch (error) {
-      expect(error.message).toBe('[403] Access denied');
+      expect(error).toEqual({
+        message: 'Access Denied',
+        statusCode: 403
+      });
     }
 
     // THEN
