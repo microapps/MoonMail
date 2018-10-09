@@ -9,7 +9,9 @@
     "test": "jest",
     "lint": "eslint ./src",
     "precommit": "lint-staged",
-    "serve": "serverless offline start"
+    "serve": "serverless offline start",
+    "deploy:dev": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage prod"
   },
   "devEngines": {
     "node": "8.x || 9.x"
