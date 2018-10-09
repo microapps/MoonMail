@@ -1,7 +1,14 @@
-export class ApiErrors {
+export default class ApiErrors {
   static get errors() {
     return {
-      invalidToken: new Error('[401] Missing or invalid Access Token')
+      invalidToken: {
+        message: 'Missing or invalid JWT',
+        statusCode: 401
+      },
+      accessDenied: {
+        message: 'Access Denied',
+        statusCode: 403
+      }
     };
   }
 
@@ -24,7 +31,7 @@ export class ApiErrors {
   }
 
   static _defaultResponse(error) {
-    return {status: 400, message: error.message || error };
+    return {statusCode: error.statusCode || 400, message: error.message || error };
   }
 
   static _authResponse() {
