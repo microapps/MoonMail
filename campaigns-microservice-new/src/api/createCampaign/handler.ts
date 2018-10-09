@@ -1,6 +1,6 @@
 import debug from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
-import { ApiErrors } from '../../lib/errors';
+import ApiErrors from '../../lib/errors';
 import { CampaignEvent, CampaignRepository, TokenData, CampaignStatus, Campaign } from '../../types';
 import campaignRepositoryFactory from '../../repositories/campaign';
 

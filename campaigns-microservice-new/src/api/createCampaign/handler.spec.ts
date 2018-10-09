@@ -13,7 +13,8 @@ describe('createCampaign', () => {
       save: jest.fn(),
       edit: jest.fn(),
       get: jest.fn(),
-      list: jest.fn()
+      list: jest.fn(),
+      delete: jest.fn(),
     };
     handler = handlerService(campaignService);
   });
@@ -85,7 +86,10 @@ describe('createCampaign', () => {
       });
     } catch(error) {
       // THEN
-      expect(error.message).toBe('[403] Access denied');
+      expect(error).toEqual({
+        message: 'Access Denied',
+        statusCode: 403
+      });
     }
   });
 });
