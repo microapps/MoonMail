@@ -4,9 +4,7 @@
       "skipLibCheck": true,
       "noEmit": true,
       "pretty": true,
-      "lib": [
-          "es7"
-      ]
+      "lib": ["es5", "es7"]
   },
   "include": [
       "./**/*"
