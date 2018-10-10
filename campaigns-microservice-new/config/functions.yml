@@ -1,6 +1,6 @@
 createCampaign:
   name: ${self:service}-create
-  handler: src/api/createCampaign/handler.default
+  handler: src/api/create.default
   timeout: 6
   memorySize: 128
   events:

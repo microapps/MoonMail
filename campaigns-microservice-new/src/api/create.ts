@@ -1,10 +1,10 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import debug from '../../lib/logger';
-import decryptor from '../../lib/auth-token-decryptor';
-import ApiErrors from '../../lib/errors';
-import { TokenData, CampaignStatus, Campaign } from '../../types';
-import campaignRepository from '../../repositories/campaign';
+import debug from '../lib/logger';
+import decryptor from '../lib/auth-token-decryptor';
+import ApiErrors from '../lib/errors';
+import { TokenData, CampaignStatus, Campaign } from '../types';
+import campaignRepository from '../repositories/campaign';
 
 export default async ({ body, headers: {Authorization: authToken} }: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   debug('= Create Campaign', JSON.stringify({ body, authToken }));

@@ -1,8 +1,8 @@
 'use strict';
 
-import handler from './handler';
-import * as decryptor from '../../lib/auth-token-decryptor';
-import campaignService from '../../repositories/campaign';
+import handler from './create';
+import * as decryptor from '../lib/auth-token-decryptor';
+import campaignService from '../repositories/campaign';
 
 describe('createCampaign', () => {
   afterEach(() => {
