@@ -37,8 +37,8 @@ describe('Decryptor', () => {
       decryptor('');
     } catch (error) {
       expect(error).toEqual({
-        message: 'Access Denied',
-        statusCode: 403
+        statusCode: 403,
+        body: "{\"message\":\"Access Denied\"}"
       });
     }
 
@@ -55,8 +55,8 @@ describe('Decryptor', () => {
       decryptor(undefined);
     } catch (error) {
       expect(error).toEqual({
-        message: 'Access Denied',
-        statusCode: 403
+        statusCode: 403,
+        body: "{\"message\":\"Access Denied\"}"
       });
     }
 

@@ -1,5 +1,5 @@
 createCampaign:
-  name: ${self:service}-campaigns-create
+  name: ${self:service}-create
   handler: src/api/createCampaign/handler.default
   timeout: 6
   memorySize: 128
@@ -7,21 +7,7 @@ createCampaign:
     - http:
         path: /campaigns
         method: POST
-        integration: lambda
         cors: ${self:custom.CORS_SETTINGS}
-        request:
-          parameters:
-            headers:
-              Authorization: true
-          template:
-            application/json:
-              '{
-                "campaign": $input.json(''$''),
-                "authToken": "$input.params(''Authotization'')"
-              }'
-        response:
-          headers:
-            Access-Control-Allow-Origin: "'*'"
 
   iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsListFunctionIAM
   iamRoleStatements:
@@ -36,7 +22,7 @@ createCampaign:
     DEBUG: true
 
 deleteCampaign:
-  name: ${self:service}-campaigns-delete
+  name: ${self:service}-delete
   handler: src/api/delete.default
   timeout: 6
   memorySize: 128
@@ -45,13 +31,6 @@ deleteCampaign:
         path: /campaigns/{id}
         method: DELETE
         cors: ${self:custom.CORS_SETTINGS}
-        request:
-          parameters:
-            headers:
-              Authorization: true
-        response:
-          headers:
-            Access-Control-Allow-Origin: "'*'"
 
   iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsListFunctionIAM
   iamRoleStatements:

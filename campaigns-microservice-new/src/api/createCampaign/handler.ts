@@ -1,23 +1,30 @@
+import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+
 import debug from '../../lib/logger';
-import decrypt from '../../lib/auth-token-decryptor';
+import decryptor from '../../lib/auth-token-decryptor';
 import ApiErrors from '../../lib/errors';
-import { CampaignEvent, CampaignRepository, TokenData, CampaignStatus, Campaign } from '../../types';
-import campaignRepositoryFactory from '../../repositories/campaign';
+import { TokenData, CampaignStatus, Campaign } from '../../types';
+import campaignRepository from '../../repositories/campaign';
 
-export function handlerService(service: CampaignRepository) {
-  return async function handler({ campaign, authToken }: CampaignEvent): Promise<Campaign> {
-    debug('= createCampaign.action', JSON.stringify({ campaign, authToken }));
-    try {
-      const {sub}: TokenData = decrypt(authToken);
-      campaign.userId = sub;
-      campaign.status = CampaignStatus.DRAFT;
+export default async ({ body, headers: {Authorization: authToken} }: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  debug('= Create Campaign', JSON.stringify({ body, authToken }));
+  try {
+    const campaign: Campaign = JSON.parse(body);
+    const {sub}: TokenData = decryptor(authToken);
+    campaign.userId = sub;
+    campaign.status = CampaignStatus.DRAFT;
 
-      await service.save(campaign);
-      return campaign;
-    } catch (error) {
-      throw ApiErrors.response(error);
-    }
+    const campaignSaved = await campaignRepository.save(campaign);
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify(campaignSaved)
+    };
+  } catch (error) {
+    console.log('Error Create campaign', error);
+    return ApiErrors.response(error);
   }
 }
-
-export default handlerService(campaignRepositoryFactory);

@@ -4,7 +4,7 @@ import * as decryptor from '../lib/auth-token-decryptor';
 import ApiErrors from '../lib/errors';
 
 describe('Delete Campaign', () => {
-  fit('should delete the campaign', () => {
+  it('should delete the campaign', () => {
     // GIVEN
     spyOn(campaignRepository, 'delete');
     spyOn(decryptor, 'default').and.returnValue({sub: 'my-user-id'});
@@ -24,11 +24,11 @@ describe('Delete Campaign', () => {
     expect(campaignRepository.delete).toBeCalledWith('my-user-id', 'someId');
   });
 
-  it('should return an error when something the Authorization header is not provided', () => {
+  it('should return an error when something the Authorization header is not provided', async () => {
     // GIVEN
     spyOn(ApiErrors, 'response').and.returnValue({
-      message: 'Missing or invalid JWT',
-      status: 401
+      body: '{"message": "Access Denied"}',
+      statusCode: 403
     });
     spyOn(decryptor, 'default').and.callFake(() => {
       throw {
@@ -39,7 +39,7 @@ describe('Delete Campaign', () => {
     spyOn(campaignRepository, 'delete');
 
     // WHEN
-    const result = handler(<any>{
+    const result = await handler(<any>{
       pathParameters: { id: 'someId' },
       headers: {
         Authorization: undefined
@@ -48,7 +48,7 @@ describe('Delete Campaign', () => {
 
     // THEN
     expect(result).toEqual({
-      message: 'Access Denied',
+      body: '{"message": "Access Denied"}',
       statusCode: 403
     });
 
@@ -65,11 +65,12 @@ describe('Delete Campaign', () => {
     expect(campaignRepository.delete).not.toBeCalled();
   });
 
-  it('should return an error when something the Authorization header is not provided', () => {
+  it('should return an error when something goes wrong on AWS API', async () => {
     // GIVEN
     spyOn(ApiErrors, 'response').and.returnValue({
-      message: 'Missing or invalid JWT',
-      status: 401
+      name: 'AWSError',
+      body: '{"message": "Something goes wrong with the deletion"}',
+      statusCode: 500
     });
     spyOn(decryptor, 'default').and.returnValue({sub: 'my-user-id'});
     spyOn(campaignRepository, 'delete').and.returnValue(Promise.reject({
@@ -79,21 +80,22 @@ describe('Delete Campaign', () => {
     }));
 
     // WHEN
-    const result = handler(<any>{
+    const result = await handler(<any>{
       pathParameters: { id: 'someId' },
       headers: {
-        Authorization: undefined
+        Authorization: 'Bearer json.web.token'
       }
     });
 
     // THEN
     expect(result).toEqual({
-      message: 'Something goes wrong with the deletion',
+      name: 'AWSError',
+      body: '{"message": "Something goes wrong with the deletion"}',
       statusCode: 500
     });
 
     // AND
-    expect(decryptor.default).toBeCalledWith(undefined);
+    expect(decryptor.default).toBeCalledWith('Bearer json.web.token');
 
     // AND
     expect(ApiErrors.response).toBeCalledWith({
