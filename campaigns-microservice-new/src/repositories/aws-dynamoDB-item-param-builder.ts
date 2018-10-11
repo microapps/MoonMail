@@ -1,5 +1,5 @@
 export default class AWSDynamoItemParamBuilder {
-  awsItem: any = {};
+  awsItem: any = {}
 
   constructor(tableName: string) {
     this.awsItem.TableName = tableName;
@@ -60,7 +60,7 @@ export default class AWSDynamoItemParamBuilder {
     return this;
   }
 
-  build = function () {
+  build() {
     return this.awsItem;
   }
 }
