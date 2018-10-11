@@ -40,7 +40,7 @@ export function dynamoFactory(client: DocumentClient): DatabaseService {
             reject(error)
             return;
           } else {
-            resolve(data);
+            resolve(data.Attributes);
           }
         });
       });

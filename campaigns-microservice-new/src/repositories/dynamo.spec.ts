@@ -147,9 +147,11 @@ describe('DynamoService', () => {
     it('should update the object set to DELETE the null and empty properties', async () => {
       // GIVEN
       spyOn(client, 'update').and.callFake((params, callback) => callback(null, {
-        id: 'someId',
-        userId: 'my-user-id',
-        scheduleAt: 0
+        Attributes: {
+          id: 'someId',
+          userId: 'my-user-id',
+          scheduleAt: 0
+        }
       }));
 
       // WHEN
