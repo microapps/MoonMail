@@ -5,7 +5,9 @@ import * as validate from '../models/schema/validator';
 import * as campaignSchemas from '../models/schema/campaign';
 
 jest.mock('cuid', () => {
-  return jest.fn(() => 'someId');
+  return {
+    slug: jest.fn(() => 'someId')
+  };
 });
 
 describe('Campaign Repository', () => {
@@ -52,7 +54,7 @@ describe('Campaign Repository', () => {
       });
   
       // THEN
-      expect(dynamoDB.put).toHaveBeenCalledWith({
+      expect(dynamoDB.put).toBeCalledWith({
         id: 'someId',
         userId: 'userId',
         senderId: 'ca654',
@@ -95,7 +97,7 @@ describe('Campaign Repository', () => {
         });
       } catch (error) {
         // THEN
-        expect(validate.default).toHaveBeenCalledWith(
+        expect(validate.default).toBeCalledWith(
           {
             id: 'someId',
             userId: 'userId',
@@ -134,7 +136,7 @@ describe('Campaign Repository', () => {
       expect(result).toBe(true);
 
       // AND
-      expect(dynamoDB.delete).toHaveBeenCalledWith('my-user-id', 'someId');
+      expect(dynamoDB.delete).toBeCalledWith('my-user-id', 'someId');
     });
 
     it('should raise any error throwed', async () => {
@@ -149,7 +151,7 @@ describe('Campaign Repository', () => {
         expect(error.message).toBe('ops');
   
         // AND
-        expect(dynamoDB.delete).toHaveBeenCalledWith('my-user-id', 'someId');
+        expect(dynamoDB.delete).toBeCalledWith('my-user-id', 'someId');
       }
     });
   });
@@ -182,7 +184,7 @@ describe('Campaign Repository', () => {
       spyOn(campaignSchemas, 'schema').and.returnValue({joiSchema: 'campaign'});
 
       // WHEN
-      campaignRepository.edit({
+      campaignRepository.update({
         id: 'someId',
         userId: 'userId',
         senderId: 'ca654',
@@ -243,7 +245,7 @@ describe('Campaign Repository', () => {
         });
       } catch (error) {
         // THEN
-        expect(validate.default).toHaveBeenCalledWith(
+        expect(validate.default).toBeCalledWith(
           {
             id: 'someId',
             userId: 'userId',
