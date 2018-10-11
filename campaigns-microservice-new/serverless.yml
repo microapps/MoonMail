@@ -15,6 +15,7 @@ provider:
     REGION: ${self:custom.config.REGION}
     CAMPAIGN_TABLE: ${self:custom.campaignsTable}
     AUTH_PERMISSION: "${file(./config/cert/auth.pem)}"
+    DEBUG: ${self:custom.enableDebugLog.${self:custom.currentStage}}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -28,6 +29,9 @@ custom:
   campaignsTable: ${self:custom.resourcesPrefix}-Campaign
   config: ${file(./config.${self:custom.currentStage}.json)}
   CORS_SETTINGS: ${file(./config/cors.yml)}
+  enableDebugLog:
+    dev: true
+    prod: false
   webpack:
     webpackConfig: ./webpack.config.js # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
