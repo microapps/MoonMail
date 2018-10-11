@@ -1,16 +1,20 @@
 import dynamoService, {client} from './dynamo';
+import campaign from './campaign';
 
 describe('DynamoService', () => {
+  beforeEach(() => {
+    process.env.CAMPAIGN_TABLE = 'companyTable';
+  });
+
   describe('Create', () => {
     it('should save the provided object', async () => {
       // GIVEN
-      process.env.CAMPAIGN_TABLE = 'companyTable';
       spyOn(client, 'put').and.callFake((param, callback) => {callback()});
   
       // WHEN
       const result = await dynamoService.put({
         id: 'someId',
-        usreId: 'my-user-id',
+        userId: 'my-user-id',
         senderId: 'ca654',
         segmentId: 'anotherId',
         subject: 'my campaign subject',
@@ -27,7 +31,7 @@ describe('DynamoService', () => {
       // THEN
       expect(result).toEqual({
         id: 'someId',
-        usreId: 'my-user-id',
+        userId: 'my-user-id',
         senderId: 'ca654',
         segmentId: 'anotherId',
         subject: 'my campaign subject',
@@ -46,7 +50,7 @@ describe('DynamoService', () => {
         TableName: 'companyTable',
         Item: {
           id: 'someId',
-          usreId: 'my-user-id',
+          userId: 'my-user-id',
           senderId: 'ca654',
           segmentId: 'anotherId',
           subject: 'my campaign subject',
@@ -71,7 +75,7 @@ describe('DynamoService', () => {
       try {
         await dynamoService.put({
           id: 'someId',
-          usreId: 'my-user-id',
+          userId: 'my-user-id',
           senderId: 'ca654',
           segmentId: 'anotherId',
           subject: 'my campaign subject',
@@ -94,7 +98,7 @@ describe('DynamoService', () => {
           TableName: 'companyTable',
           Item: {
             id: 'someId',
-            usreId: 'my-user-id',
+            userId: 'my-user-id',
             senderId: 'ca654',
             segmentId: 'anotherId',
             subject: 'my campaign subject',
@@ -137,5 +141,99 @@ describe('DynamoService', () => {
         expect(error).toBe('error');
       }
     });
-  })
+  });
+
+  describe('Update', () => {
+    it('should update the object set to DELETE the null and empty properties', async () => {
+      // GIVEN
+      spyOn(client, 'update').and.callFake((params, callback) => callback(null, {
+        id: 'someId',
+        userId: 'my-user-id',
+        scheduleAt: 0
+      }));
+
+      // WHEN
+      const result = await dynamoService.update({
+        id: 'someId',
+        userId: 'my-user-id',
+        segmentId: '',
+        subject: null,
+        scheduleAt: 0
+      }, 'my-user-id', 'someId');
+
+      // THEN
+      expect(client.update).toBeCalledWith({
+        AttributeUpdates: {
+          scheduleAt: {
+            Action: 'PUT',
+            'Value': 0},
+            segmentId: {
+              Action: 'DELETE'
+            },
+            subject: {
+              Action: 'DELETE'
+            }
+          },
+          Key: {
+            id: 'someId',
+            userId: 'my-user-id'
+          },
+          ReturnValues: 'ALL_NEW',
+          TableName: 'companyTable'
+        },
+        expect.any(Function)
+      );
+
+      // AND
+      expect(result).toEqual({
+        id: 'someId',
+        userId: 'my-user-id',
+        scheduleAt: 0
+      });
+    });
+
+    it('should throw any error from AWS API', async () => {
+      // GIVEN
+      spyOn(client, 'update').and.callFake((params, callback) => callback('Some error AWS Error'));
+
+      // WHEN
+      try {
+        await dynamoService.update({
+          id: 'someId',
+          userId: 'my-user-id',
+          segmentId: '',
+          subject: null,
+          scheduleAt: 0
+        }, 'my-user-id', 'someId');
+      } catch (error) {
+        // THEN
+        expect(client.update).toBeCalledWith(
+          {
+            AttributeUpdates: {
+              scheduleAt: {
+                Action: 'PUT',
+                'Value': 0
+              },
+              segmentId: {
+                Action: 'DELETE'
+              },
+              subject: {
+                Action: 'DELETE'
+              }
+            },
+            Key: {
+              id: 'someId',
+              userId: 'my-user-id'
+            },
+            ReturnValues: 'ALL_NEW',
+            TableName: 'companyTable'
+          },
+          expect.any(Function)
+        );
+
+        // AND
+        expect(error).toBe('Some error AWS Error');
+      }
+    });
+  });
 });
