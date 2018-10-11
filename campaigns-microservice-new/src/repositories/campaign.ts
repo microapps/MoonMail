@@ -1,4 +1,4 @@
-import * as cuid from 'cuid';
+import {slug} from 'cuid';
 
 import { Campaign, DatabaseService, CampaignRepository } from '../types';
 import * as campaignSchemas from '../models/schema/campaign';
@@ -16,12 +16,12 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
 
       return DatabaseService.put(campaignValidated);
     },
-    async edit(campaign: Campaign, userId: string, id: string) {
+    update(campaign: Campaign, userId: string, id: string) {
       const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
       if (error) {
-        throw new Error(`Validation error: ${error}`);
+        throw new Error(`Validation error: ${JSON.stringify(error)}`);
       }
-
+      
       return DynamoDB.update(campaignValidated, userId, id);
     },
     async get(id: string) {
@@ -30,10 +30,10 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
     async list(userId: string) {
       throw new Error('[500] Method not implemented')
     },
-    async delete(userId: string, id: string) {
+    delete(userId: string, id: string) {
       return DynamoDB.delete(userId, id);
     }
   };
 }
 
-export default campaignRepositoryFactory(cuid, DynamoDB);
+export default campaignRepositoryFactory(slug, DynamoDB);

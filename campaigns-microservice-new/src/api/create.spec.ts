@@ -4,11 +4,7 @@ import handler from './create';
 import * as decryptor from '../lib/auth-token-decryptor';
 import campaignService from '../repositories/campaign';
 
-describe('createCampaign', () => {
-  afterEach(() => {
-    jest.resetModules();
-  });
-
+describe('Create Campaign', () => {
   it('should creates the campaign when the event is valid', async () => {
     // GIVEN
     spyOn(decryptor, 'default').and.returnValue({sub: 'my-user-id'});
