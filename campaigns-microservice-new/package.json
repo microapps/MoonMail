@@ -21,6 +21,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-typescript": "^7.1.0",
     "@types/aws-lambda": "^8.10.13",
@@ -60,7 +61,7 @@
     "global": "^4.3.2",
     "joi": "^13.3.0",
     "jsonwebtoken": "^8.3.0",
-    "middy": "^0.13.1",
+    "middy": "^0.19.1",
     "moment": "^2.22.2",
     "omit-empty": "^0.4.1",
     "prettier": "^1.14.1",

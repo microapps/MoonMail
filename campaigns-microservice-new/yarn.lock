@@ -217,6 +217,17 @@
     "@babel/helper-remap-async-to-generator" "^7.1.0"
     "@babel/plugin-syntax-async-generators" "^7.0.0"
 
+"@babel/plugin-proposal-class-properties@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-class-properties/-/plugin-proposal-class-properties-7.1.0.tgz#9af01856b1241db60ec8838d84691aa0bd1e8df4"
+  dependencies:
+    "@babel/helper-function-name" "^7.1.0"
+    "@babel/helper-member-expression-to-functions" "^7.0.0"
+    "@babel/helper-optimise-call-expression" "^7.0.0"
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/helper-replace-supers" "^7.1.0"
+    "@babel/plugin-syntax-class-properties" "^7.0.0"
+
 "@babel/plugin-proposal-json-strings@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-json-strings/-/plugin-proposal-json-strings-7.0.0.tgz#3b4d7b5cf51e1f2e70f52351d28d44fc2970d01e"
@@ -249,6 +260,12 @@
 "@babel/plugin-syntax-async-generators@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-async-generators/-/plugin-syntax-async-generators-7.0.0.tgz#bf0891dcdbf59558359d0c626fdc9490e20bc13c"
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+
+"@babel/plugin-syntax-class-properties@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-class-properties/-/plugin-syntax-class-properties-7.0.0.tgz#e051af5d300cbfbcec4a7476e37a803489881634"
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
@@ -5326,9 +5343,9 @@ micromatch@^3.1.10, micromatch@^3.1.4, micromatch@^3.1.8:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-middy@^0.13.1:
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/middy/-/middy-0.13.3.tgz#7beeb12741d829073e920813fa0482140932e585"
+middy@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/middy/-/middy-0.19.1.tgz#8033fb54d4ea0c70c63b20d930a17a423dcb0dcc"
   dependencies:
     "@types/aws-lambda" "^8.10.1"
     "@types/http-errors" "^1.6.1"
@@ -5339,6 +5356,7 @@ middy@^0.13.1:
     http-errors "^1.6.2"
     json-mask "^0.3.8"
     negotiator "^0.6.1"
+    once "^1.4.0"
     qs "^6.5.0"
     querystring "^0.2.0"
 

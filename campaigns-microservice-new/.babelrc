@@ -1,17 +1,21 @@
 {
   "comments": false,
   "presets": [
-    "@babel/typescript",
-    [
-      "@babel/preset-env",
+    ["@babel/preset-env",
       {
+        "useBuiltIns": "entry",
+        "shippedProposals": true,
+        "modules": "commonjs",
+        "loose": true,
         "targets": {
           "node": "8.10"
         }
       }
-    ]
+    ],
+    "@babel/preset-typescript"
   ],
   "plugins": [
+    "@babel/proposal-class-properties",
     "source-map-support"
   ]
 }
