@@ -3,21 +3,26 @@ import * as cuid from 'cuid';
 import { Campaign, DatabaseService, CampaignRepository } from '../types';
 import * as campaignSchemas from '../models/schema/campaign';
 import validate from '../models/schema/validator';
-import DynamoDB from '../lib/dynamo';
+import DynamoDB from './dynamo';
 
 export function campaignRepositoryFactory(cuid: () => string, DatabaseService: DatabaseService): CampaignRepository {
   return {
     save(campaign: Campaign) {
       campaign.id = cuid();
-      const {error} = validate(campaign, campaignSchemas.schema());
+      const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
       if (error) {
         throw new Error(`Validation error: ${error}`);
       }
 
-      return DatabaseService.put(campaign);
+      return DatabaseService.put(campaignValidated);
     },
-    async edit(id: string, campaign: Campaign) {
-      throw new Error('[500] Method not implemented')
+    async edit(campaign: Campaign, userId: string, id: string) {
+      const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
+      if (error) {
+        throw new Error(`Validation error: ${error}`);
+      }
+
+      return DynamoDB.update(campaignValidated, userId, id);
     },
     async get(id: string) {
       throw new Error('[500] Method not implemented')
@@ -28,7 +33,7 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
     async delete(userId: string, id: string) {
       return DynamoDB.delete(userId, id);
     }
-  }
+  };
 }
 
 export default campaignRepositoryFactory(cuid, DynamoDB);
