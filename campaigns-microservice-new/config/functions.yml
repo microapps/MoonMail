@@ -5,21 +5,34 @@ createCampaign:
   memorySize: 128
   events:
     - http:
-        path: /campaigns
+        path: /campaign
         method: POST
         cors: ${self:custom.CORS_SETTINGS}
 
-  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsListFunctionIAM
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsCreateFunctionIAM
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
-  environment:
-    SERVERLESS_PROJECT: ${self:service}
-    SERVERLESS_STAGE: ${self:custom.currentStage}
-    SERVERLESS_REGION: ${self:custom.config.REGION}
-    DEBUG: true
+
+updateCampaign:
+  name: ${self:service}-update
+  handler: src/api/update.default
+  timeout: 6
+  memorySize: 128
+  events:
+    - http:
+        path: /campaign/{id}
+        method: PUT
+        cors: ${self:custom.CORS_SETTINGS}
+  
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsUpdateFunctionIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:#{AWS:Region}:#{AWS:AccountId}:table/${self:custom.campaignsTable}"
 
 deleteCampaign:
   name: ${self:service}-delete
@@ -28,18 +41,13 @@ deleteCampaign:
   memorySize: 128
   events:
     - http:
-        path: /campaigns/{id}
+        path: /campaign/{id}
         method: DELETE
         cors: ${self:custom.CORS_SETTINGS}
 
-  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsListFunctionIAM
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsDeleteFunctionIAM
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
-  environment:
-    SERVERLESS_PROJECT: ${self:service}
-    SERVERLESS_STAGE: ${self:custom.currentStage}
-    SERVERLESS_REGION: ${self:custom.config.REGION}
-    DEBUG: true
