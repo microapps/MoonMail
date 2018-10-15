@@ -60,6 +60,15 @@ export default class AWSDynamoItemParamBuilder {
     return this;
   }
 
+  withCondition(key, value) {
+    this.awsItem.KeyConditionExpression = `${key} = :hkey`;
+    this.awsItem.ExpressionAttributeValues = {
+      ':hkey': value
+    };
+
+    return this;
+  }
+
   build() {
     return this.awsItem;
   }

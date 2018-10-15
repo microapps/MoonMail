@@ -1,5 +1,6 @@
 import dynamoService, {client} from './dynamo';
 import campaign from './campaign';
+import { AWSError } from 'aws-sdk';
 
 describe('DynamoService', () => {
   beforeEach(() => {
@@ -235,6 +236,50 @@ describe('DynamoService', () => {
 
         // AND
         expect(error).toBe('Some error AWS Error');
+      }
+    });
+  });
+
+  describe('List', () => {
+    it('should query the DynamoDB', async () => {
+      // GIVEN
+      spyOn(client, 'query').and.callFake((params, callback) => callback(null, {
+        Items: [{
+          id: 'someId',
+          userId: 'my-user-id',
+          name: 'test'
+        }]
+      }));
+
+      // WHEN
+      const result = await dynamoService.list('my-user-id');
+
+      // THEN
+      expect(result instanceof Array).toBe(true);
+
+      // AND
+      expect(client.query).toBeCalledWith(
+        {
+          AttributesToGet: ['name'],
+          ExpressionAttributeValues: {
+          ':hkey': 'my-user-id'
+          },
+          KeyConditionExpression: 'userId = :hkey',
+          TableName: 'companyTable',
+        }, expect.any(Function)
+      );
+    });
+
+    it('should raise any error the DynamoDB client throws', async () => {
+      // GIVEN
+      spyOn(client, 'query').and.callFake((params, callback) => callback(new Error('Some error from query')));
+
+      // WHEN
+      try {
+        await dynamoService.list('my-user-id');
+      } catch (error) {
+        // THEN
+        expect(error.message).toBe('Some error from query');
       }
     });
   });

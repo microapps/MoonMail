@@ -48,14 +48,28 @@ export function dynamoFactory(client: DocumentClient): DatabaseService {
     async get(params: GetItemInput) {
       throw new Error('[500] Method not implemented');
     }, // Soon it'll be implemented
-    async list(params: ScanInput) {
-      throw new Error('[500] Method not implemented');
+    async list(userId: string) {
+      return new Promise((resolve, reject) => {
+        const param = new AWSDynamoItemParamBuilder(process.env.CAMPAIGN_TABLE)
+          .withCondition(HASH_KEY, userId)
+          .build();
+        param.AttributesToGet = ['name'];
+
+        client.query(param, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data.Items);
+          }
+        });
+      });
     },
     async delete(hashKey: string, rangeKey: string) {
       return new Promise((resolve, reject) => {
         const param = new AWSDynamoItemParamBuilder(process.env.CAMPAIGN_TABLE)
           .withKeyProperty(HASH_KEY, hashKey, RANGE_KEY, rangeKey)
           .build();
+
         client.delete(param, (error) => {
           if (error) {
             reject(error);
