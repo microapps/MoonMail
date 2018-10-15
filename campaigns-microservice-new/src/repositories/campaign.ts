@@ -1,6 +1,7 @@
-import {slug} from 'cuid';
+import cuid from 'cuid';
+import {BadRequest} from 'http-errors';
 
-import { Campaign, DatabaseService, CampaignRepository } from '../types';
+import {Campaign, DatabaseService, CampaignRepository} from '../types';
 import * as campaignSchemas from '../models/schema/campaign';
 import validate from '../models/schema/validator';
 import DynamoDB from './dynamo';
@@ -11,7 +12,9 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
       campaign.id = cuid();
       const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
       if (error) {
-        throw new Error(`Validation error: ${error}`);
+        const badRequest = new BadRequest(error.message);
+        badRequest.stack = error.stack;
+        throw badRequest;
       }
 
       return DatabaseService.put(campaignValidated);
@@ -21,7 +24,7 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
       if (error) {
         throw new Error(`Validation error: ${JSON.stringify(error)}`);
       }
-      
+
       return DynamoDB.update(campaignValidated, userId, id);
     },
     async get(id: string) {
@@ -36,4 +39,4 @@ export function campaignRepositoryFactory(cuid: () => string, DatabaseService: D
   };
 }
 
-export default campaignRepositoryFactory(slug, DynamoDB);
+export default campaignRepositoryFactory(cuid, DynamoDB);

@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export default function validate(object: object, schema: any) {
   const {error, value} = Joi.validate(object, schema);

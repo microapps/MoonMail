@@ -1,22 +1,23 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import middy from 'middy';
+import { jsonBodyParser } from 'middy/middlewares';
 
 import campaignRepository from '../repositories/campaign';
 import decryptor from '../lib/auth-token-decryptor';
-import debug from '../lib/logger';
-import ApiErrors from '../lib/errors';
+import { apiRequestRoutine, logRoutine } from '../../common/middlewares';
+import { TokenData } from '../types';
 
-export default async ({ pathParameters: { id }, headers: { Authorization: authToken } }: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  debug('= Delete Campaign', JSON.stringify({ id, authToken }));
+export async function action({pathParameters: {id: campaignId}, headers: {Authorization: authToken}}: APIGatewayEvent): Promise<APIGatewayProxyResult> {
+  const {sub: userId}: TokenData = decryptor(authToken);
+  await campaignRepository.delete(userId, campaignId);
 
-  try {
-    const { sub: userId } = decryptor(authToken);
-    await campaignRepository.delete(userId, id);
-    return {
-      statusCode: 204,
-      body: ''
-    };
-  } catch (error) {
-    console.log('Error Delete Campaign', error);
-    return ApiErrors.response(error);
-  }
+  return {
+    statusCode: 204,
+    body: ''
+  };
 }
+
+export default middy(action)
+  .use(jsonBodyParser())
+  .use(apiRequestRoutine())
+  .use(logRoutine());

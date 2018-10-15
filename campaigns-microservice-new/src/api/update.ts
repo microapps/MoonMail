@@ -1,29 +1,24 @@
-import { APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
+import middy from 'middy';
+import { jsonBodyParser } from 'middy/middlewares';
 
-import debug from '../lib/logger';
 import decryptor from '../lib/auth-token-decryptor';
-import ApiErrors from '../lib/errors';
 import { TokenData, Campaign } from '../types';
 import campaignRepository from '../repositories/campaign';
+import { NormalizedEvent } from '../../common/@types';
+import { apiRequestRoutine, logRoutine } from '../../common/middlewares';
 
-export default async ({ body, pathParameters: { id: campaignId }, headers: { Authorization: authToken } }: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  debug('= Create Campaign', JSON.stringify({ body, campaignId, authToken }));
-  try {
-    const campaign: Campaign = JSON.parse(body);
-    const {sub: userId}: TokenData = decryptor(authToken);
-    campaign.userId = userId;
+interface Event extends NormalizedEvent {
+  body: Campaign
+};
 
-    const campaignSaved = await campaignRepository.update(campaign, userId, campaignId);
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
-      body: JSON.stringify(campaignSaved)
-    };
-  } catch (error) {
-    console.log('Error Create campaign', error);
-    return ApiErrors.response(error);
-  }
+export async function action({ body: campaign, pathParameters: { id: campaignId }, headers: { Authorization: authToken } }: Event): Promise<Campaign> {
+  const {sub: userId}: TokenData = decryptor(authToken);
+  campaign.userId = userId;
+
+  return await campaignRepository.update(campaign, userId, campaignId);
 }
+
+export default middy(action)
+  .use(jsonBodyParser())
+  .use(apiRequestRoutine())
+  .use(logRoutine());

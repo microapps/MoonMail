@@ -1,4 +1,6 @@
-import updateHandler from './update';
+import {Unauthorized} from 'http-errors';
+
+import {action} from './update';
 import * as decryptor from '../lib/auth-token-decryptor';
 import campaignService from '../repositories/campaign';
 
@@ -24,8 +26,8 @@ describe('Update campaign', () => {
     });
 
     // WHEN
-    const result = await updateHandler(<any>{
-      body: JSON.stringify({
+    const campaign = await action(<any>{
+      body: {
         senderId: 'ca654',
         segmentId: 'anotherId',
         subject: 'my campaign subject',
@@ -38,7 +40,7 @@ describe('Update campaign', () => {
         sentAt: 0,
         createdAt: 0,
         scheduleAt: 0
-      }),
+      },
       pathParameters: {
         id: 'someId'
       },
@@ -46,8 +48,8 @@ describe('Update campaign', () => {
         Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik5UWTJSRGt4TVVJeE9FRTFNRFZET0Rnd05VWTVORUUxT0RSQk1qaEJSakkxTkVNd1FrSTBNdyJ9.eyJpc3MiOiJodHRwczovL21vb25tYWlsLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwODMyODMwMzkxNDA0Mzc2NTUxMyIsImF1ZCI6Inl4YUhSVm1BbFp2UFM5bXdTYnd6bXk5WTI0aDhtS2NWIiwiaWF0IjoxNTM4OTkwMjUzLCJleHAiOjE1Mzg5OTM4NTMsImF0X2hhc2giOiJEWGJHSE1OdHhZX0JOSkxDTGpKMWRRIiwibm9uY2UiOiJ5eGFIUlZtQWxadlBTOW13U2J3em15OVkyNGg4bUtjViJ9.zq-476NXJzwdOe_bzCEzIuh266TM-4oS18Xv_UHacHQ5GOyTWRBWkUToZGulDslEVBPgfDaqFEmolyrymMYQJ8cWqI561QIvUszjSvV9ENYzf72gSTnNYDX8RnvZIt6_3obDduByEBvUEdSSm6fZDh8yVx_BQeq_ItSNBP8pT4wmh1Glv9qqi9W9FifaegErGv8rdVMJL_jHhHnqIWxspxzkhMhbXKkL5q0XSnOv5kDFvHocuOvqjMUb488lS8L_PcHiovnDF0PzMPwc1mmOhVZGOuFvEtVCzHpZrw-ySc3KyGdX8ogfTZ4YRnxYGLriI8-hoDZVZk-pfFBnjobDKQ'
       }
     });
+
     // THEN
-    const campaign = JSON.parse(result.body);
     expect(campaign.userId).toBe('my-user-id');
     expect(campaign.status).toBe('draft');
 
@@ -76,7 +78,7 @@ describe('Update campaign', () => {
 
     // WHEN
     try {
-      await updateHandler(<any>{
+      await action(<any>{
         body: JSON.stringify({
           senderId: 'ca654',
           subject: 'my campaign subject',
@@ -93,10 +95,8 @@ describe('Update campaign', () => {
       });
     } catch(error) {
       // THEN
-      expect(error).toEqual({
-        message: 'Access Denied',
-        statusCode: 403
-      });
+      expect(error instanceof Unauthorized).toBe(true);
+      expect(error.message).toBe('Missing or invalid JWT');
     }
   });
 })

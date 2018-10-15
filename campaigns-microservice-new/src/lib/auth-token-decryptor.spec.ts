@@ -1,5 +1,6 @@
 import decryptor from './auth-token-decryptor';
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import {Unauthorized} from 'http-errors';
 
 describe('Decryptor', () => {
   beforeEach(() => {
@@ -36,10 +37,8 @@ describe('Decryptor', () => {
     try {
       decryptor('');
     } catch (error) {
-      expect(error).toEqual({
-        statusCode: 403,
-        body: "{\"message\":\"Access Denied\"}"
-      });
+      expect(error instanceof Unauthorized).toBe(true)
+      expect(error.message).toBe('Missing or invalid JWT');
     }
 
     // THEN
@@ -54,10 +53,8 @@ describe('Decryptor', () => {
     try {
       decryptor(undefined);
     } catch (error) {
-      expect(error).toEqual({
-        statusCode: 403,
-        body: "{\"message\":\"Access Denied\"}"
-      });
+      expect(error instanceof Unauthorized).toBe(true)
+      expect(error.message).toBe('Missing or invalid JWT');
     }
 
     // THEN

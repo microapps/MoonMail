@@ -1,7 +1,8 @@
-import handler from './delete';
+import {Unauthorized} from 'http-errors';
+
+import {action} from './delete';
 import campaignRepository from '../repositories/campaign';
 import * as decryptor from '../lib/auth-token-decryptor';
-import ApiErrors from '../lib/errors';
 
 describe('Delete Campaign', () => {
   it('should delete the campaign', () => {
@@ -10,7 +11,7 @@ describe('Delete Campaign', () => {
     spyOn(decryptor, 'default').and.returnValue({sub: 'my-user-id'});
 
     // WHEN
-    handler(<any>{
+    action(<any>{
       pathParameters: { id: 'someId' },
       headers: {
         Authorization: 'Bearer json.web.token'
@@ -26,52 +27,34 @@ describe('Delete Campaign', () => {
 
   it('should return an error when something the Authorization header is not provided', async () => {
     // GIVEN
-    spyOn(ApiErrors, 'response').and.returnValue({
-      body: '{"message": "Access Denied"}',
-      statusCode: 403
-    });
     spyOn(decryptor, 'default').and.callFake(() => {
-      throw {
-        message: 'Access Denied',
-        statusCode: 403
-      }
+      throw new Unauthorized('Missing or invalid JWT');
     });
     spyOn(campaignRepository, 'delete');
 
     // WHEN
-    const result = await handler(<any>{
-      pathParameters: { id: 'someId' },
-      headers: {
-        Authorization: undefined
-      }
-    });
-
-    // THEN
-    expect(result).toEqual({
-      body: '{"message": "Access Denied"}',
-      statusCode: 403
-    });
-
-    // AND
-    expect(decryptor.default).toBeCalledWith(undefined);
-
-    // AND
-    expect(ApiErrors.response).toBeCalledWith({
-      message: 'Access Denied',
-      statusCode: 403
-    });
-
-    // AND
-    expect(campaignRepository.delete).not.toBeCalled();
+    try {
+      await action(<any>{
+        pathParameters: { id: 'someId' },
+        headers: {
+          Authorization: undefined
+        }
+      });
+    } catch (error) {
+      // THEN
+      expect(error instanceof Unauthorized).toBe(true);
+      expect(error.message).toEqual('Missing or invalid JWT');
+  
+      // AND
+      expect(decryptor.default).toBeCalledWith(undefined);
+  
+      // AND
+      expect(campaignRepository.delete).not.toBeCalled();
+    }
   });
 
   it('should return an error when something goes wrong on AWS API', async () => {
     // GIVEN
-    spyOn(ApiErrors, 'response').and.returnValue({
-      name: 'AWSError',
-      body: '{"message": "Something goes wrong with the deletion"}',
-      statusCode: 500
-    });
     spyOn(decryptor, 'default').and.returnValue({sub: 'my-user-id'});
     spyOn(campaignRepository, 'delete').and.returnValue(Promise.reject({
       name: 'AWSError',
@@ -80,31 +63,26 @@ describe('Delete Campaign', () => {
     }));
 
     // WHEN
-    const result = await handler(<any>{
-      pathParameters: { id: 'someId' },
-      headers: {
-        Authorization: 'Bearer json.web.token'
-      }
-    });
+    try {
+      await action(<any>{
+        pathParameters: { id: 'someId' },
+        headers: {
+          Authorization: 'Bearer json.web.token'
+        }
+      });
+    } catch (error) {
+      // THEN
+      expect(error).toEqual({
+        name: 'AWSError',
+        message: 'Something goes wrong with the deletion',
+        statusCode: 500
+      });
+  
+      // AND
+      expect(decryptor.default).toBeCalledWith('Bearer json.web.token');
 
-    // THEN
-    expect(result).toEqual({
-      name: 'AWSError',
-      body: '{"message": "Something goes wrong with the deletion"}',
-      statusCode: 500
-    });
-
-    // AND
-    expect(decryptor.default).toBeCalledWith('Bearer json.web.token');
-
-    // AND
-    expect(ApiErrors.response).toBeCalledWith({
-      name: 'AWSError',
-      message: 'Something goes wrong with the deletion',
-      statusCode: 500
-    });
-
-    // AND
-    expect(campaignRepository.delete).toBeCalledWith('my-user-id', 'someId');
+      // AND
+      expect(campaignRepository.delete).toBeCalledWith('my-user-id', 'someId');
+    }
   });
 });
