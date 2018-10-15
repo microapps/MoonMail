@@ -17,7 +17,7 @@ module.exports = {
     hints: false
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx']
+    extensions: ['.js', '.ts', '.json']
   },
   module: {
     rules: [

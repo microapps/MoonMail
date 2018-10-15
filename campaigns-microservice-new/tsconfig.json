@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-      "noImplicitAny": false, // TODO: Enable it once we have all types created
-      "skipLibCheck": true,
-      "noEmit": true,
-      "pretty": true,
-      "lib": ["es5", "es7"]
+    "noImplicitAny": false, // TODO: Enable it once we have all types created
+    "skipLibCheck": true,
+    "noEmit": true,
+    "pretty": true,
+    /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "esModuleInterop": true,
+    "lib": ["es5", "es7"]
   },
   "include": [
       "./**/*"

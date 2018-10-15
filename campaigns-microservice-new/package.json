@@ -56,9 +56,12 @@
   "dependencies": {
     "aws-sdk": "^2.327.0",
     "bluebird": "^3.5.1",
+    "content-type": "^1.0.4",
     "cuid": "^2.1.4",
     "deep-assign": "^2.0.0",
+    "error-to-json": "^1.1.0",
     "global": "^4.3.2",
+    "http-errors": "^1.7.1",
     "joi": "^13.3.0",
     "jsonwebtoken": "^8.3.0",
     "middy": "^0.19.1",
