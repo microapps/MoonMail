@@ -1,7 +1,15 @@
 import errorToJSON from 'error-to-json';
 
+export const logDebugObject = (data: {[key:string]: any}): void => {
+  Object.keys(data).forEach(key => {
+    logInfo(`${key}:`, data[key]);
+  });
+};
+
 export const logInfo = (comment: string, data?: object): void => {
-  console.log(`${comment}:`, JSON.stringify(data, null, 2));
+  if (process.env.DEBUG && JSON.parse(process.env.DEBUG)) {
+    console.log(`${comment}:`, JSON.stringify(data, null, 2));
+  }
 };
 
 export const logDebugInfo = (comment: string, data?: object): void => {

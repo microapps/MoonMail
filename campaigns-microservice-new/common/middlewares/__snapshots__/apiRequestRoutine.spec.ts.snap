@@ -3,6 +3,10 @@
 exports[`apiRequestRoutine buildErrorResponse should build a correct response object in case of the http error 1`] = `
 Object {
   "body": "{\\"status\\":\\"NotFoundError\\",\\"statusCode\\":404,\\"message\\":\\"Recourse not found\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+  },
   "statusCode": 404,
 }
 `;
@@ -10,6 +14,10 @@ Object {
 exports[`apiRequestRoutine buildErrorResponse should build a correct response object in case of the internal error 1`] = `
 Object {
   "body": "{\\"status\\":\\"ServiceUnavailableError\\",\\"statusCode\\":503,\\"message\\":\\"Upstream service is unavailable\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+  },
   "statusCode": 503,
 }
 `;
@@ -80,6 +88,10 @@ Object {
 exports[`apiRequestRoutine should return error response if http error is thrown in handler 1`] = `
 Object {
   "body": "{\\"status\\":\\"NotFoundError\\",\\"statusCode\\":404,\\"message\\":\\"Recourse not found\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+  },
   "statusCode": 404,
 }
 `;
@@ -87,6 +99,10 @@ Object {
 exports[`apiRequestRoutine should return error response if internal error is thrown in handler 1`] = `
 Object {
   "body": "{\\"status\\":\\"ServiceUnavailableError\\",\\"statusCode\\":503,\\"message\\":\\"Upstream service is unavailable\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+  },
   "statusCode": 503,
 }
 `;

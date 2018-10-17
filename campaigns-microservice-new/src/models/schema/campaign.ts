@@ -1,8 +1,13 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
+import dynogels from 'dynogels';
 
-export function schema () {
-  return Joi.object().keys({
-    id: Joi.string().required(),
+export const Campaign = dynogels.define('Campaign', {
+  hashKey: 'userId',
+  rangeKey: 'id',
+  tableName: process.env.CAMPAIGN_TABLE,
+  timestamps : true,
+  schema: {
+    id: dynogels.types.uuid(),
     userId: Joi.string().required(),
     senderId: Joi.string().required(),
     segmentId: Joi.string(),
@@ -14,10 +19,9 @@ export function schema () {
     template: Joi.string(),
     isUpToDate: Joi.boolean(),
     sentAt: Joi.number(),
-    createdAt: Joi.number(),
     scheduleAt: Joi.number()
-  });
-}
+  }
+});
 
 export function schemaCampaignToBeSent () {
   return Joi.alternatives().try(

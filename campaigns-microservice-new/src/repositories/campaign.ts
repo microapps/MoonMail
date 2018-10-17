@@ -1,42 +1,108 @@
-import cuid from 'cuid';
 import {BadRequest} from 'http-errors';
+import {QueryOutput} from 'aws-sdk/clients/dynamodb';
+import { Model } from 'dynogels';
 
-import {Campaign, DatabaseService, CampaignRepository} from '../types';
-import * as campaignSchemas from '../models/schema/campaign';
-import validate from '../models/schema/validator';
-import DynamoDB from './dynamo';
+import {Campaign, CampaignRepository, ListOptions} from '../types';
+import {Campaign as CampaignSchema} from '../models/schema/campaign';
 
-export function campaignRepositoryFactory(cuid: () => string, DatabaseService: DatabaseService): CampaignRepository {
+export function campaignRepositoryFactory(campaignSchema: Model): CampaignRepository {
   return {
     save(campaign: Campaign) {
-      campaign.id = cuid();
-      const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
-      if (error) {
-        const badRequest = new BadRequest(error.message);
-        badRequest.stack = error.stack;
-        throw badRequest;
-      }
-
-      return DatabaseService.put(campaignValidated);
+      return new Promise((resolve, reject) => {
+        campaignSchema.create(campaign, function(error, data) {
+          if (error) {
+            const badRequest = new BadRequest(error.message);
+            badRequest.stack = error.stack;
+            reject(badRequest)
+          } else {
+            resolve(<any>data);
+          }
+        });
+      });
     },
     update(campaign: Campaign, userId: string, id: string) {
-      const {error, value: campaignValidated} = validate(campaign, campaignSchemas.schema());
-      if (error) {
-        throw new Error(`Validation error: ${JSON.stringify(error)}`);
-      }
+      return new Promise((resolve, reject) => {
+        if (campaign.userId !== userId || campaign.id !== id) {
+          reject(new BadRequest('Data does not match'));
+          return;
+        }
+        campaignSchema.update(campaign, function(error, data) {
+          if (error) {
+            const badRequest = new BadRequest(error.message);
+            badRequest.stack = error.stack;
+            reject(badRequest)
+          } else {
+            resolve(<any>data);
+          }
+        });
+      });
+    },
+    get(userId: string, id: string) {
+      return new Promise((resolve, reject) => {
+        campaignSchema.get(userId, id, function(error, data) {
+          if (error) {
+            const badRequest = new BadRequest(error.message);
+            badRequest.stack = error.stack;
+            reject(badRequest)
+          } else {
+            resolve(<any>data);
+          }
+        });
+      });
+    },
+    list(userId: string, {page, limit, fields, filters} = {}) {
+      return new Promise(async (resolve, reject) => {
+        let queryResult: QueryOutput = {};
+        let currentPage = 0;
+        try {
+          do {
+            let query = campaignSchema.query(userId)
+              .limit(limit)
+              .attributes(fields);
 
-      return DynamoDB.update(campaignValidated, userId, id);
-    },
-    async get(id: string) {
-      throw new Error('[500] Method not implemented')
-    },
-    async list(userId: string) {
-      throw new Error('[500] Method not implemented')
+            if (queryResult.LastEvaluatedKey) {
+              query = query.startKey(queryResult.LastEvaluatedKey.userId, queryResult.LastEvaluatedKey.id)
+            }
+
+            queryResult = await executeQueryAsync(query);
+            currentPage++;
+          } while(page > currentPage);
+          resolve(queryResult.Items);
+        } catch(error) {
+          reject(error);
+        }
+      });
     },
     delete(userId: string, id: string) {
-      return DynamoDB.delete(userId, id);
+      return new Promise((resolve, reject) => {
+        campaignSchema.destroy(userId, id, function(error) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(true);
+          }
+        })
+      });
     }
   };
 }
 
-export default campaignRepositoryFactory(cuid, DynamoDB);
+function executeQueryAsync(query): Promise<QueryOutput> {
+  return new Promise((resolve, reject) => {
+    query.exec(function(error, data) {
+      if (error) {
+        const badRequest = new BadRequest(error.message);
+        badRequest.stack = error.stack;
+        reject(badRequest)
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+function shouldGetMoreData(data: QueryOutput, options: ListOptions) {
+  return data.LastEvaluatedKey || data.Items.length < Number(options.limit);
+}
+
+export default campaignRepositoryFactory(CampaignSchema);

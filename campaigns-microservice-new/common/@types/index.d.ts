@@ -33,7 +33,13 @@ export interface NormalizedEvent {
   isBase64Encoded: boolean;
   path: string;
   pathParameters: {[name: string]: string} | null;
-  queryStringParameters: {[name: string]: string} | null;
+  queryStringParameters: {
+    [name: string]: string|number|Array<string>,
+    page: number,
+    limit: number,
+    fields: Array<string>,
+    archived: boolean
+  } | null,
   stageVariables: {[name: string]: string} | null;
   requestContext: APIGatewayEventRequestContext;
   resource: string;

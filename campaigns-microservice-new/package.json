@@ -54,11 +54,13 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@types/dynogels": "^9.0.0",
     "aws-sdk": "^2.327.0",
     "bluebird": "^3.5.1",
     "content-type": "^1.0.4",
     "cuid": "^2.1.4",
     "deep-assign": "^2.0.0",
+    "dynogels": "^9.0.0",
     "error-to-json": "^1.1.0",
     "global": "^4.3.2",
     "http-errors": "^1.7.1",
@@ -68,6 +70,7 @@
     "moment": "^2.22.2",
     "omit-empty": "^0.4.1",
     "prettier": "^1.14.1",
+    "rxjs": "^6.3.3",
     "source-map-support": "^0.5.5",
     "webpack-cli": "^3.1.2"
   },

@@ -1,7 +1,13 @@
-export interface DatabaseService {
-  put: (params: any) => Promise<any>,
-  update: (params: any, hashKey: string, rangeKey: string) => Promise<any>,
-  get: (params: any) => Promise<any>,
-  list: (key: string) => Promise<any>,
-  delete: (hash: string, range: string) => Promise<any>
+import { QueryOutput, Key } from "aws-sdk/clients/dynamodb";
+
+export type ListOptions = {
+  page?: number,
+  limit?: number,
+  fields?: Array<string>,
+  filters?: {
+    archived: {
+      eq?: boolean,
+      ne?: boolean
+    }
+  }
 }

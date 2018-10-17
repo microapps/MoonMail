@@ -22,7 +22,7 @@ export const setDefaultParams = (event: APIGatewayProxyEvent): void => {
   }
 };
 
-export const buildJSONResponse = (response: Response): Response => {
+export function buildJSONResponse(response: Response): Response {
   if (!response) return response;
   if (response.statusCode) return response;
   return {
@@ -32,7 +32,7 @@ export const buildJSONResponse = (response: Response): Response => {
   };
 };
 
-export const buildErrorResponse = (error: Error): Response => {
+export function buildErrorResponse(error: Error): Response {
   let httpError: HttpError;
   if (error instanceof HttpError) {
     httpError = error;
@@ -41,6 +41,7 @@ export const buildErrorResponse = (error: Error): Response => {
   }
   return {
     statusCode: httpError.statusCode,
+    headers: DEFAULT_HEADERS,
     body: JSON.stringify({
       status: httpError.name,
       statusCode: httpError.statusCode,
@@ -50,19 +51,36 @@ export const buildErrorResponse = (error: Error): Response => {
 };
 
 export const apiRequestRoutine = () => ({
-  before: (handler: IHandlerLambda, next: IMiddyNextFunction) => {
+  before(handler: IHandlerLambda, next: IMiddyNextFunction) {
     addAuthorizerContext(handler.event);
     setDefaultParams(handler.event);
     return next();
   },
 
-  after: (handler: IHandlerLambda, next: IMiddyNextFunction) => {
+  after(handler: IHandlerLambda, next: IMiddyNextFunction) {
     handler.response = buildJSONResponse(handler.response);
     return next();
   },
 
-  onError: (handler: IHandlerLambda, next: IMiddyNextFunction) => {
+  onError(handler: IHandlerLambda, next: IMiddyNextFunction) {
     handler.response = buildErrorResponse(handler.error);
     return next();
   }
 });
+
+export function normalizeListQueryParameters() {
+  return {
+    before(handler: IHandlerLambda, next: IMiddyNextFunction) {
+      const {page='0', limit='250', fields, archived='false'} = handler.event.queryStringParameters;
+      handler.event.queryStringParameters = {
+        ...handler.event.queryStringParameters,
+        page: Number(page),
+        limit: Number(limit),
+        fields: fields && fields.split(','),
+        archived: JSON.parse(archived)
+      }
+
+      return next();
+    }
+  };
+}

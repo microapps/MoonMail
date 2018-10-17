@@ -60,11 +60,15 @@ export default class AWSDynamoItemParamBuilder {
     return this;
   }
 
-  withCondition(key, value) {
+  withCondition(key: string, value: string, options?: {LastEvaluatedKey: object}) {
     this.awsItem.KeyConditionExpression = `${key} = :hkey`;
     this.awsItem.ExpressionAttributeValues = {
       ':hkey': value
     };
+
+    if (options.LastEvaluatedKey) {
+      this.awsItem.ExclusiveStartKey = options.LastEvaluatedKey;
+    }
 
     return this;
   }
