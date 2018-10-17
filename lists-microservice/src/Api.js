@@ -23,7 +23,7 @@ function publishRecipientImportedEvents(recipientsBatch, importId, batchFirstInd
 
   return EventLog.batchWrite({
     topic: Events.listRecipientImported,
-    streamName: process.env.LIST_RECIPIENT_STREAM_NAME,
+    streamName: process.env.LIST_RECIPIENT_STREAM_NAME2,
     data: batchToWrite
   });
 }

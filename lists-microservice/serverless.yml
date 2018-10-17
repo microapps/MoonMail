@@ -21,6 +21,7 @@ provider:
     ES_HOST: ${self:custom.config.ES_HOST}
     ES_REGION: ${self:custom.config.ES_REGION}
     LIST_RECIPIENT_STREAM_NAME: ${self:custom.resourcesPrefix}-listEventStream  
+    LIST_RECIPIENT_STREAM_NAME2: ${self:custom.resourcesPrefix}-listEventStream2 
     IOT_ENDPOINT: ${file(./config.${self:custom.currentStage}.json):IOT_ENDPOINT}
     GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
     ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
@@ -314,6 +315,18 @@ functions:
             Fn::GetAtt:
               - ListEventStream
               - Arn
+  eventStreamProcessorHandler2:
+    handler: handler.eventStreamProcessor
+    name: ${self:custom.resourcesPrefix}-eventStreamProcessor2
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          arn:
+            Fn::GetAtt:
+              - ListEventStream2
+              - Arn
 
   # recipientCreatedEventHandler:
   #   handler: handler.recipientCreatedProcessor
@@ -602,6 +615,11 @@ resources:
       Properties:
         Name: ${self:custom.resourcesPrefix}-listEventStream
         ShardCount: 1
+    ListEventStream2:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:custom.resourcesPrefix}-listEventStream2
+        ShardCount: 1
     ListMicroserviceDeadLetterQueue:
       Type: "AWS::SQS::Queue"
       Properties:
@@ -659,4 +677,10 @@ resources:
       Value:
         'Fn::GetAtt':
           - ListEventStream
+          - Arn
+    ListEventStream2ARN:
+      Description: ListEventStream Kinesis Stream 2 ARN
+      Value:
+        'Fn::GetAtt':
+          - ListEventStream2
           - Arn
