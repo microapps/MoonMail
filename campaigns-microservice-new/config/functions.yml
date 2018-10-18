@@ -48,6 +48,22 @@ listCampaign:
         - dynamodb:Query
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
 
+getCampaign:
+  name: ${self:service}-get
+  handler: src/api/get.default
+  timeout: 6
+  memorySize: 128
+  events:
+    - http:
+        path: /campaign/{id}
+        method: GET
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsGetFunctionIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
+
 deleteCampaign:
   name: ${self:service}-delete
   handler: src/api/delete.default

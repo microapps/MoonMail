@@ -10,6 +10,7 @@ export interface Campaign {
   body: string;
   template: string;
   isUpToDate: boolean;
+  archived: boolean;
   sentAt: number;
   createdAt: number;
   scheduleAt: number;

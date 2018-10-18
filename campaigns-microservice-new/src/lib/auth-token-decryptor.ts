@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {TokenData} from '../types';
-import {BadRequest, Unauthorized} from 'http-errors';
+import {Unauthorized} from 'http-errors';
 
 export default function decrypt(authToken: string): TokenData {
   if (!authToken) {

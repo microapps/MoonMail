@@ -1,6 +1,6 @@
 import {BadRequest} from 'http-errors';
 import {QueryOutput} from 'aws-sdk/clients/dynamodb';
-import { Model } from 'dynogels';
+import {Model, GetItemOptions} from 'dynogels';
 
 import {Campaign, CampaignRepository, ListOptions} from '../types';
 import {Campaign as CampaignSchema} from '../models/schema/campaign';
@@ -37,9 +37,12 @@ export function campaignRepositoryFactory(campaignSchema: Model): CampaignReposi
         });
       });
     },
-    get(userId: string, id: string) {
+    get(userId: string, id: string, fields: Array<string> = []) {
       return new Promise((resolve, reject) => {
-        campaignSchema.get(userId, id, function(error, data) {
+        const options: GetItemOptions = {};
+        options.AttributesToGet = fields.length ? fields : undefined;
+
+        campaignSchema.get(userId, id, {}, function(error, data) {
           if (error) {
             const badRequest = new BadRequest(error.message);
             badRequest.stack = error.stack;
@@ -99,10 +102,6 @@ function executeQueryAsync(query): Promise<QueryOutput> {
       }
     });
   });
-}
-
-function shouldGetMoreData(data: QueryOutput, options: ListOptions) {
-  return data.LastEvaluatedKey || data.Items.length < Number(options.limit);
 }
 
 export default campaignRepositoryFactory(CampaignSchema);

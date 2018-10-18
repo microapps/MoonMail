@@ -32,7 +32,10 @@ export interface NormalizedEvent {
   httpMethod: string;
   isBase64Encoded: boolean;
   path: string;
-  pathParameters: {[name: string]: string} | null;
+  pathParameters: {
+    [name: string]: string,
+    fields: Array<string>
+  } | null;
   queryStringParameters: {
     [name: string]: string|number|Array<string>,
     page: number,
