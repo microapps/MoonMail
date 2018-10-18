@@ -15,6 +15,40 @@ createCampaign:
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
 
+duplicateCampaign:
+  name: ${self:service}-duplicate
+  handler: src/api/duplicate.default
+  timeout: 10
+  memorySize: 128
+  events:
+    - http:
+        path: /campaign/{id}
+        method: POST
+        cors: ${self:custom.CORS_SETTINGS}
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsDuplicateFunctionIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
+
+duplicateCampaign:
+  name: ${self:service}-duplicate
+  handler: src/api/duplicate.default
+  timeout: 10
+  memorySize: 128
+  events:
+    - http:
+        path: /campaign/{id}
+        method: POST
+        cors: ${self:custom.CORS_SETTINGS}
+  iamRoleStatementsName: ${self:custom.resourcesPrefix}-campaignsDuplicateFunctionIAM
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.campaignsTable}"
+
 updateCampaign:
   name: ${self:service}-update
   handler: src/api/update.default
