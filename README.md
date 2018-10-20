@@ -133,7 +133,7 @@ To configure and deploy these, you will have to follow the instructions provided
 If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://microapps.github.io/MoonMail-UI)
     
 ## Questions?
-Please pose your questions in [StackOverflow by tagging them with: moonmail](http://stackoverflow.com/questions/tagged/moonmail?sort=votes&pageSize=50). 
+Please post your questions on [StackOverflow and tag them with: moonmail](http://stackoverflow.com/questions/tagged/moonmail?sort=votes&pageSize=50). 
 
 ## Contributing Guidelines
 Contributions are always welcome! If you'd like to collaborate with us, take into account that:
