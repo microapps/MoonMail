@@ -36,7 +36,8 @@
     "ATTACH_RECIPIENTS_TOPIC": "$${attachRecipientsTopic}",
     "ATTACH_RECIPIENTS_TOPIC_ARN": "${attachRecipientsTopicARN}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
-    "API_HOST": "${apiHost}"
+    "API_HOST": "${apiHost}",
+    "CLICKS_HOST": "${clicksHost}"
   },
   "vpc": {
     "securityGroupIds": [],
