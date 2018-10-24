@@ -39,6 +39,7 @@
     "SEND_CAMPAIGN_TOPIC_ARN": "${sendCampaignTopicARN}",
     "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
     "API_HOST": "${apiHost}",
+    "CLICKS_HOST": "${clicksHost}",
     "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "LISTS_TABLE": "$${listsTable}"

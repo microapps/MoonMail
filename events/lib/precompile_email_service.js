@@ -8,6 +8,7 @@ class PrecompileEmailService {
   constructor(sqsClient, emailParams) {
     this.emailParams = emailParams;
     this.apiHost = process.env.API_HOST;
+    this.clicksHost = process.env.CLICKS_HOST;
     this.queue = new EmailQueue(sqsClient, { name: this.queueName });
     const uncompressedBody = uncompressString(emailParams.campaign.body);
     const campaignMetadata = this._buildCampaignMetadata(emailParams.campaign);
@@ -56,7 +57,7 @@ class PrecompileEmailService {
   }
 
   _addTracking(body, context) {
-    const linksParser = new LinksParser({ apiHost: this.apiHost, context });
+    const linksParser = new LinksParser({ apiHost: this.apiHost, context, clicksHost: this.clicksHost });
     return linksParser.appendRecipientIdToLinks(body)
       .then(parsedBody => linksParser.appendOpensPixel(parsedBody));
   }

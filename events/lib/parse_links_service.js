@@ -11,6 +11,7 @@ class ParseLinksService {
     this.campaignParams.campaign.body = uncompressedBody;
     this.parsedBody = null;
     this.apiHost = process.env.API_HOST;
+    this.clicksHost = process.env.CLICKS_HOST;
     this.sendCampaignTopicArn = process.env.ATTACH_RECIPIENTS_TOPIC_ARN;
     this.snsClient = snsClient;
   }
@@ -33,7 +34,8 @@ class ParseLinksService {
     logger().debug('= ParseLinksService.addTracking', 'Adding tracking to body');
     const linksParser = new LinksParser({
       campaignId: this.campaignParams.campaign.id,
-      apiHost: this.apiHost
+      apiHost: this.apiHost,
+      clicksHost: this.clicksHost
     });
     return linksParser.parseLinks(this.campaignParams.campaign.body);
   }

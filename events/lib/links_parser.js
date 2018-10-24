@@ -7,8 +7,9 @@ import omitEmpty from 'omit-empty';
 import { logger } from './index';
 
 class LinksParser {
-  constructor({ apiHost, campaignId, context = {} } = {}) {
+  constructor({ apiHost, campaignId, context = {}, clicksHost } = {}) {
     this.apiHost = apiHost;
+    this.clicksHost = clicksHost
     this.campaignId = campaignId || (context.campaign || {}).id;
     this.segmentId = (context.campaign || {}).segmentId;
     this.recipientId = (context.recipient || {}).id;
@@ -118,14 +119,14 @@ class LinksParser {
   }
 
   _isRedirectionLink(uri) {
-    return uri.protocol === 'https:' && this.apiHost.includes(uri.hostname);
+    return uri.protocol === 'https:' && (this.apiHost.includes(uri.hostname) || this.clicksHost.includes(uri.hostname));
   }
 
   clicksTrackUrl(linkId, linkUrl) {
-    if (this.apiHost) {
+    if (this.clicksHost) {
       const clicksUrlObj = {
         protocol: 'https',
-        hostname: this.apiHost,
+        hostname: this.clicksHost,
         pathname: `${this.clicksPath}/${this.campaignId}/${linkId}`,
         query: { url: linkUrl }
       };
