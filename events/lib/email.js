@@ -3,7 +3,7 @@ import base64url from 'base64-url';
 import * as Liquid from 'liquid-node';
 import * as url from 'url';
 import { debug } from './index';
-import formatAddress from 'address-format';
+import formatAddress from './formatAddress';
 
 const liquid = new Liquid.Engine();
 
@@ -40,7 +40,7 @@ class Email {
       from_email: this.from || '',
       unsubscribe_url: unsubscribeUrl || '',
       resubscribe_url: resubscribeUrl || '',
-      list_address: this._address(contact) || '',
+      list_address: this._address(contact, this.metadata.country) || '',
       list_description: contact.description || '',
       list_name: this.list.name || '',
       list_company: contact.company || '',
@@ -159,7 +159,7 @@ class Email {
       </p>
       <p>
         Our mailing address is:<br />
-        ${this._address(contact)}
+        ${this._address(contact, this.metadata.country)}
       </p>
       <p>
         Copyright (C) ${ new Date().getFullYear()} <a href="${contact.websiteUrl || ''}"
@@ -202,7 +202,7 @@ class Email {
         </p>
         <p>
           Our mailing address is:<br />
-          ${this._address(contact)}
+          ${this._address(contact, this.metadata.country)}
         </p>
         <p>
           Copyright (C) ${ new Date().getFullYear()} <a href="${contact.websiteUrl || ''}"
@@ -217,15 +217,16 @@ class Email {
     }
   }
 
-  _address(contact) {
-    return `${formatAddress({
+  _address(contact, recipientCountry) {
+    return formatAddress({
+      company: contact.company || '',
       address: contact.address || '',
       address2: contact.address2 || '',
       city: contact.city || '',
-      subdivision: contact.state || '',
-      postalCode: contact.zipCode || '',
-      countryCode: contact.country || ''
-    }).join('<br data-mce-bogus="1">')}`
+      state: contact.state || '',
+      zipCode: contact.zipCode || '',
+      country: contact.country || ''
+    }, recipientCountry)
   }
 
   _isFreeUser(userPlan) {
