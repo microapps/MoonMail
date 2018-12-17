@@ -31,7 +31,7 @@ export default class ChargeEmailsService {
   }
 
   _doCharge(customerId, user, customPrice = null) {
-    if (user.plan.match(/free/)) return Promise.resolve(true);
+    if (user.plan.match(/free/) || user.plan.match(/ses/)) return Promise.resolve(true);
     const perEmailRate = parseInt(customPrice || costPerReputation(user.reputationData.reputation, user.reputationData.sentEmails || 0));
     const emailsToCharge = this.recipientsCount - this.freeEmails;
     if (emailsToCharge > 0) {
