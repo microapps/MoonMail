@@ -36,7 +36,7 @@ function entitleUser({amazonCustomerId, userId, entitlements}) {
 }
 
 function doEntitleUser({amazonCustomerId, userId, entitlements}) {
-  const plan = AmazonSubscriptions.plansMapping[entitlements.Entitlements[0].Dimension || 'basicUser'];
+  const plan = AmazonSubscriptions.plansMapping[entitlements.Entitlements[0].Dimension || 'freeUser'];
   const params = {amazonCustomerId, amazonSubscriptionActive: true, plan, approved: true};
   return User.update(params, userId);
 }

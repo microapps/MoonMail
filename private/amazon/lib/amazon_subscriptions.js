@@ -10,7 +10,8 @@ const awsMarketplaceProductCode = process.env.AWS_MARKETPLACE_PRODUCT_CODE;
 
 const plansMapping = {
   basicUser: 'aws_saas_marketplace_basic',
-  proUser: 'aws_saas_marketplace_pro'
+  proUser: 'aws_saas_marketplace_pro',
+  freeUser: 'aws_saas_marketplace_free'
 };
 
 function awsMarketplaceClient(config = awsConfig, service = 'MarketplaceEntitlementService') {
@@ -36,7 +37,6 @@ function getCustomerEntitlements(customerId) {
   const options = {Filter: {CUSTOMER_IDENTIFIER: [customerId]}};
   return getEntitlements({options});
 }
-
 
 export default {
   resolveCustomer,
