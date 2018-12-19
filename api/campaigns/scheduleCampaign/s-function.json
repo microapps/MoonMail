@@ -42,6 +42,7 @@
     "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
     "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
     "GET_TOTAL_RECIPIENTS_FUNCTION": "$${getTotalRecipientsFunctionName}",
+    "LIST_SEGMENT_MEMBERS_FUNCTION": "$${listSegmentMembersFunctionName}",
     "DEBUG": "true"
   },
   "vpc": {
