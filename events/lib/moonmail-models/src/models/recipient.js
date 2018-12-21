@@ -74,6 +74,33 @@ class Recipient extends Model {
     const dbOptions = Object.assign({}, indexOptions, options);
     return this.allBy('email', email, dbOptions);
   }
+
+  //Recursive allBy - should be redone to avoid high usage of memory
+  static allByListId(key, results = [], lastIndex = null) {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: 'listId = :listId',
+      FilterExpression: '#status = :status',
+      ExpressionAttributeValues: {
+        ':status': 'subscribed',
+        ':listId': key
+      },
+      ExpressionAttributeNames: {
+        '#status': 'status'
+      },
+      ExclusiveStartKey: lastIndex
+    };
+    return this._client('query', params)
+      .then((result) => {
+        if (result.LastEvaluatedKey != null) {
+          const newResult = [...result.Items, ...results]
+          return this.allByListId(key, newResult, result.LastEvaluatedKey)
+        } else {
+          const newResult = [...result.Items, ...results]
+          return { items: newResult }
+        }
+      })
+  }
 }
 
 module.exports.Recipient = Recipient;

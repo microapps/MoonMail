@@ -1,4 +1,5 @@
-import { Recipient, List } from 'moonmail-models';
+import { List } from 'moonmail-models';
+import { Recipient } from './moonmail-models/src/models/recipient';
 import csvWriter from 'csv-write-stream';
 import fs from 'fs';
 import moment from 'moment';
@@ -140,7 +141,7 @@ export default class ExportListService {
   _fetchRecipients(previousBatch = {}) {
     const options = { limit: 1000, filters: { status: { eq: 'subscribed' } } };
     if (previousBatch.nextPage) options.page = previousBatch.nextPage;
-    return Recipient.allBy('listId', this.listId, options);
+    return Recipient.allByListId(this.listId, options);
   }
 
   _notifyUser(success = true, list) {
